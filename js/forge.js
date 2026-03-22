@@ -44,6 +44,18 @@
   // Scroll reveal (Intersection Observer)
   // =========================================================================
   function initScrollReveal() {
+    // For grid containers with .reveal, move the reveal to each child
+    // so items appear individually as they scroll into view on mobile
+    document.querySelectorAll('.photo-grid.reveal, .media-grid.reveal').forEach(grid => {
+      grid.classList.remove('reveal');
+      grid.style.opacity = '1';
+      grid.style.transform = 'none';
+      Array.from(grid.children).forEach((child, i) => {
+        child.classList.add('reveal');
+        child.dataset.delay = String(i * 80);
+      });
+    });
+
     if (prefersReducedMotion) {
       document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
         el.classList.add('revealed');
