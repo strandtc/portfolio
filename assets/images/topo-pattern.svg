@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#0a0a0a"/>
+  <!-- Topographic/contour lines -->
+  <g fill="none" stroke="rgba(255,107,26,0.03)" stroke-width="0.8">
+    <ellipse cx="300" cy="300" rx="280" ry="250"/>
+    <ellipse cx="300" cy="300" rx="240" ry="210"/>
+    <ellipse cx="300" cy="300" rx="200" ry="170"/>
+    <ellipse cx="300" cy="300" rx="160" ry="130"/>
+    <ellipse cx="300" cy="300" rx="120" ry="90"/>
+    <ellipse cx="300" cy="300" rx="80" ry="50"/>
+    <ellipse cx="300" cy="300" rx="40" ry="20"/>
+    <!-- Offset cluster -->
+    <ellipse cx="150" cy="180" rx="120" ry="100" transform="rotate(-15,150,180)"/>
+    <ellipse cx="150" cy="180" rx="80" ry="60" transform="rotate(-15,150,180)"/>
+    <ellipse cx="150" cy="180" rx="40" ry="25" transform="rotate(-15,150,180)"/>
+    <!-- Another cluster -->
+    <ellipse cx="450" cy="420" rx="100" ry="80" transform="rotate(25,450,420)"/>
+    <ellipse cx="450" cy="420" rx="60" ry="45" transform="rotate(25,450,420)"/>
+    <ellipse cx="450" cy="420" rx="25" ry="15" transform="rotate(25,450,420)"/>
+  </g>
+</svg>

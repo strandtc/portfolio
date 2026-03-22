@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Experience | Chris Strandt</title>
+  <meta name="description" content="25 years of building, scaling, and leading - from early sysadmin to COO of a $225M hosting company.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* Timeline layout */
+    .timeline-section {
+      padding: var(--space-12) 0 var(--space-32);
+      position: relative;
+      overflow: hidden;
+    }
+    .timeline-section .section-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('../assets/images/experience-bg.png') center/cover no-repeat;
+      opacity: 0.07;
+      filter: grayscale(30%);
+      z-index: 0;
+    }
+    .timeline-section > .container { position: relative; z-index: 1; }
+
+    .timeline {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Center line */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-border);
+      z-index: 0;
+    }
+
+    .timeline-fill {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      width: 2px;
+      height: 0;
+      background: var(--color-accent);
+      transition: height 0.1s linear;
+      z-index: 1;
+    }
+
+    /* Items are absolutely positioned by JS on desktop */
+    .timeline-item {
+      position: relative;
+      width: 46%;
+    }
+
+    /* Left-side cards: right-aligned text */
+    .timeline-item.tl-left {
+      text-align: right;
+    }
+
+    .timeline-item.tl-left .tags {
+      justify-content: flex-end;
+    }
+
+    .timeline-item.tl-left .sub-topic-chips {
+      justify-content: flex-end;
+    }
+
+    /* Dot ON the center line */
+    .timeline-node {
+      position: absolute;
+      top: 32px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      background: var(--color-bg-primary);
+      z-index: 2;
+      transition: all var(--duration-normal) var(--ease-default);
+    }
+
+    .timeline-item.tl-left .timeline-node {
+      right: -31px;
+    }
+
+    .timeline-item.tl-right .timeline-node {
+      left: -31px;
+    }
+
+    .timeline-node.active {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 12px var(--color-accent-glow);
+    }
+
+    .timeline-node.featured {
+      width: 18px;
+      height: 18px;
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    .timeline-item.tl-left .timeline-node.featured {
+      right: -33px;
+    }
+
+    .timeline-item.tl-right .timeline-node.featured {
+      left: -33px;
+    }
+
+    .timeline-node.featured.active {
+      box-shadow: 0 0 20px var(--color-accent-glow);
+    }
+
+    /* Era color tinting */
+    .era-teal { background: rgba(255, 107, 26, 0.04); }
+    .era-indigo { background: rgba(255, 107, 26, 0.04); }
+    .era-blue { background: rgba(255, 107, 26, 0.04); }
+    .era-emerald { background: rgba(255, 107, 26, 0.04); }
+    .era-amber { background: rgba(245, 158, 11, 0.08); }
+
+    /* Timeline card */
+    .timeline-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-8);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+      transition: all var(--duration-normal) var(--ease-default);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-card .card-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.12;
+      filter: grayscale(40%);
+      z-index: 0;
+      transition: opacity var(--duration-normal) var(--ease-default);
+    }
+
+    .timeline-card:hover .card-bg {
+      opacity: 0.2;
+      filter: grayscale(20%);
+    }
+
+    .timeline-card > *:not(.card-bg) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-card:hover {
+      border-color: var(--color-accent-border);
+      background: var(--color-bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .timeline-card--featured {
+      border-color: var(--color-accent-border);
+      padding: var(--space-10);
+      position: relative;
+      background: linear-gradient(135deg, var(--color-accent-dim), transparent 60%), var(--color-bg-card);
+    }
+
+    .timeline-card--featured:hover {
+      background: linear-gradient(135deg, var(--color-accent-dim), transparent 60%), var(--color-bg-card-hover);
+    }
+
+    .timeline-card .badge {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      background: var(--color-accent-dim);
+      border: 1px solid var(--color-accent-border);
+      padding: 4px 10px;
+    }
+
+    .timeline-card .era-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-2);
+    }
+
+    .timeline-card h3 {
+      font-size: var(--text-xl);
+      margin-bottom: var(--space-1);
+    }
+
+    .timeline-card h3 a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    .timeline-card h3 a:hover {
+      color: var(--color-accent);
+    }
+
+    .timeline-card .role {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-accent);
+      margin-bottom: var(--space-4);
+    }
+
+    .timeline-card .summary {
+      color: var(--color-text-secondary);
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      margin-bottom: var(--space-6);
+    }
+
+    .timeline-card .tags {
+      margin-bottom: var(--space-6);
+    }
+
+    .timeline-card .tags .tag {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: var(--color-text-secondary);
+    }
+
+    .timeline-card .tags .tag:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-text-inverse);
+    }
+
+    .timeline-card .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    .timeline-card .card-cta:hover {
+      color: var(--color-accent-hover);
+    }
+
+    .timeline-card .card-cta .arrow {
+      transition: transform var(--duration-fast) var(--ease-default);
+    }
+
+    .timeline-card .card-cta:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* Sub-topics inside featured cards */
+    .sub-topics {
+      margin-top: var(--space-6);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .sub-topics-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-4);
+    }
+
+    .sub-topic-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .sub-topic-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      background: rgba(255, 107, 26, 0.1);
+      border: 1px solid rgba(255, 107, 26, 0.3);
+      padding: 6px 12px;
+      text-decoration: none;
+      transition: all var(--duration-fast) var(--ease-default);
+    }
+
+    .sub-topic-chip:hover {
+      color: var(--color-text-inverse);
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+    }
+
+    /* Growth bar (LW card) */
+    .growth-bar {
+      margin-top: var(--space-6);
+      padding-top: var(--space-4);
+    }
+
+    .growth-bar-track {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .growth-bar-start,
+    .growth-bar-end {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: var(--color-accent);
+      white-space: nowrap;
+    }
+
+    .growth-bar-line {
+      flex: 1;
+      height: 4px;
+      background: var(--color-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .growth-bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--color-accent);
+      transition: width 2s var(--ease-out);
+    }
+
+    .growth-bar-fill.active {
+      width: 100%;
+    }
+
+    .growth-bar-meta {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: var(--space-2);
+    }
+
+    /* Page hero */
+    .experience-hero {
+      padding: 0 0 var(--space-12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .experience-hero .hero-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('../assets/images/experience-hero-bg.png') center/cover no-repeat;
+      opacity: 0.25;
+      filter: grayscale(30%);
+      z-index: 0;
+    }
+
+    .experience-hero .grid-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .experience-hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+    }
+
+    .experience-hero-text {
+      flex: 1;
+    }
+
+    .experience-hero h1 {
+      font-size: clamp(32px, 4vw, 52px);
+      margin-bottom: var(--space-6);
+    }
+
+    .experience-hero .lead {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      line-height: var(--leading-relaxed);
+      max-width: 700px;
+    }
+
+    .experience-hero-portrait {
+      flex-shrink: 0;
+    }
+
+    .experience-hero-portrait .hero-image-outer {
+      position: relative;
+      display: block;
+      padding: 6px;
+      background: var(--color-bg-card);
+      clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+    }
+    .experience-hero-portrait .hero-image-outer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--color-accent-border);
+      clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+      z-index: 2;
+      pointer-events: none;
+    }
+    .experience-hero-portrait img {
+      display: block;
+      width: 430px;
+      max-height: 350px;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    @media (max-width: 768px) {
+      .experience-hero-content { flex-direction: column; }
+      .experience-hero-portrait img { width: 220px; }
+    }
+
+    /* Desktop: JS positions items absolutely */
+    @media (min-width: 1025px) {
+      .timeline.positioned {
+        position: relative;
+      }
+
+      .timeline.positioned .timeline-item {
+        position: absolute;
+      }
+
+      .timeline.positioned .timeline-item.tl-left {
+        right: 54%;
+      }
+
+      .timeline.positioned .timeline-item.tl-right {
+        left: 54%;
+      }
+    }
+
+    /* Mobile: single column, ignore JS positioning */
+    @media (max-width: 1024px) {
+      .timeline {
+        padding-left: 50px;
+      }
+
+      .timeline::before {
+        left: 16px;
+        transform: none;
+      }
+
+      .timeline-fill {
+        left: 16px;
+        transform: none;
+      }
+
+      .timeline-item {
+        width: 100% !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        text-align: left !important;
+        margin-bottom: var(--space-8);
+      }
+
+      .timeline-node {
+        left: -42px !important;
+        right: auto !important;
+      }
+
+      .timeline-node.featured {
+        left: -44px !important;
+      }
+
+      .timeline-item.tl-left .tags,
+      .timeline-item.tl-left .sub-topic-chips {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown">
+            <a href="index.html" class="active">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="early-career.html">Early Career</a>
+              <a href="liquid-web/">Liquid Web</a>
+              <a href="power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">About</a>
+    <a href="index.html" class="active">Experience</a>
+    <a href="early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a>
+
+    <a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf" download>Download Resume</a>
+  </div>
+
+  <main id="main" style="padding-top: var(--header-height);">
+
+    <!-- Breadcrumbs -->
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" aria-current="page">Experience</span>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <section class="experience-hero">
+      <div class="hero-bg-img" aria-hidden="true"></div>
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="experience-hero-content">
+          <div class="experience-hero-text">
+            <div class="section-label" data-hero-delay="0">// Career</div>
+            <h1 data-hero-delay="200">25 Years of Building, Scaling &amp; Leading</h1>
+            <p class="lead" data-hero-delay="400">From early sysadmin to COO of a $225M hosting company - every chapter taught me something different about technology, people, and growth. Click into any chapter to see the full story.</p>
+          </div>
+          <div class="experience-hero-portrait">
+            <div class="hero-image-outer">
+              <img src="../assets/materials/hero-experience-portrait.png" alt="Chris Strandt at work with circuit boards and schematics">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="timeline-section" aria-label="Career timeline">
+      <div class="section-bg-img" aria-hidden="true"></div>
+      <div class="container">
+        <div class="timeline" role="list">
+          <div class="timeline-fill" aria-hidden="true"></div>
+
+          <!-- 1. Northville Public Schools -->
+          <div class="timeline-item" role="listitem" aria-label="Northville Public Schools, late 1990s" data-delay="0">
+            <div class="timeline-node" aria-hidden="true"></div>
+            <div class="timeline-card era-teal"><div class="card-bg" style="background-image:url('../assets/images/northville-hero.png')" aria-hidden="true"></div>
+              <div class="era-label">Late 1990s</div>
+              <h3><a href="early-career.html#northville">Northville Public Schools</a></h3>
+              <div class="role">System Administrator</div>
+              <p class="summary">Started administering school district networks in the late 1990s - building servers, pulling cable, and learning that technology is only as good as the problems it solves.</p>
+              <div class="tags">
+                <span class="tag">Linux</span>
+                <span class="tag">Networking</span>
+                <span class="tag">Hardware</span>
+              </div>
+              <a href="early-career.html#northville" class="card-cta">Read More <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <!-- 2. Merit Networks -->
+          <div class="timeline-item" role="listitem" aria-label="Merit Networks, circa 2000" data-delay="150">
+            <div class="timeline-node" aria-hidden="true"></div>
+            <div class="timeline-card era-indigo"><div class="card-bg" style="background-image:url('../assets/images/merit-hero.png')" aria-hidden="true"></div>
+              <div class="era-label">~2000</div>
+              <h3><a href="early-career.html#merit">Merit Networks / University of Michigan</a></h3>
+              <div class="role">Network Operations Center</div>
+              <p class="summary">Monitored and maintained backbone infrastructure for Michigan's primary research and education network - first exposure to large-scale, mission-critical network operations.</p>
+              <div class="tags">
+                <span class="tag">BGP</span>
+                <span class="tag">NOC Operations</span>
+                <span class="tag">Cisco</span>
+                <span class="tag">SNMP</span>
+              </div>
+              <a href="early-career.html#merit" class="card-cta">Read More <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <!-- 3. Innoveda -->
+          <div class="timeline-item" role="listitem" aria-label="Innoveda at Ford Motor Company, circa 2001" data-delay="300">
+            <div class="timeline-node" aria-hidden="true"></div>
+            <div class="timeline-card era-blue"><div class="card-bg" style="background-image:url('../assets/images/innoveda-hero.png')" aria-hidden="true"></div>
+              <div class="era-label">~2001</div>
+              <h3><a href="early-career.html#innoveda">Innoveda</a></h3>
+              <div class="role">CAD/CAE Implementation at Ford Motor Company</div>
+              <p class="summary">Deployed and supported enterprise CAD/CAE tools across Ford's engineering division - learning how large organizations adopt and depend on complex technical systems.</p>
+              <div class="tags">
+                <span class="tag">CAD/CAE</span>
+                <span class="tag">Enterprise Deployment</span>
+                <span class="tag">Ford Motor Company</span>
+              </div>
+              <a href="early-career.html#innoveda" class="card-cta">Read More <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <!-- 4. Liquid Web (FEATURED) -->
+          <div class="timeline-item" role="listitem" aria-label="Liquid Web career chapter, 2002 to 2015" data-delay="450">
+            <div class="timeline-node featured" aria-hidden="true"></div>
+            <div class="timeline-card timeline-card--featured era-emerald"><div class="card-bg" style="background-image:url('../assets/images/card-liquidweb.png')" aria-hidden="true"></div>
+              <span class="badge">6 Deep Dives</span>
+              <div class="era-label">2002 &ndash; 2015</div>
+              <h3><a href="liquid-web/index.html">Liquid Web</a></h3>
+              <div class="role">Network Engineer &rarr; Chief Operating Officer</div>
+              <p class="summary">Grew with the company from 7 employees to 450, rising from Network Engineer to COO and helping build a platform that led to a $225M exit.</p>
+              <div class="tags">
+                <span class="tag">Leadership</span>
+                <span class="tag">Scaling Operations</span>
+                <span class="tag">Data Centers</span>
+                <span class="tag">Network Engineering</span>
+                <span class="tag">Strategy</span>
+                <span class="tag">M&amp;A</span>
+              </div>
+
+              <!-- Growth bar -->
+              <div class="growth-bar">
+                <div class="growth-bar-track">
+                  <span class="growth-bar-start">7</span>
+                  <div class="growth-bar-line">
+                    <div class="growth-bar-fill" id="lw-growth-fill"></div>
+                  </div>
+                  <span class="growth-bar-end">450</span>
+                </div>
+                <div class="growth-bar-meta">employees &middot; 2002 &rarr; 2015</div>
+              </div>
+
+              <!-- Sub-topics -->
+              <div class="sub-topics">
+                <div class="sub-topics-label">Deep-Dive Areas</div>
+                <div class="sub-topic-chips">
+                  <a href="liquid-web/index.html#networking" class="sub-topic-chip">Networking <span aria-hidden="true">&rarr;</span></a>
+                  <a href="liquid-web/index.html#data-centers" class="sub-topic-chip">Data Centers <span aria-hidden="true">&rarr;</span></a>
+                  <a href="liquid-web/index.html#cloud" class="sub-topic-chip">Cloud Platform <span aria-hidden="true">&rarr;</span></a>
+                  <a href="liquid-web/index.html#linux" class="sub-topic-chip">Linux <span aria-hidden="true">&rarr;</span></a>
+                  <a href="liquid-web/index.html#operations" class="sub-topic-chip">Operations <span aria-hidden="true">&rarr;</span></a>
+                  <a href="liquid-web/index.html#the-exit" class="sub-topic-chip">The Exit <span aria-hidden="true">&rarr;</span></a>
+                </div>
+              </div>
+
+              <div style="margin-top: var(--space-6);">
+                <a href="liquid-web/index.html" class="card-cta">Explore Liquid Web Experience <span class="arrow" aria-hidden="true">&rarr;</span></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Power Gauge Pro (FEATURED) -->
+          <div class="timeline-item" role="listitem" aria-label="Power Gauge Pro, Now" data-delay="600">
+            <div class="timeline-node featured" aria-hidden="true"></div>
+            <div class="timeline-card timeline-card--featured era-amber"><div class="card-bg" style="background-image:url('../assets/images/card-pgp.png')" aria-hidden="true"></div>
+              <span class="badge">4 Deep Dives</span>
+              <div class="era-label">Now</div>
+              <h3><a href="power-gauge-pro/index.html">Power Gauge Pro</a></h3>
+              <div class="role">Founder &amp; Builder</div>
+              <p class="summary">Founded Power Gauge Pro to design and manufacture embedded automotive digital dashboards - hardware, firmware, and full-stack product development from the ground up.</p>
+              <div class="tags">
+                <span class="tag">Embedded Systems</span>
+                <span class="tag">Product Design</span>
+                <span class="tag">Firmware</span>
+                <span class="tag">Entrepreneurship</span>
+              </div>
+
+              <!-- Sub-topics -->
+              <div class="sub-topics">
+                <div class="sub-topics-label">Deep-Dive Areas</div>
+                <div class="sub-topic-chips">
+                  <a href="power-gauge-pro/index.html#embedded" class="sub-topic-chip">Embedded Software <span aria-hidden="true">&rarr;</span></a>
+                  <a href="power-gauge-pro/index.html#hardware" class="sub-topic-chip">Hardware <span aria-hidden="true">&rarr;</span></a>
+                  <a href="power-gauge-pro/index.html#marketplace" class="sub-topic-chip">Marketplace <span aria-hidden="true">&rarr;</span></a>
+                  <a href="power-gauge-pro/index.html#modules" class="sub-topic-chip">Modules <span aria-hidden="true">&rarr;</span></a>
+                </div>
+              </div>
+
+              <div style="margin-top: var(--space-6);">
+                <a href="power-gauge-pro/index.html" class="card-cta">Explore Power Gauge Pro <span class="arrow" aria-hidden="true">&rarr;</span></a>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.timeline -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div>
+        <div class="footer-social">
+          <a href="https://linkedin.com/in/liquidwebchris" aria-label="LinkedIn" target="_blank" rel="noopener">in</a>
+          <a href="https://github.com/strandtc" aria-label="GitHub" target="_blank" rel="noopener">gh</a>
+          
+          <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" role="dialog" aria-label="Image viewer" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close image viewer">&times;</button>
+    <img src="" alt="">
+  </div>
+
+  <script src="../js/forge.js"></script>
+  <script>
+    (function() {
+      // =====================================================================
+      // Timeline layout algorithm
+      // Places cards alternating left/right with computed vertical positions
+      // so they stagger without overlapping on each side
+      // =====================================================================
+      function layoutTimeline() {
+        const timeline = document.querySelector('.timeline');
+        const items = Array.from(document.querySelectorAll('.timeline-item'));
+        if (!timeline || !items.length) return;
+
+        // Only run on desktop
+        if (window.innerWidth <= 1024) {
+          timeline.classList.remove('positioned');
+          timeline.style.height = '';
+          items.forEach(function(item) {
+            item.style.top = '';
+            item.classList.remove('tl-left', 'tl-right');
+          });
+          return;
+        }
+
+        // First, make items visible to measure them
+        items.forEach(function(item) {
+          item.style.position = 'relative';
+          item.style.top = '';
+        });
+
+        // Measure all card heights
+        var heights = items.map(function(item) {
+          return item.offsetHeight;
+        });
+
+        // Find smallest card height for padding calc
+        var minHeight = Math.min.apply(null, heights);
+        var padding = Math.round(minHeight * 0.2);
+
+        // Calculate positions
+        // Track the bottom edge of the last card on each side
+        var leftBottom = 0;   // bottom of last left-side card
+        var rightBottom = 0;  // bottom of last right-side card
+        var positions = [];
+
+        items.forEach(function(item, i) {
+          var side = (i % 2 === 0) ? 'left' : 'right'; // 0,2,4 = left; 1,3 = right
+          var h = heights[i];
+          var top;
+
+          if (i === 0) {
+            // First card: starts at top, left side
+            top = 0;
+          } else if (i === 1) {
+            // Second card: starts 50% down the first card's height, right side
+            top = Math.round(heights[0] * 0.5);
+          } else {
+            // Subsequent cards:
+            // Must be below the last card on the SAME side (+ padding)
+            // Should also be below the dot of the previous card (chronological order)
+            var sameBottom = (side === 'left') ? leftBottom : rightBottom;
+            var prevDotTop = positions[i - 1] + 32; // dot is 32px from card top
+            top = Math.max(sameBottom + padding, prevDotTop + padding);
+          }
+
+          positions.push(top);
+
+          if (side === 'left') {
+            leftBottom = top + h;
+          } else {
+            rightBottom = top + h;
+          }
+        });
+
+        // Apply positions
+        timeline.classList.add('positioned');
+
+        items.forEach(function(item, i) {
+          var side = (i % 2 === 0) ? 'left' : 'right';
+          item.classList.remove('tl-left', 'tl-right');
+          item.classList.add(side === 'left' ? 'tl-left' : 'tl-right');
+          item.style.position = 'absolute';
+          item.style.top = positions[i] + 'px';
+        });
+
+        // Set container height
+        var totalHeight = Math.max(leftBottom, rightBottom);
+        timeline.style.height = totalHeight + 'px';
+      }
+
+      // Run on load and resize
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          layoutTimeline();
+          // Re-run after fonts load (may change heights)
+          document.fonts.ready.then(layoutTimeline);
+        });
+      } else {
+        layoutTimeline();
+        document.fonts.ready.then(layoutTimeline);
+      }
+
+      var resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(layoutTimeline, 200);
+      });
+
+      // =====================================================================
+      // Growth bar animation
+      // =====================================================================
+      var fill = document.getElementById('lw-growth-fill');
+      if (fill) {
+        var growthObs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              fill.classList.add('active');
+              growthObs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
+        growthObs.observe(fill.closest('.growth-bar'));
+      }
+
+      // =====================================================================
+      // Scroll reveal for timeline items
+      // =====================================================================
+      document.querySelectorAll('.timeline-item').forEach(function(item) {
+        var revealObs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              var delay = parseInt(entry.target.dataset.delay) || 0;
+              setTimeout(function() {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateX(0)';
+              }, delay);
+              revealObs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        // Set initial hidden state for desktop
+        if (window.innerWidth > 1024) {
+          var side = item.classList.contains('tl-left') ? 'left' : 'right';
+          item.style.opacity = '0';
+          item.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+          item.style.transform = side === 'left' ? 'translateX(-30px)' : 'translateX(30px)';
+        }
+
+        revealObs.observe(item);
+      });
+    })();
+  </script>
+</body>
+</html>

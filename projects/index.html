@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Chris Strandt</title>
+  <meta name="description" content="Welding, CNC machining, 3D printing, construction, adventure travel, and photography. The same build-and-learn mindset applied to personal projects.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* Hero */
+    .page-hero {
+      padding: var(--space-32) 0 var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero .hero-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('../assets/materials/fabrication - welded metal part.jpg') center/cover no-repeat;
+      opacity: 0.25;
+      filter: grayscale(40%);
+      z-index: 0;
+    }
+    .page-hero .container { position: relative; z-index: 1; }
+    .page-hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      margin-bottom: var(--space-6);
+    }
+    .page-hero .lead {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      line-height: var(--leading-relaxed);
+      max-width: 700px;
+    }
+
+    /* Project sections */
+    .making-section {
+      padding: var(--space-20) 0;
+    }
+    .making-section + .making-section {
+      border-top: 1px solid var(--color-border);
+    }
+    .making-section h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      margin-bottom: var(--space-3);
+    }
+    .making-section .section-body {
+      font-size: var(--text-md);
+      line-height: var(--leading-relaxed);
+      max-width: 700px;
+      margin-bottom: var(--space-8);
+    }
+
+    /* Photo grid - optimized for photo-heavy page */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin: var(--space-8) 0;
+    }
+    .photo-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+      border: 1px solid var(--color-border);
+    }
+    .photo-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+      border-color: var(--color-accent-border);
+    }
+    @media (max-width: 1024px) {
+      .photo-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .photo-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Media grid: interleaved images and videos */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin: var(--space-8) 0;
+    }
+    .media-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+      border: 1px solid var(--color-border);
+    }
+    .media-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+      border-color: var(--color-accent-border);
+    }
+    .media-grid video {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border: 1px solid var(--color-border);
+      background: #111;
+    }
+    @media (max-width: 1024px) {
+      .media-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .media-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Tags as spans (not links) */
+    .inline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-6);
+    }
+    .inline-tags .tag {
+      pointer-events: none;
+      cursor: default;
+    }
+
+    /* Tools grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin: var(--space-8) 0;
+    }
+    .tool-cell {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-6) var(--space-4);
+      text-align: center;
+      transition: all var(--duration-normal) var(--ease-default);
+    }
+    .tool-cell:hover {
+      border-color: var(--color-accent-border);
+      transform: translateY(-2px);
+    }
+    .tool-icon {
+      font-size: 28px;
+      margin-bottom: var(--space-3);
+      filter: grayscale(100%);
+      transition: filter var(--duration-normal) var(--ease-default);
+    }
+    .tool-cell:hover .tool-icon {
+      filter: grayscale(0%);
+    }
+    .tool-name {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-accent);
+      margin-bottom: var(--space-1);
+    }
+    @media (max-width: 768px) {
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../" class="logo">STRANDT<span class="slash">//</span></a>
+      <nav><ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li class="nav-dropdown"><a href="../experience/">Experience</a>
+          <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+            <a href="../experience/early-career.html">Early Career</a>
+            <a href="../experience/liquid-web/">Liquid Web</a>
+            <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+          </div></div>
+        </li>
+        <li><a href="./" class="active">Projects</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></nav>
+      <a href="../assets/resume.pdf" class="nav-resume">Download Resume</a>
+      <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a>
+    <a href="../about.html">About</a>
+    <a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="./" class="active">Projects</a>
+    <a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+
+  <main id="main" style="padding-top: var(--header-height);">
+
+    <!-- Breadcrumbs -->
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="../">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" aria-current="page">Projects</span>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="hero-bg-img" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-label reveal">// Projects</div>
+        <h1 class="reveal" data-delay="100">Building Things</h1>
+        <p class="lead reveal" data-delay="200">Data centers, networks, embedded products, software platforms, welded fabrication, CNC parts, and a pole barn. The same instinct applied to every material.</p>
+      </div>
+    </section>
+
+    <!-- Building Liquid Web -->
+    <section class="making-section" id="liquidweb">
+      <div class="container">
+        <div class="section-label reveal">// Building a Company</div>
+        <h2 class="reveal" data-delay="100">Liquid Web - 7 to 450</h2>
+        <p class="section-body reveal" data-delay="200">Joined as employee #7 and helped build Liquid Web into a 450-person managed hosting company over 13 years. Rose from Network Engineer to COO. Built recruiting pipelines, management structures, support teams, and compliance programs. Multiple-time Inc. 5000 fastest-growing company. Sold for $225M to Madison Dearborn Partners in 2015.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <img src="../assets/materials/lw-team-outside.jpg" alt="Liquid Web team outside the data center" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/lw-building.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/inc-5000.png" alt="Inc. 5000 Fastest Growing Companies" data-lightbox>
+          <img src="../assets/materials/lw-team-indoor.jpg" alt="Liquid Web team at work" data-lightbox>
+          <img src="../assets/materials/liquidweb front of building.jpg" alt="Liquid Web headquarters exterior" data-lightbox>
+          <img src="../assets/materials/liquidweb marketing photo.jpg" alt="Liquid Web brand" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">COO</span>
+          <span class="tag">7 to 450 Employees</span>
+          <span class="tag">$225M Exit</span>
+          <span class="tag">Inc. 5000</span>
+          <span class="tag">Recruiting</span>
+          <span class="tag">Operations</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Center Design & Build -->
+    <section class="making-section" id="datacenters">
+      <div class="container">
+        <div class="section-label reveal">// Data Center Design & Build</div>
+        <h2 class="reveal" data-delay="100">Three Facilities From Scratch</h2>
+        <p class="section-body reveal" data-delay="200">Designed and built 3 data centers at Liquid Web - hand-drew every floor plan, designed complete power chains from utility feed through switchgear, UPS, and PDUs to the rack. Managed construction of an $80M ground-up facility including coordinating a dedicated electrical substation with the utility provider.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <img src="../assets/materials/liquidweb 2d building floorplan.jpg" alt="Hand-drawn data center floor plan" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/lw-3d-rendering.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/liquidweb 3d color site layout.jpg" alt="3D color data center site layout" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/lw-server-room.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/liquidweb front of building.jpg" alt="Liquid Web data center exterior" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/lw-electrical.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/liquidweb generators.jpg" alt="Standby generators at data center" data-lightbox>
+          <img src="../assets/materials/liquidweb electrical room.jpg" alt="Electrical distribution room" data-lightbox>
+          <img src="../assets/materials/liquidweb medium voltage switchgear.jpg" alt="Medium voltage switchgear installation" data-lightbox>
+          <img src="../assets/materials/liquidweb ups maintenance.jpg" alt="UPS system maintenance" data-lightbox>
+          <img src="../assets/materials/liquidweb electrical load center.jpg" alt="Electrical load center and breaker panels" data-lightbox>
+          <img src="../assets/materials/hero-image-datacenter.jpg" alt="Data center server rows" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">Three-Phase Power</span>
+          <span class="tag">UPS</span>
+          <span class="tag">Generators</span>
+          <span class="tag">HVAC</span>
+          <span class="tag">Construction Management</span>
+          <span class="tag">$80M Build</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Networking -->
+    <section class="making-section" id="networking">
+      <div class="container">
+        <div class="section-label reveal">// Network Architecture</div>
+        <h2 class="reveal" data-delay="100">Highest Capacity Network in Lansing, MI</h2>
+        <p class="section-body reveal" data-delay="200">Designed and operated the complete network infrastructure for a rapidly growing hosting company over 13 years. Scaled from a single upstream connection to the highest capacity network in Lansing, Michigan. BGP full routing tables, DWDM fiber rings, Internet Exchange peering, and enterprise DDoS mitigation. Found dark fiber providers, negotiated IRU contracts, and built connectivity to major interconnection points.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <img src="../assets/materials/hero-image-network.jpg" alt="Network infrastructure and cabling" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/lw-network-switches.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/hero-image-cables.jpg" alt="Structured fiber and copper cabling" data-lightbox>
+          <img src="../assets/materials/liqudweb rack.jpg" alt="Server rack with network equipment" data-lightbox>
+          <img src="../assets/materials/hero-image-row.jpg" alt="Data center row with network switches" data-lightbox>
+          <img src="../assets/materials/hero-image-tworows.jpg" alt="Two rows of network infrastructure" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">BGP</span>
+          <span class="tag">DWDM</span>
+          <span class="tag">Cisco</span>
+          <span class="tag">IX Peering</span>
+          <span class="tag">DDoS Mitigation</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Power Gauge Pro -->
+    <section class="making-section" id="pgp">
+      <div class="container">
+        <div class="section-label reveal">// Embedded Product Development</div>
+        <h2 class="reveal" data-delay="100">Power Gauge Pro - Digital Dash</h2>
+        <p class="section-body reveal" data-delay="200">Founded and built an aftermarket automotive digital dash concept. Custom carrier board with NXP iMX8MP processor, 12.3" capacitive touch display, C++/Qt6 application on Yocto Linux, ESP32 sensor modules, and a PHP/Laravel/React online marketplace. Every layer designed or integrated in-house.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <img src="../assets/materials/pgp coverglass render2.png" alt="Power Gauge Pro product render" data-lightbox>
+          <img src="../assets/materials/pgp aluminum case.JPG" alt="PGP aluminum enclosure" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/pgp design software.mov" type="video/mp4"></video>
+          <img src="../assets/materials/pgp display pcb.JPG" alt="PGP display and PCB assembly" data-lightbox>
+          <img src="../assets/materials/pgp pcb board 2.JPG" alt="Custom PCB board design" data-lightbox>
+          <img src="../assets/materials/pgp electronics bench.jpg" alt="Electronics workbench during development" data-lightbox>
+          <img src="../assets/materials/pgp full component layout.jpg" alt="Full component layout and assembly" data-lightbox>
+          <img src="../assets/materials/pgp esp32 board.jpg" alt="ESP32 sensor module with custom PCB" data-lightbox>
+          <img src="../assets/materials/pgp settings menu software.PNG" alt="PGP software settings interface" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">NXP iMX8MP</span>
+          <span class="tag">C++</span>
+          <span class="tag">Qt6/QML</span>
+          <span class="tag">Yocto Linux</span>
+          <span class="tag">ESP32</span>
+          <span class="tag">PCB Design</span>
+          <span class="tag">Laravel/React</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fabrication -->
+    <section class="making-section" id="fabrication">
+      <div class="container">
+        <div class="section-label reveal">// Fabrication</div>
+        <h2 class="reveal" data-delay="100">Steel, Aluminum, and Stainless</h2>
+        <p class="section-body reveal" data-delay="200">Self-taught MIG and TIG welding. Rebuilt diesel engines. Designed and built an electric-over-hydraulic rear steer system. Custom components from sheet metal to precision machined parts.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <img src="../assets/materials/fabrication - welded metal part.jpg" alt="MIG welded metal fabrication part" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/tig welding 2.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/hummer welded fuel tank.jpg" alt="Custom welded fuel tank for Hummer" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/slow motion grinding.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/welded rear steer.jpg" alt="Welded electric-over-hydraulic rear steer system" data-lightbox>
+          <img src="../assets/materials/fabricated seat bracket.jpg" alt="Custom fabricated steel seat bracket" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/electric side step.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/ig-weld-bead-1.png" alt="TIG weld bead close-up on aluminum" data-lightbox>
+          <img src="../assets/materials/pressure test welded box.jpg" alt="Pressure testing a welded fabrication" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">MIG Welding</span>
+          <span class="tag">TIG Welding</span>
+          <span class="tag">Steel</span>
+          <span class="tag">Aluminum</span>
+          <span class="tag">Stainless</span>
+          <span class="tag">Hydraulics</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CNC & Digital Fabrication -->
+    <section class="making-section" id="digital">
+      <div class="container">
+        <div class="section-label reveal">// Digital Fabrication</div>
+        <h2 class="reveal" data-delay="100">CAD to Cut Part</h2>
+        <p class="section-body reveal" data-delay="200">Fusion 360 for 3D CAD and CAM. 3D printing, CNC milling, CO2 laser cutting, and 3D scanning. Designs for milling, turning, sheet metal, and additive manufacturing.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/gp-fusion360-cad.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/cnc machined bracket.jpg" alt="CNC machined aluminum bracket" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/cnc-machining-1.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/cnc machined parts.jpg" alt="CNC machined precision parts" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/cnc-machining-2.mp4" type="video/mp4"></video>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/fusion 360 animated washer tank.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/cnc machined hawse.jpg" alt="CNC machined hawse fairlead" data-lightbox>
+          <img src="../assets/materials/3d printed and machined crankshaft adapter.jpg" alt="3D printed and machined crankshaft adapter" data-lightbox>
+          <img src="../assets/materials/3d printed fuel manifold prototype.jpg" alt="3D printed fuel manifold prototype" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/kitchen-animation.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/fusion 360 seat bracket.jpg" alt="Fusion 360 CAD design of seat bracket" data-lightbox>
+          <img src="../assets/materials/fusion 360 custom rear hatch.jpg" alt="Fusion 360 CAD design of custom rear hatch" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">Fusion 360</span>
+          <span class="tag">CNC Milling</span>
+          <span class="tag">3D Printing</span>
+          <span class="tag">CO2 Laser</span>
+          <span class="tag">CAM</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Construction -->
+    <section class="making-section" id="construction">
+      <div class="container">
+        <div class="section-label reveal">// Construction</div>
+        <h2 class="reveal" data-delay="100">Designed and Built</h2>
+        <p class="section-body reveal" data-delay="200">Personally built residential and commercial projects through the entire process - design in CAD, permits, rough carpentry, electrical, plumbing, insulation, drywall, flooring, and finish work. Projects include a 30x56 pole barn, full basement renovation, and a back deck.</p>
+
+        <div class="photo-grid reveal" data-delay="250">
+          <img src="../assets/materials/pole barn construction photo.jpg" alt="Pole barn framing under construction" data-lightbox>
+          <img src="../assets/materials/pole barn cross section.jpg" alt="Pole barn cross section design drawing" data-lightbox>
+          <img src="../assets/materials/pole barn electrical floor plan.jpg" alt="Pole barn electrical floor plan layout" data-lightbox>
+          <img src="../assets/materials/pole-barn-framing.jpg" alt="Pole barn framing going up with telehandler" data-lightbox>
+          <img src="../assets/materials/3d cad kitchenette.jpg" alt="3D CAD design of basement kitchenette renovation" data-lightbox>
+          <img src="../assets/materials/ig-construction-basement.jpg" alt="Basement renovation - finished ceiling and lighting" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">Carpentry</span>
+          <span class="tag">Electrical</span>
+          <span class="tag">Plumbing</span>
+          <span class="tag">CAD Design</span>
+          <span class="tag">Permits</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Adventure, Travel & Photography -->
+    <section class="making-section" id="adventure">
+      <div class="container">
+        <div class="section-label reveal">// Adventure, Travel & Photography</div>
+        <h2 class="reveal" data-delay="100">50 States and Counting</h2>
+        <p class="section-body reveal" data-delay="200">Visited all 50 states. Epic road trip to Alaska with custom-outfitted 4Runners - thousands of miles of gravel, river crossings, and starlight. NOLS Wilderness First Responder certified. Night star photography and landscapes on the road.</p>
+
+        <div class="media-grid reveal" data-delay="250">
+          <img src="../assets/materials/adventure travel - mountains.JPG" alt="Mountain vista from Alaska road trip" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/ig-adventure-reel.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/star-photo.jpg" alt="Night star photography - long exposure of the Milky Way" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none"><source src="../assets/materials/white sands adventure travel.mp4" type="video/mp4"></video>
+          <img src="../assets/materials/adventure travel mountain range.jpg" alt="Dramatic mountain range panorama" data-lightbox>
+          <img src="../assets/materials/orange hummer - adventure.jpg" alt="Custom outfitted vehicle for overlanding" data-lightbox>
+          <img src="../assets/materials/chris portrait - spacex background.jpg" alt="Chris at a SpaceX launch" data-lightbox>
+          <img src="../assets/materials/adventure travel overland rigs.jpg" alt="Outfitted 4Runner overland vehicles" data-lightbox>
+          <img src="../assets/materials/family adventure portrait.jpg" alt="Family adventure portrait" data-lightbox>
+          <img src="../assets/materials/ig-nols-training.png" alt="NOLS Wilderness First Responder field training exercise" data-lightbox>
+          <img src="../assets/materials/ig-nols-badge.png" alt="NOLS Wilderness First Responder certification" data-lightbox>
+          <img src="../assets/materials/ig-nols-kit.png" alt="Wilderness first responder medical kit" data-lightbox>
+        </div>
+
+        <div class="inline-tags reveal" data-delay="300">
+          <span class="tag">All 50 States</span>
+          <span class="tag">Alaska</span>
+          <span class="tag">Overlanding</span>
+          <span class="tag">National Parks</span>
+          <span class="tag">NOLS WFR</span>
+          <span class="tag">Astrophotography</span>
+          <span class="tag">Space Enthusiast</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Navigation -->
+    <div class="container">
+      <nav class="page-nav" aria-label="Page navigation">
+        <a href="../experience/"><span aria-hidden="true">&larr;</span> Experience</a>
+        <a href="../contact.html">Contact <span aria-hidden="true">&rarr;</span></a>
+      </nav>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color:var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building systems at every level for 25+ years.</p>
+      </div>
+      <div>
+        <ul class="footer-nav">
+          <li><a href="../">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-social">
+          <a href="https://linkedin.com/in/liquidwebchris/" aria-label="LinkedIn" target="_blank" rel="noopener">in</a>
+          <a href="https://github.com/strandtc" aria-label="GitHub" target="_blank" rel="noopener">&lt;/&gt;</a>
+          <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt</span>
+      <span class="status"><span class="status-dot"></span> Available for opportunities</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" role="dialog" aria-label="Image lightbox">
+    <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="">
+  </div>
+
+  <script src="../js/forge.js"></script>
+  <script>
+    // Autoplay videos when they scroll into view, pause when they leave
+    (function() {
+      var videos = document.querySelectorAll('.autoplay-video');
+      if (!videos.length) return;
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.play().catch(function() {});
+          } else {
+            entry.target.pause();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      videos.forEach(function(video) {
+        observer.observe(video);
+      });
+    })();
+  </script>
+</body>
+</html>

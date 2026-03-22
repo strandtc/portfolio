@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power Gauge Pro | Experience | Chris Strandt</title>
+  <meta name="description" content="Founder of Power Gauge Pro - designing and manufacturing embedded automotive digital dashboards with custom hardware, C++/Qt6 on Yocto Linux, ESP32 sensor modules, and a Laravel/React marketplace.">
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <style>
+    /* Hero */
+    .pgp-hero {
+      padding: 0 0 var(--space-12);
+      position: relative;
+      overflow: hidden;
+      background: var(--color-bg-primary);
+    }
+    .pgp-hero .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('../../assets/images/card-pgp.png') center/cover no-repeat;
+      opacity: 0.25;
+      z-index: 0;
+    }
+    .pgp-hero .grid-bg { position: absolute; inset: 0; z-index: 1; }
+    .pgp-hero .container { position: relative; z-index: 2; }
+    .pgp-hero-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+    }
+    .pgp-hero-text { flex: 1; }
+    .pgp-hero-logo {
+      flex-shrink: 0;
+    }
+    .pgp-hero-logo img {
+      width: 400px;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(255, 107, 26, 0.15));
+    }
+    @media (max-width: 768px) {
+      .pgp-hero-content { flex-direction: column; }
+      .pgp-hero-logo img { width: 180px; }
+    }
+    .pgp-hero .era-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-ultra);
+      text-transform: uppercase;
+      color: var(--color-era-pgp);
+      margin-bottom: var(--space-3);
+    }
+    .pgp-hero h1 {
+      font-size: clamp(40px, 5vw, 72px);
+      margin-bottom: var(--space-3);
+    }
+    .pgp-hero .hero-meta {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+      display: flex;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .pgp-hero .hero-meta a { color: var(--color-accent); }
+    .pgp-hero .hero-tagline {
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: var(--weight-medium);
+      color: var(--color-text-primary);
+      line-height: var(--leading-snug);
+      max-width: 700px;
+    }
+    .pgp-hero .hero-tagline .accent { color: var(--color-accent); }
+
+    /* Section content layout */
+    .section-intro {
+      max-width: var(--max-width-narrow);
+      font-size: var(--text-md);
+      line-height: var(--leading-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-8);
+    }
+    .section-intro p { margin-bottom: var(--space-4); }
+
+    /* Product showcase grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+    }
+    .product-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+    }
+    .product-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+    }
+    @media (max-width: 768px) {
+      .product-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Technology stack visualization */
+    .stack-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 700px;
+      margin: var(--space-8) 0;
+    }
+    .stack-layer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-5) var(--space-6);
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+    }
+    .stack-layer .layer-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-accent);
+      min-width: 100px;
+    }
+    .stack-layer .layer-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    /* Code showcase */
+    /* Code viewer */
+    .code-showcase {
+      background: #0d1117;
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      position: relative;
+      margin: var(--space-6) 0;
+    }
+
+
+    .code-scroll-area {
+      max-height: 400px;
+      overflow: hidden;
+      position: relative;
+      scroll-behavior: smooth;
+    }
+
+    .code-scroll-area .code-body {
+      padding-bottom: 80px;
+    }
+    .code-showcase-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg-card);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .code-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-text-muted);
+    }
+    .code-dot.red { background: #ef4444; }
+    .code-dot.yellow { background: #f59e0b; }
+    .code-dot.green { background: #22c55e; }
+    .code-filename {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-left: var(--space-2);
+    }
+    .code-body {
+      padding: var(--space-6);
+      overflow-x: auto;
+    }
+    .code-body pre {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--color-text-secondary);
+      margin: 0;
+    }
+    .code-body .keyword { color: #c792ea; }
+    .code-body .type { color: #82aaff; }
+    .code-body .string { color: #c3e88d; }
+    .code-body .comment { color: #546e7a; font-style: italic; }
+    .code-body .func { color: #82aaff; }
+    .code-body .number { color: #f78c6c; }
+    .code-body .accent { color: var(--color-accent); }
+
+    /* Test coverage bars */
+    .test-viz {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+      margin: var(--space-8) 0;
+    }
+    .test-bar {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-5);
+    }
+    .test-bar-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-3);
+    }
+    .test-bar-fill {
+      height: 4px;
+      background: var(--color-border);
+      position: relative;
+      margin-bottom: var(--space-3);
+    }
+    .test-bar-fill-inner {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      background: var(--color-success);
+      width: 0;
+      transition: width 1.2s var(--ease-out);
+    }
+    .test-bar-fill-inner.animated { width: 100%; }
+    .test-bar-count {
+      font-family: var(--font-mono);
+      font-size: var(--text-xl);
+      color: var(--color-accent);
+      font-weight: var(--weight-bold);
+    }
+    .test-bar-status {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-success);
+      margin-top: var(--space-1);
+    }
+
+    /* Sine wave canvas */
+    .sine-wave-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .sine-wave-section canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .sine-wave-section .container { position: relative; z-index: 2; }
+
+    /* Photo grid */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+    .photo-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+    }
+    .photo-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+    }
+    @media (max-width: 768px) {
+      .photo-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Marketplace screenshot */
+    .screenshot-container {
+      margin: var(--space-8) 0;
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+    .screenshot-container img {
+      width: 100%;
+      display: block;
+      filter: grayscale(20%) contrast(1.05);
+      transition: filter var(--duration-slow) var(--ease-default);
+    }
+    .screenshot-container:hover img {
+      filter: grayscale(0%) contrast(1.1);
+    }
+
+    /* Data flow SVG */
+    .dataflow-container {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-6);
+      margin: var(--space-8) 0;
+    }
+    .dataflow-svg {
+      width: 100%;
+      height: auto;
+    }
+
+    /* Gallery grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+    .gallery-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+    }
+    .gallery-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+    }
+    @media (max-width: 1024px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li class="nav-dropdown">
+            <a href="../index.html" class="active">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../early-career.html">Early Career</a>
+              <a href="../liquid-web/">Liquid Web</a>
+              <a href="../power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../../projects/">Projects</a></li>
+          <li><a href="../../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a href="../../index.html">Home</a>
+    <a href="../../about.html">About</a>
+    <a href="../index.html" class="active">Experience</a>
+    <a href="../early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../../projects/">Projects</a>
+    <a href="../../contact.html">Contact</a>
+    <a href="../../assets/resume.pdf" download>Download Resume</a>
+  </nav>
+
+  <main id="main-content" style="padding-top: var(--header-height);">
+    <!-- Breadcrumbs -->
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="../index.html">Experience</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" aria-current="page">Power Gauge Pro</span>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <section class="pgp-hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="pgp-hero-content">
+          <div class="pgp-hero-text">
+            <div class="section-label">// Career Chapter</div>
+            <div class="era-label">Now</div>
+            <h1>Power Gauge Pro</h1>
+            <div class="hero-meta">
+              <span>Founder</span>
+              <span><a href="https://powergaugepro.com" target="_blank" rel="noopener">powergaugepro.com</a></span>
+            </div>
+            <p class="hero-tagline">A <span class="accent">digital dash</span> for aftermarket automotive: <span class="accent">custom hardware</span>, <span class="accent">embedded C++</span>, <span class="accent">online marketplace</span>.</p>
+          </div>
+          <div class="pgp-hero-logo">
+            <img src="../../assets/images/pgp-logo-white.png" alt="Power Gauge Pro logo">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 1: The Vision (#vision)              -->
+    <!-- ============================================ -->
+    <section class="section" id="vision" aria-labelledby="vision-heading">
+      <div class="container">
+        <div class="section-label reveal">// The Vision</div>
+        <h2 id="vision-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">From Concept to Product</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>Founded PGP from market analysis through product development. Identified gaps in existing aftermarket digital dashes, developed detailed product specifications, found all technology suppliers, hired and managed the engineering team. Full product lifecycle ownership as a solo founder - from the first competitive analysis through hardware bringup, embedded software, and marketplace development.</p>
+        </div>
+
+        <!-- Product Showcase -->
+        <div class="product-grid reveal" data-delay="200">
+          <img src="../../assets/materials/pgp full component layout.jpg" alt="Full component layout of Power Gauge Pro hardware assembly" loading="lazy" data-lightbox>
+          <video class="autoplay-video" muted loop playsinline preload="none" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--color-border);background:#111;"><source src="../../assets/materials/pgp design software.mov" type="video/mp4"></video>
+          <img src="../../assets/materials/pgp coverglass render2.png" alt="Power Gauge Pro display cover glass render" loading="lazy" data-lightbox>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="section-label reveal" data-delay="250">// Technology Stack</div>
+        <p class="reveal" data-delay="260" style="color: var(--color-text-secondary); margin-bottom: var(--space-4); font-size: var(--text-md);">Every layer designed, built, or integrated in-house.</p>
+        <div class="stack-layers">
+          <div class="stack-layer" data-delay="0">
+            <span class="layer-label">Marketplace</span>
+            <span class="layer-desc">PHP / Laravel / React / TypeScript - user-created dash designs, OAuth authentication</span>
+          </div>
+          <div class="stack-layer" data-delay="100">
+            <span class="layer-label">Mobile App</span>
+            <span class="layer-desc">Flutter / Dart - Bluetooth configuration for ESP32 accessory modules</span>
+          </div>
+          <div class="stack-layer" data-delay="200">
+            <span class="layer-label">CI/CD</span>
+            <span class="layer-desc">GitHub Actions, Mender OTA updates, CodeRabbit code reviews</span>
+          </div>
+          <div class="stack-layer" data-delay="300">
+            <span class="layer-label">Application</span>
+            <span class="layer-desc">C++ / Qt6 / QML - datalogging, CAN bus, formula engine, OTA updates</span>
+          </div>
+          <div class="stack-layer" data-delay="400">
+            <span class="layer-label">OS</span>
+            <span class="layer-desc">Yocto Linux with custom BSP, NetworkManager via DBus, libgit2</span>
+          </div>
+          <div class="stack-layer" data-delay="500">
+            <span class="layer-label">Modules</span>
+            <span class="layer-desc">ESP32 with custom PCBs, PlatformIO firmware, analog-to-digital conversion</span>
+          </div>
+          <div class="stack-layer" data-delay="600">
+            <span class="layer-label">Hardware</span>
+            <span class="layer-desc">NXP iMX8MP on custom carrier board, 12.3" capacitive touch, CAN/SPI/I2C/UART</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2: Embedded Software (#embedded)     -->
+    <!-- ============================================ -->
+    <section class="section section--alt" id="embedded" aria-labelledby="embedded-heading">
+      <div class="container">
+        <div class="section-label reveal">// Embedded Software</div>
+        <h2 id="embedded-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">The Software</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p><span class="tag" style="display:inline;">C++</span>/<span class="tag" style="display:inline;">Qt6</span>/<span class="tag" style="display:inline;">QML</span> application on <span class="tag" style="display:inline;">Yocto</span> Linux - <span class="tag" style="display:inline;">CAN Bus</span> frame decoding, datalogging, odometer calculation, OTA updates via <span class="tag" style="display:inline;">Mender</span>, and a formula engine with 2,348 unit test assertions.</p>
+        </div>
+
+        <div class="code-showcase reveal" data-delay="200" id="code-viewer">
+          <div class="code-showcase-header">
+            <span class="code-dot red"></span>
+            <span class="code-dot yellow"></span>
+            <span class="code-dot green"></span>
+            <span class="code-filename">Formula.cpp</span>
+            <span style="margin-left:auto; font-family:var(--font-mono); font-size:9px; color:var(--color-text-muted); letter-spacing:1px;">pgp-dash/src/backend/formulas/</span>
+          </div>
+          <div class="code-scroll-area" id="code-scroll">
+            <div class="code-body">
+<pre><span class="comment">#include "backend/formulas/Formula.h"</span>
+<span class="comment">#include "backend/core/logging/LoggingCategories.h"</span>
+<span class="comment">#include "backend/formulas/BaseOperation.h"</span>
+
+<span class="type">Formula</span>::<span class="func">Formula</span>(<span class="type">QObject</span> *parent)
+    : <span class="type">QObject</span>{parent}
+    , m_value{<span class="type">Value</span>{<span class="type">QVariant</span>{}}}
+{}
+
+<span class="keyword">void</span> <span class="type">Formula</span>::<span class="func">onExpressionValueChanged</span>()
+{
+    <span class="comment">// Get the cached value from expression</span>
+    <span class="type">Value</span> newValue{m_expressionRoot ? m_expressionRoot-&gt;<span class="func">value</span>() : <span class="type">Value</span>{<span class="type">QVariant</span>{}}};
+    <span class="keyword">if</span> (newValue != m_value) {
+        m_value = newValue;
+        <span class="keyword">emit</span> <span class="func">valueChanged</span>(<span class="func">name</span>(), newValue);
+    }
+}
+
+<span class="type">QString</span> <span class="type">Formula</span>::<span class="func">name</span>() <span class="keyword">const</span>
+{
+    <span class="keyword">return</span> m_name;
+}
+
+<span class="keyword">void</span> <span class="type">Formula</span>::<span class="func">setName</span>(<span class="keyword">const</span> <span class="type">QString</span> &amp;newName)
+{
+    m_name = newName;
+}
+
+<span class="type">Value</span> <span class="type">Formula</span>::<span class="func">value</span>()
+{
+    <span class="keyword">if</span> (m_expressionRoot.<span class="func">isNull</span>())
+        <span class="keyword">return</span> <span class="type">Value</span>{<span class="type">QVariant</span>{}};
+    <span class="keyword">return</span> m_expressionRoot-&gt;<span class="func">value</span>();
+}
+
+<span class="keyword">void</span> <span class="type">Formula</span>::<span class="func">parseFormula</span>(<span class="keyword">const</span> <span class="type">QJsonObject</span> &amp;description)
+{
+    m_expressionRoot = <span class="type">BaseOperation</span>::<span class="func">parseExpression</span>(description, <span class="keyword">this</span>);
+
+    <span class="keyword">if</span> (!m_expressionRoot) {
+        <span class="type">QString</span> errorMsg{<span class="string">"Failed to parse formula expression"</span>};
+        m_currentErrors.<span class="func">clear</span>();
+        m_currentErrors.<span class="func">append</span>(<span class="type">FormulaError</span>{errorMsg, <span class="type">FormulaError</span>::Error});
+        <span class="func">qCWarning</span>(pgpFormulasFormula) &lt;&lt; errorMsg;
+        <span class="keyword">emit</span> <span class="func">errorsChanged</span>();
+        <span class="keyword">return</span>;
+    }
+
+    <span class="comment">// Clear any previous errors</span>
+    <span class="keyword">if</span> (!m_currentErrors.<span class="func">isEmpty</span>()) {
+        m_currentErrors.<span class="func">clear</span>();
+        <span class="keyword">emit</span> <span class="func">errorsChanged</span>();
+    }
+
+    <span class="comment">// Connect error propagation from expression tree</span>
+    <span class="func">connect</span>(
+        m_expressionRoot.<span class="func">data</span>(),
+        &amp;<span class="type">Expression</span>::errorsChanged,
+        <span class="keyword">this</span>,
+        &amp;<span class="type">Formula</span>::onExpressionErrorsChanged);
+
+    <span class="comment">// Connect value changes</span>
+    <span class="func">connect</span>(
+        m_expressionRoot.<span class="func">data</span>(),
+        &amp;<span class="type">Expression</span>::valueChanged,
+        <span class="keyword">this</span>,
+        &amp;<span class="type">Formula</span>::onExpressionValueChanged);
+
+    <span class="comment">// Initialize value by evaluating the expression</span>
+    <span class="keyword">if</span> (m_expressionRoot) {
+        m_value = m_expressionRoot-&gt;<span class="func">evaluate</span>();
+        m_currentErrors = m_expressionRoot-&gt;<span class="func">currentErrors</span>();
+        <span class="keyword">if</span> (!m_currentErrors.<span class="func">isEmpty</span>()) {
+            <span class="keyword">emit</span> <span class="func">errorsChanged</span>();
+        }
+    }
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test Coverage Bars -->
+        <div class="test-viz reveal" data-delay="300" id="test-viz">
+          <div class="test-bar">
+            <div class="test-bar-label">Arithmetic</div>
+            <div class="test-bar-fill"><div class="test-bar-fill-inner"></div></div>
+            <div class="test-bar-count counter" data-target="847">0</div>
+            <div class="test-bar-status">ALL PASSING</div>
+          </div>
+          <div class="test-bar">
+            <div class="test-bar-label">Conditionals</div>
+            <div class="test-bar-fill"><div class="test-bar-fill-inner"></div></div>
+            <div class="test-bar-count counter" data-target="412">0</div>
+            <div class="test-bar-status">ALL PASSING</div>
+          </div>
+          <div class="test-bar">
+            <div class="test-bar-label">Unit Conversion</div>
+            <div class="test-bar-fill"><div class="test-bar-fill-inner"></div></div>
+            <div class="test-bar-count counter" data-target="638">0</div>
+            <div class="test-bar-status">ALL PASSING</div>
+          </div>
+          <div class="test-bar">
+            <div class="test-bar-label">Edge Cases</div>
+            <div class="test-bar-fill"><div class="test-bar-fill-inner"></div></div>
+            <div class="test-bar-count counter" data-target="295">0</div>
+            <div class="test-bar-status">ALL PASSING</div>
+          </div>
+          <div class="test-bar">
+            <div class="test-bar-label">Performance</div>
+            <div class="test-bar-fill"><div class="test-bar-fill-inner"></div></div>
+            <div class="test-bar-count counter" data-target="156">0</div>
+            <div class="test-bar-status">ALL PASSING</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3: Hardware (#hardware)              -->
+    <!-- ============================================ -->
+    <section class="section sine-wave-section" id="hardware" aria-labelledby="hardware-heading">
+      <canvas id="sine-wave" aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="section-label reveal">// Hardware</div>
+        <h2 id="hardware-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">The Hardware</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>12.3" capacitive touch display powered by <span class="tag" style="display:inline;">NXP iMX8MP</span> on a custom carrier board. Managed <span class="tag" style="display:inline;">PCB Design</span>, board bringup with logic analyzers and oscilloscopes, and supplier coordination across multiple vendors. Serial protocols include <span class="tag" style="display:inline;">SPI</span>, <span class="tag" style="display:inline;">I2C</span>, and <span class="tag" style="display:inline;">UART</span> for peripheral communication.</p>
+        </div>
+
+        <!-- Hardware Photos -->
+        <div class="photo-grid reveal" data-delay="200">
+          <img src="../../assets/materials/pgp pcb board 2.JPG" alt="Power Gauge Pro custom PCB board showing component placement and routing" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/pgp electronics bench.jpg" alt="Electronics workbench with Power Gauge Pro hardware during development" loading="lazy" data-lightbox>
+        </div>
+        <div style="margin-top: var(--space-4);">
+          <div class="photo-grid reveal" data-delay="250">
+            <img src="../../assets/materials/pgp esp32 board.jpg" alt="ESP32-based sensor module PCB for Power Gauge Pro" loading="lazy" data-lightbox>
+            <img src="../../assets/materials/pgp full component layout.jpg" alt="Full component layout of Power Gauge Pro hardware assembly" loading="lazy" data-lightbox>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4: Marketplace (#marketplace)        -->
+    <!-- ============================================ -->
+    <section class="section section--alt" id="marketplace" aria-labelledby="marketplace-heading">
+      <div class="container">
+        <div class="section-label reveal">// Marketplace</div>
+        <h2 id="marketplace-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">The Marketplace</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>Built a <span class="tag" style="display:inline;">PHP</span>/<span class="tag" style="display:inline;">Laravel</span>/<span class="tag" style="display:inline;">React</span>/<span class="tag" style="display:inline;">TypeScript</span> platform where users create and sell custom dash designs. <span class="tag" style="display:inline;">OAuth</span> and Device Code authentication, <span class="tag" style="display:inline;">REST API</span> for device communication, Filament admin interface. Content is delivered to devices via libgit2 - each design is a git repository enabling efficient incremental updates.</p>
+        </div>
+
+        <!-- Marketplace Screenshot -->
+        <div class="screenshot-container reveal" data-delay="200">
+          <img src="../../assets/materials/pgp settings menu software.PNG" alt="Power Gauge Pro software settings interface showing the marketplace integration and configuration options" loading="lazy" data-lightbox>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 5: Sensor Modules (#modules)         -->
+    <!-- ============================================ -->
+    <section class="section" id="modules" aria-labelledby="modules-heading">
+      <div class="container">
+        <div class="section-label reveal">// Sensor Modules</div>
+        <h2 id="modules-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Sensor Modules</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p><span class="tag" style="display:inline;">ESP32</span>-based accessory modules with custom PCBs for analog-to-digital sensor conversion. <span class="tag" style="display:inline;">PlatformIO</span> firmware, <span class="tag" style="display:inline;">Flutter</span>/Dart configuration app over <span class="tag" style="display:inline;">Bluetooth</span>. These modules extend the PGP dash to read analog sensors like boost pressure, exhaust gas temperature, and fuel level that are not available on the vehicle CAN bus.</p>
+        </div>
+
+        <!-- ESP32 Photo -->
+        <div style="max-width: 500px;">
+          <img src="../../assets/materials/pgp esp32 board.jpg" alt="ESP32 sensor module board for Power Gauge Pro" loading="lazy" data-lightbox style="width: 100%; border: 1px solid var(--color-border); filter: grayscale(40%) contrast(1.05); transition: filter var(--duration-slow) var(--ease-default); cursor: pointer;" onmouseover="this.style.filter='grayscale(0%) contrast(1.1)'" onmouseout="this.style.filter='grayscale(40%) contrast(1.05)'">
+        </div>
+
+        <!-- Data Flow SVG -->
+        <div class="dataflow-container reveal" data-delay="200">
+          <svg class="dataflow-svg" viewBox="0 0 700 160" role="img" aria-label="Data flow diagram showing sensors connected to ESP32 module, communicating over CAN Bus to the PGP Dash display, with mobile BLE configuration.">
+            <defs>
+              <pattern id="flowGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,107,26,0.03)" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="700" height="160" fill="url(#flowGrid)"/>
+
+            <!-- Sensors -->
+            <rect x="20" y="25" width="120" height="70" fill="var(--color-bg-primary)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+            <text x="80" y="50" text-anchor="middle" fill="#22c55e" font-family="'Space Mono', monospace" font-size="9" font-weight="700">SENSORS</text>
+            <text x="80" y="65" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">BOOST / EGT</text>
+            <text x="80" y="78" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">FUEL / TEMP</text>
+
+            <!-- Arrow 1 -->
+            <line x1="145" y1="60" x2="195" y2="60" stroke="rgba(255,107,26,0.4)" stroke-width="2"/>
+            <polygon points="192,55 205,60 192,65" fill="var(--color-accent)"/>
+            <text x="170" y="50" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">ANALOG</text>
+
+            <!-- ESP32 -->
+            <rect x="210" y="25" width="130" height="70" fill="var(--color-bg-primary)" stroke="var(--color-accent)" stroke-width="1.5"/>
+            <text x="275" y="50" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="10" font-weight="700">ESP32</text>
+            <text x="275" y="65" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">ADC CONVERSION</text>
+            <text x="275" y="78" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">PLATFORMIO</text>
+
+            <!-- Arrow 2: CAN Bus -->
+            <line x1="345" y1="60" x2="405" y2="60" stroke="rgba(255,107,26,0.4)" stroke-width="2"/>
+            <polygon points="402,55 415,60 402,65" fill="var(--color-accent)"/>
+            <text x="375" y="50" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="7">CAN BUS</text>
+
+            <!-- Mobile Device (BLE config) -->
+            <rect x="225" y="115" width="100" height="35" rx="3" fill="var(--color-bg-primary)" stroke="rgba(59,130,246,0.4)" stroke-width="1"/>
+            <text x="275" y="133" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" font-weight="700">MOBILE</text>
+            <text x="275" y="144" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">FLUTTER / DART</text>
+            <!-- BLE arrow from mobile to ESP32 -->
+            <line x1="275" y1="115" x2="275" y2="98" stroke="rgba(59,130,246,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <polygon points="271,100 275,93 279,100" fill="#3b82f6"/>
+            <text x="292" y="108" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="6">BLE</text>
+
+            <!-- PGP Dash -->
+            <rect x="420" y="15" width="160" height="90" fill="var(--color-bg-primary)" stroke="rgba(255,107,26,0.5)" stroke-width="2"/>
+            <text x="500" y="45" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="11" font-weight="700">PGP DASH</text>
+            <text x="500" y="62" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7">NXP iMX8MP</text>
+            <text x="500" y="75" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">12.3" DISPLAY</text>
+            <text x="500" y="88" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">C++ / QT6 / QML</text>
+
+            <!-- Arrow 3 -->
+            <line x1="585" y1="60" x2="625" y2="60" stroke="rgba(255,107,26,0.3)" stroke-width="2"/>
+            <polygon points="622,55 635,60 622,65" fill="rgba(255,107,26,0.6)"/>
+            <text x="605" y="50" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">WIFI</text>
+
+            <!-- Cloud -->
+            <rect x="640" y="30" width="50" height="60" fill="var(--color-bg-primary)" stroke="rgba(255,107,26,0.2)" stroke-width="1"/>
+            <text x="665" y="55" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">API</text>
+            <text x="665" y="70" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">CLOUD</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 6: Photo Gallery                     -->
+    <!-- ============================================ -->
+    <section class="section section--alt" aria-labelledby="gallery-heading">
+      <div class="container">
+        <div class="section-label reveal">// Gallery</div>
+        <h2 id="gallery-heading" class="sr-only">Gallery</h2>
+        <div class="gallery-grid reveal" data-delay="100">
+          <img src="../../assets/materials/pgp coverglass render2.png" alt="Power Gauge Pro cover glass render - finished product design" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/pgp pcb design.jpg" alt="PCB design layout for Power Gauge Pro main board" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/pgp io module pcb.jpg" alt="I/O module PCB for Power Gauge Pro accessories" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/pgp pcb board.jpg" alt="Power Gauge Pro PCB board during assembly" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/pgp aluminum case.JPG" alt="CNC machined aluminum case for the display unit" loading="lazy" data-lightbox>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Navigation -->
+    <div class="container">
+      <nav class="page-nav" aria-label="Chapter navigation">
+        <a href="../liquid-web/index.html" aria-label="Previous: Liquid Web">
+          <span aria-hidden="true">&larr;</span> Liquid Web
+        </a>
+        <a href="../../projects/" aria-label="Next: Projects">
+          Projects <span aria-hidden="true">&rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li><a href="../index.html">Experience</a></li>
+          <li><a href="../../projects/">Projects</a></li>
+          <li><a href="../../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div>
+        <div class="footer-social">
+          <a href="mailto:chris@strandt.com" aria-label="Email Chris Strandt">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
+          </a>
+          <a href="https://linkedin.com/in/liquidwebchris" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://github.com/strandtc" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" role="dialog" aria-label="Image lightbox" aria-modal="true">
+    <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="">
+  </div>
+
+  <script src="../../js/forge.js"></script>
+  <script>
+    // Code viewer: show first half, then type word-by-word, then scroll
+    (function() {
+      var viewer = document.getElementById('code-viewer');
+      var scrollArea = document.getElementById('code-scroll');
+      if (!viewer || !scrollArea) return;
+
+      var pre = scrollArea.querySelector('pre');
+      var fullHTML = pre.innerHTML;
+      var lines = fullHTML.split('\n');
+      var halfPoint = 8;
+      var animated = false;
+
+      // Show first half immediately
+      pre.innerHTML = lines.slice(0, halfPoint).join('\n');
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !animated) {
+            animated = true;
+            observer.unobserve(entry.target);
+
+            // Flatten remaining lines into a single string with newlines
+            var remainingText = '\n' + lines.slice(halfPoint).join('\n');
+            // Parse out the characters, keeping HTML tags as atomic units
+            var chunks = [];
+            var i = 0;
+            while (i < remainingText.length) {
+              if (remainingText[i] === '<') {
+                // Grab the entire HTML tag as one chunk
+                var end = remainingText.indexOf('>', i);
+                if (end !== -1) {
+                  chunks.push(remainingText.substring(i, end + 1));
+                  i = end + 1;
+                } else {
+                  chunks.push(remainingText[i]);
+                  i++;
+                }
+              } else if (remainingText[i] === '&') {
+                // Grab HTML entities as one chunk
+                var semi = remainingText.indexOf(';', i);
+                if (semi !== -1 && semi - i < 8) {
+                  chunks.push(remainingText.substring(i, semi + 1));
+                  i = semi + 1;
+                } else {
+                  chunks.push(remainingText[i]);
+                  i++;
+                }
+              } else {
+                chunks.push(remainingText[i]);
+                i++;
+              }
+            }
+
+            var chunkIndex = 0;
+            var typed = pre.innerHTML;
+
+            function typeNextChar() {
+              if (chunkIndex >= chunks.length) {
+                setTimeout(startSlowScroll, 1500);
+                return;
+              }
+
+              // Type several chunks per frame for tags/whitespace, one at a time for visible chars
+              var chunk = chunks[chunkIndex];
+              typed += chunk;
+              chunkIndex++;
+
+              // If this was a tag or entity, immediately process the next chunk too (no delay for markup)
+              if (chunk[0] === '<' || chunk[0] === '&') {
+                typeNextChar();
+                return;
+              }
+
+              // Newlines - quick
+              if (chunk === '\n') {
+                pre.innerHTML = typed;
+                // Scroll so last line is visible with ~2 lines of space below
+                var lineHeight = 23; // approximate line height at 13px font * 1.8 leading
+                scrollArea.scrollTop = scrollArea.scrollHeight - scrollArea.clientHeight;
+                setTimeout(typeNextChar, 30);
+                return;
+              }
+
+              // Spaces - very fast
+              if (chunk === ' ') {
+                // Batch spaces - don't render each one
+                while (chunkIndex < chunks.length && chunks[chunkIndex] === ' ') {
+                  typed += chunks[chunkIndex];
+                  chunkIndex++;
+                }
+                pre.innerHTML = typed;
+                setTimeout(typeNextChar, 15);
+                return;
+              }
+
+              // Visible character - render at typing speed with human randomness
+              pre.innerHTML = typed;
+              var lineHeight = 23;
+              scrollArea.scrollTop = scrollArea.scrollHeight - scrollArea.clientHeight;
+
+              // Base speed ~35ms with random variation +/- 20ms
+              var delay = 25 + Math.random() * 30;
+
+              // Occasional micro-pause (thinking) ~3% chance
+              if (Math.random() < 0.03) delay += 200 + Math.random() * 400;
+
+              // Slight pause after punctuation
+              if (chunk === ';' || chunk === '{' || chunk === '}') delay += 40 + Math.random() * 60;
+
+              // Occasional typo + backspace ~2% chance
+              if (Math.random() < 0.02 && chunkIndex < chunks.length - 3) {
+                var wrongChar = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+                var savedTyped = typed;
+                typed += wrongChar;
+                pre.innerHTML = typed;
+                setTimeout(function() {
+                  // Backspace the wrong char
+                  typed = savedTyped;
+                  pre.innerHTML = typed;
+                  setTimeout(typeNextChar, 80 + Math.random() * 120);
+                }, 100 + Math.random() * 150);
+                return;
+              }
+
+              setTimeout(typeNextChar, delay);
+            }
+
+            function startSlowScroll() {
+              // Scroll back to top slowly
+              var current = scrollArea.scrollTop;
+              var startTime = performance.now();
+              var duration = 3000;
+
+              function scrollUp(now) {
+                var elapsed = now - startTime;
+                var progress = Math.min(elapsed / duration, 1);
+                // Ease out
+                var eased = 1 - Math.pow(1 - progress, 3);
+                scrollArea.scrollTop = current * (1 - eased);
+                if (progress < 1) requestAnimationFrame(scrollUp);
+              }
+              requestAnimationFrame(scrollUp);
+            }
+
+            setTimeout(typeNextChar, 800);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      observer.observe(viewer);
+    })();
+
+    (function() {
+      var videos = document.querySelectorAll('.autoplay-video');
+      if (!videos.length) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.play().catch(function() {});
+          } else {
+            entry.target.pause();
+          }
+        });
+      }, { threshold: 0.3 });
+      videos.forEach(function(video) { observer.observe(video); });
+    })();
+  </script>
+</body>
+</html>

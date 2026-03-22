@@ -1,0 +1,254 @@
+/* =============================================================================
+   FORGE DESIGN SYSTEM — CSS Design Tokens
+   Portfolio: Chris Strandt
+   Selected: 2026-03-21
+
+   These tokens define the complete visual language. Import this file first in
+   any stylesheet. All component styles reference these variables exclusively.
+   ============================================================================= */
+
+:root {
+  /* =========================================================================
+     COLOR SYSTEM
+     ========================================================================= */
+
+  /* --- Backgrounds --- */
+  --color-bg-primary:       #0a0a0a;    /* Page background, deepest layer */
+  --color-bg-secondary:     #111111;    /* Alternate section backgrounds */
+  --color-bg-card:          #161616;    /* Card/panel surfaces */
+  --color-bg-card-hover:    #1c1c1c;    /* Card hover state */
+  --color-bg-elevated:      #1e1e1e;    /* Modals, dropdowns, tooltips */
+  --color-bg-input:         #0e0e0e;    /* Form input backgrounds */
+
+  /* --- Accent (Electric Orange) --- */
+  --color-accent:           #ff6b1a;    /* Primary accent — CTAs, active states, highlights */
+  --color-accent-hover:     #ff8844;    /* Accent hover / lighter variant */
+  --color-accent-dim:       rgba(255, 107, 26, 0.08);   /* Accent tint for backgrounds */
+  --color-accent-glow:      rgba(255, 107, 26, 0.30);   /* Accent glow for box-shadows */
+  --color-accent-border:    rgba(255, 107, 26, 0.25);   /* Accent-tinted borders */
+  --color-accent-text:      #ff6b1a;    /* Accent used as text color */
+
+  /* --- Era Colors (career chapter tinting, 5-15% opacity backgrounds) --- */
+  --color-era-northville:   #2dd4bf;    /* Teal — School IT */
+  --color-era-merit:        #818cf8;    /* Indigo — Networking */
+  --color-era-innoveda:     #3b82f6;    /* Blue — CAD/Automotive */
+  --color-era-liquidweb:    #10b981;    /* Emerald — Hosting/Growth */
+  --color-era-pgp:          #f59e0b;    /* Amber — Embedded/Founder */
+
+  /* --- Text --- */
+  --color-text-primary:     #e8e8e8;    /* Body text, headings */
+  --color-text-secondary:   #888888;    /* Supporting text, descriptions */
+  --color-text-muted:       #555555;    /* Tertiary text, placeholders, disabled */
+  --color-text-inverse:     #0a0a0a;    /* Text on accent backgrounds */
+
+  /* --- Borders --- */
+  --color-border:           #2a2a2a;    /* Default borders */
+  --color-border-light:     #333333;    /* Subtle dividers */
+  --color-border-accent:    rgba(255, 107, 26, 0.25);   /* Accent-tinted borders on hover */
+
+  /* --- State / Feedback --- */
+  --color-success:          #22c55e;    /* Available indicator, success states */
+  --color-warning:          #f59e0b;    /* Warnings */
+  --color-error:            #ef4444;    /* Error states */
+  --color-info:             #3b82f6;    /* Info badges */
+
+  /* =========================================================================
+     TYPOGRAPHY
+     ========================================================================= */
+
+  /* --- Font Families --- */
+  --font-display:           'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:              'Space Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* --- Font Sizes (modular scale, ratio ~1.25) --- */
+  --text-xs:                10px;       /* Micro labels, badges, status text */
+  --text-sm:                12px;       /* Nav items, tag text, captions */
+  --text-base:              14px;       /* Body text, card descriptions */
+  --text-md:                16px;       /* Section subtitles, lead text */
+  --text-lg:                18px;       /* Hero statement, intro text */
+  --text-xl:                22px;       /* Card titles, timeline roles */
+  --text-2xl:               28px;       /* Sub-section headings */
+  --text-3xl:               36px;       /* Section headings (mobile) */
+  --text-4xl:               52px;       /* Section headings (desktop) */
+  --text-5xl:               72px;       /* Hero name (desktop) */
+  --text-6xl:               88px;       /* Hero name (large screens) */
+
+  /* --- Font Weights --- */
+  --weight-light:           300;
+  --weight-regular:         400;
+  --weight-medium:          600;        /* Outfit has no 500; use 600 */
+  --weight-bold:            700;
+  --weight-heavy:           800;
+  --weight-black:           900;
+
+  /* --- Line Heights --- */
+  --leading-none:           1.0;        /* Display headings */
+  --leading-tight:          1.15;       /* Section headings */
+  --leading-snug:           1.35;       /* Card titles */
+  --leading-normal:         1.6;        /* Body text, descriptions */
+  --leading-relaxed:        1.7;        /* Hero statement, long-form */
+  --leading-loose:          2.0;        /* Terminal-style output */
+
+  /* --- Letter Spacing --- */
+  --tracking-tight:         -2px;       /* Display headings */
+  --tracking-snug:          -1px;       /* Section headings */
+  --tracking-normal:        0px;        /* Body text */
+  --tracking-wide:          1px;        /* Small labels */
+  --tracking-wider:         2px;        /* Nav items, tags */
+  --tracking-widest:        3px;        /* Section labels, badges */
+  --tracking-ultra:         4px;        /* Eyebrow text */
+
+  /* =========================================================================
+     SPACING (8px base grid)
+     ========================================================================= */
+
+  --space-1:                4px;
+  --space-2:                8px;
+  --space-3:                12px;
+  --space-4:                16px;
+  --space-5:                20px;
+  --space-6:                24px;
+  --space-8:                32px;
+  --space-10:               40px;
+  --space-12:               48px;
+  --space-16:               64px;
+  --space-20:               80px;
+  --space-24:               96px;
+  --space-32:               120px;      /* Section padding vertical */
+
+  /* =========================================================================
+     LAYOUT
+     ========================================================================= */
+
+  --max-width:              1400px;     /* Content max-width */
+  --max-width-narrow:       800px;      /* Text-heavy sections */
+  --gutter:                 60px;       /* Desktop page padding */
+  --gutter-mobile:          20px;       /* Mobile page padding */
+  --gutter-tablet:          40px;       /* Tablet page padding */
+
+  /* --- Header --- */
+  --header-height:          72px;
+  --header-height-scrolled: 56px;
+
+  /* --- Grid --- */
+  --grid-gap:               24px;       /* Default grid gap */
+  --grid-gap-tight:         2px;        /* Flush grid gap (impact cards, skill matrix) */
+  --grid-gap-wide:          48px;       /* Wide grid gap */
+
+  /* =========================================================================
+     BORDERS & SHAPES
+     ========================================================================= */
+
+  --radius-none:            0px;        /* Forge default — sharp corners */
+  --radius-sm:              2px;        /* Subtle rounding (badges) */
+  --radius-md:              4px;        /* Inputs, small cards (rare) */
+
+  /* Forge signature: chamfered corners via clip-path */
+  /* --chamfer-sm:  8px  corner cut */
+  /* --chamfer-md:  10px corner cut */
+  /* --chamfer-lg:  16px corner cut */
+  /* --chamfer-xl:  30px corner cut (hero image) */
+
+  --border-width:           1px;
+  --border-width-thick:     2px;
+
+  /* =========================================================================
+     SHADOWS
+     ========================================================================= */
+
+  --shadow-sm:              0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md:              0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-lg:              0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow-xl:              0 16px 48px rgba(0, 0, 0, 0.4);
+  --shadow-accent:          0 8px 32px rgba(255, 107, 26, 0.30);
+  --shadow-accent-lg:       0 16px 48px rgba(255, 107, 26, 0.20);
+
+  /* =========================================================================
+     TRANSITIONS & ANIMATION
+     ========================================================================= */
+
+  --ease-default:           cubic-bezier(0.4, 0, 0.2, 1);    /* General purpose */
+  --ease-out:               cubic-bezier(0, 0, 0.2, 1);      /* Elements entering */
+  --ease-in:                cubic-bezier(0.4, 0, 1, 1);      /* Elements exiting */
+  --ease-bounce:            cubic-bezier(0.34, 1.56, 0.64, 1); /* Playful pop */
+
+  --duration-fast:          150ms;      /* Hover states, color changes */
+  --duration-normal:        300ms;      /* Card transitions, reveals */
+  --duration-slow:          600ms;      /* Page-level transitions */
+  --duration-slower:        1000ms;     /* Counter animations, timeline fill */
+
+  /* --- Animation timing for hero entrance --- */
+  --hero-bg-delay:          0ms;        /* Background fade */
+  --hero-eyebrow-delay:     300ms;      /* Eyebrow text */
+  --hero-name-delay:        600ms;      /* Name type-in */
+  --hero-statement-delay:   1000ms;     /* Positioning statement */
+  --hero-cta-delay:         1300ms;     /* CTA buttons */
+  --hero-image-delay:       800ms;      /* Hero photo */
+  --hero-scroll-delay:      2000ms;     /* Scroll indicator */
+
+  /* =========================================================================
+     BREAKPOINTS (use in @media queries)
+     ========================================================================= */
+  /*
+     Mobile:  < 768px
+     Tablet:  768px — 1024px
+     Desktop: > 1024px
+     Wide:    > 1440px
+
+     --bp-mobile:  768px;
+     --bp-tablet:  1024px;
+     --bp-wide:    1440px;
+  */
+
+  /* =========================================================================
+     Z-INDEX SCALE
+     ========================================================================= */
+
+  --z-base:                 1;
+  --z-card:                 2;
+  --z-sticky:               10;
+  --z-header:               100;
+  --z-dropdown:             200;
+  --z-modal:                300;
+  --z-toast:                400;
+  --z-noise:                9999;       /* Noise texture overlay */
+}
+
+/* =============================================================================
+   REDUCED MOTION
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =============================================================================
+   GLOBAL RESET
+   ============================================================================= */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}

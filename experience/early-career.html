@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Early Career | Experience | Chris Strandt</title>
+  <meta name="description" content="Three foundational roles in the late 1990s and early 2000s - system administration, network operations, and enterprise software deployment.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* Hero */
+    .page-hero {
+      padding: var(--space-32) 0 var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero .hero-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('../assets/images/northville-hero.png') center/cover no-repeat;
+      opacity: 0.25;
+      filter: grayscale(40%);
+      z-index: 0;
+    }
+    .page-hero .container { position: relative; z-index: 1; }
+    .page-hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      margin-bottom: var(--space-3);
+    }
+    .page-hero .subtitle {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-accent);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      margin-bottom: var(--space-6);
+    }
+    .page-hero .lead {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      line-height: var(--leading-relaxed);
+      max-width: 700px;
+    }
+
+    /* Career chapter sections */
+    .career-chapter {
+      padding: var(--space-20) 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .career-chapter + .career-chapter {
+      border-top: 1px solid var(--color-border);
+    }
+    .career-chapter .chapter-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+    .career-chapter .container { position: relative; z-index: 1; }
+    .career-chapter h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      margin-bottom: var(--space-3);
+    }
+    .career-chapter .role-line {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-accent);
+      margin-bottom: var(--space-6);
+    }
+    .career-chapter .chapter-body {
+      font-size: var(--text-md);
+      line-height: var(--leading-relaxed);
+      max-width: 700px;
+      margin-bottom: var(--space-8);
+    }
+
+    /* Northville visual layout */
+    .northville-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-12);
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .northville-grid { grid-template-columns: 1fr; }
+    }
+
+    /* CRT visual */
+    .crt-visual {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+    }
+    .crt-visual svg { width: 100%; height: 100%; }
+    .crt-text { font-family: 'Space Mono', monospace; }
+
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .cursor-blink { animation: blink-cursor 1s step-end infinite; }
+
+    /* Tags as spans (not links) */
+    .inline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-6);
+    }
+    .inline-tags .tag {
+      pointer-events: none;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../" class="logo">STRANDT<span class="slash">//</span></a>
+      <nav><ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li class="nav-dropdown"><a href="./" class="active">Experience</a>
+          <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+            <a href="early-career.html">Early Career</a>
+            <a href="liquid-web/">Liquid Web</a>
+            <a href="power-gauge-pro/">Power Gauge Pro</a>
+          </div></div>
+        </li>
+        <li><a href="../projects/">Projects</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></nav>
+      <a href="../assets/resume.pdf" class="nav-resume">Download Resume</a>
+      <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a>
+    <a href="../about.html">About</a>
+    <a href="./" class="active">Experience</a>
+    <a href="early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a>
+    <a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+
+  <main id="main" style="padding-top: var(--header-height);">
+
+    <!-- Breadcrumbs -->
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="../">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="./">Experience</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" aria-current="page">Early Career</span>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="hero-bg-img" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-label reveal">// Career Foundation</div>
+        <h1 class="reveal" data-delay="100">The Foundation</h1>
+        <div class="subtitle reveal" data-delay="200">Late 1990s - Early 2000s</div>
+        <p class="lead reveal" data-delay="300">Three roles that built the instincts - system administration, network operations, and enterprise software deployment.</p>
+      </div>
+    </section>
+
+    <!-- Northville -->
+    <section class="career-chapter" id="northville">
+      <div class="container">
+        <div class="section-label reveal">// Late 1990s</div>
+        <div class="northville-grid">
+          <div>
+            <h2 class="reveal" data-delay="100">Northville Public Schools</h2>
+            <div class="role-line reveal" data-delay="150">System Administrator - Northville, Michigan</div>
+            <p class="chapter-body reveal" data-delay="200">Started doing system administration for the school district. DOS through Windows NT, Novell NetWare, Token Ring networking. Built and repaired PCs, ran Ethernet cabling, deployed OS images via Ghost multicast, and wrote early programs in C and QBasic.</p>
+            <div class="inline-tags reveal" data-delay="250">
+              <span class="tag">Windows</span>
+              <span class="tag">Novell NetWare</span>
+              <span class="tag">Ethernet</span>
+              <span class="tag">Ghost Imaging</span>
+              <span class="tag">C</span>
+              <span class="tag">QBasic</span>
+            </div>
+          </div>
+          <div class="crt-visual reveal" data-delay="300" aria-hidden="true">
+            <svg viewBox="0 0 480 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- CRT Monitor -->
+              <rect x="100" y="30" width="280" height="220" rx="8" fill="#1a1a1a" stroke="#ff6b1a" stroke-width="1.5" opacity="0.8"/>
+              <rect x="115" y="45" width="250" height="180" rx="2" fill="#0a0f0a"/>
+              <!-- Scanline overlay -->
+              <defs>
+                <clipPath id="screen-clip"><rect x="115" y="45" width="250" height="180" rx="2"/></clipPath>
+              </defs>
+              <rect x="115" y="45" width="250" height="4" fill="rgba(255,107,26,0.04)" clip-path="url(#screen-clip)">
+                <animateTransform attributeName="transform" type="translate" values="0 0; 0 180; 0 0" dur="4s" repeatCount="indefinite"/>
+              </rect>
+              <!-- Terminal text lines -->
+              <text class="crt-text" x="125" y="72" fill="#ff6b1a" font-size="11" opacity="0.9">C:\WINDOWS&gt; ping 10.0.0.1</text>
+              <text class="crt-text" x="125" y="90" fill="#ff6b1a" font-size="11" opacity="0.7">Reply from 10.0.0.1: bytes=32</text>
+              <text class="crt-text" x="125" y="108" fill="#ff6b1a" font-size="11" opacity="0.7">Reply from 10.0.0.1: bytes=32</text>
+              <text class="crt-text" x="125" y="132" fill="#ff6b1a" font-size="11" opacity="0.9">C:\&gt; ghost -clone,mode=load</text>
+              <text class="crt-text" x="125" y="150" fill="#ff6b1a" font-size="11" opacity="0.7">Loading image: win98_lab.gho</text>
+              <text class="crt-text" x="125" y="168" fill="#ff6b1a" font-size="11" opacity="0.6">[##########............] 47%</text>
+              <text class="crt-text" x="125" y="192" fill="#ff6b1a" font-size="11" opacity="0.9">C:\&gt; ipconfig</text>
+              <text class="crt-text" x="125" y="210" fill="#ff6b1a" font-size="11" opacity="0.7">IP: 192.168.1.50  Mask: 255.255.255.0</text>
+              <!-- Blinking cursor -->
+              <rect x="350" y="202" width="8" height="12" fill="#ff6b1a" class="cursor-blink"/>
+              <!-- Monitor stand -->
+              <rect x="200" y="250" width="80" height="12" rx="2" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+              <rect x="215" y="262" width="50" height="8" rx="1" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+              <!-- Ethernet cable running from monitor -->
+              <path d="M380 160 Q420 160 420 200 Q420 280 380 280 L80 280 Q40 280 40 250 L40 180" stroke="#ff6b1a" stroke-width="1" stroke-dasharray="4 3" opacity="0.3">
+                <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
+              </path>
+              <!-- Small network switch -->
+              <rect x="20" y="150" width="40" height="25" rx="2" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+              <circle cx="28" cy="162" r="2" fill="#ff6b1a" opacity="0.8">
+                <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="36" cy="162" r="2" fill="#ff6b1a" opacity="0.6">
+                <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="44" cy="162" r="2" fill="#ff6b1a" opacity="0.5">
+                <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="52" cy="162" r="2" fill="#ff6b1a" opacity="0.7">
+                <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.3s" repeatCount="indefinite"/>
+              </circle>
+              <!-- Second PC outline -->
+              <rect x="380" y="290" width="80" height="60" rx="3" fill="none" stroke="#333" stroke-width="1" opacity="0.4"/>
+              <rect x="388" y="298" width="64" height="40" rx="1" fill="#0a0f0a" opacity="0.3"/>
+              <!-- Cable to second PC -->
+              <path d="M40 175 L40 330 L380 330 L380 320" stroke="#ff6b1a" stroke-width="1" stroke-dasharray="4 3" opacity="0.2">
+                <animate attributeName="stroke-dashoffset" values="0;-14" dur="2.5s" repeatCount="indefinite"/>
+              </path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Merit -->
+    <section class="career-chapter" id="merit">
+      <div class="chapter-bg" style="background-image: url('../assets/images/merit-hero.png'); opacity: 0.20; filter: grayscale(30%);" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-label reveal">// ~2000</div>
+        <h2 class="reveal" data-delay="100">Merit Networks</h2>
+        <div class="role-line reveal" data-delay="150">Network Operations Center - University of Michigan</div>
+        <p class="chapter-body reveal" data-delay="200">Monitored backbone infrastructure for Michigan's primary research and education network - connecting universities, municipalities, libraries, and K-12 schools statewide. First exposure to Cisco networking, Sun Solaris, circuit diagnostics, and mission-critical operations.</p>
+        <div class="inline-tags reveal" data-delay="250">
+          <span class="tag">Cisco</span>
+          <span class="tag">Sun Solaris</span>
+          <span class="tag">SNMP</span>
+          <span class="tag">NOC Operations</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Innoveda -->
+    <section class="career-chapter" id="innoveda">
+      <div class="chapter-bg" style="background-image: url('../assets/images/innoveda-hero.png'); opacity: 0.20; filter: grayscale(30%);" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-label reveal">// ~2001</div>
+        <h2 class="reveal" data-delay="100">Innoveda at Ford Motor Company</h2>
+        <div class="role-line reveal" data-delay="150">CAD/CAE Implementation</div>
+        <p class="chapter-body reveal" data-delay="200">On-site at Ford deploying TransDesign - wire harness design software that took engineers from schematic through to manufacturing data. First exposure to the intersection of software and physical engineering - seeing how software becomes a physical product.</p>
+        <div class="inline-tags reveal" data-delay="250">
+          <span class="tag">CAD/CAE</span>
+          <span class="tag">Wire Harness Design</span>
+          <span class="tag">Ford Motor Company</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Navigation -->
+    <div class="container">
+      <nav class="page-nav" aria-label="Page navigation">
+        <a href="./"><span aria-hidden="true">&larr;</span> Experience Hub</a>
+        <a href="liquid-web/index.html">Liquid Web <span aria-hidden="true">&rarr;</span></a>
+      </nav>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color:var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building systems at every level for 25+ years.</p>
+      </div>
+      <div>
+        <ul class="footer-nav">
+          <li><a href="../">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="./">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-social">
+          <a href="https://linkedin.com/in/liquidwebchris/" aria-label="LinkedIn" target="_blank" rel="noopener">in</a>
+          <a href="https://github.com/strandtc" aria-label="GitHub" target="_blank" rel="noopener">&lt;/&gt;</a>
+          <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt</span>
+      <span class="status"><span class="status-dot"></span> Available for opportunities</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" role="dialog" aria-label="Image lightbox">
+    <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="">
+  </div>
+
+  <script src="../js/forge.js"></script>
+</body>
+</html>

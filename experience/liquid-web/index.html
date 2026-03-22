@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liquid Web | Experience | Chris Strandt</title>
+  <meta name="description" content="13 years at Liquid Web - from Network Engineer to COO. Scaled 7 to 450 employees, designed 3 data centers, built cloud platform, led $225M exit to Madison Dearborn Partners.">
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <style>
+    /* Hero with background image */
+    .lw-hero {
+      padding: 0 0 var(--space-12);
+      position: relative;
+      overflow: hidden;
+    }
+    .lw-hero .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('../../assets/images/card-liquidweb.png') center/cover no-repeat;
+      opacity: 0.25;
+      z-index: 0;
+    }
+    .lw-hero .grid-bg { position: absolute; inset: 0; z-index: 1; }
+    .lw-hero .container { position: relative; z-index: 2; }
+    .lw-hero-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+    }
+    .lw-hero-text { flex: 1; }
+    .lw-hero-logo { flex-shrink: 0; }
+    .lw-hero-logo img {
+      width: 450px;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.08));
+    }
+    @media (max-width: 768px) {
+      .lw-hero-content { flex-direction: column; }
+      .lw-hero-logo img { width: 200px; }
+    }
+    .lw-hero .era-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-ultra);
+      text-transform: uppercase;
+      color: var(--color-era-lw);
+      margin-bottom: var(--space-3);
+    }
+    .lw-hero h1 {
+      font-size: clamp(40px, 5vw, 72px);
+      margin-bottom: var(--space-3);
+    }
+    .lw-hero .hero-meta {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+      display: flex;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .lw-hero .hero-tagline {
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: var(--weight-medium);
+      color: var(--color-text-primary);
+      line-height: var(--leading-snug);
+      max-width: 700px;
+    }
+    .lw-hero .hero-tagline .accent { color: var(--color-accent); }
+
+    /* Section content layout */
+    .section-intro {
+      max-width: var(--max-width-narrow);
+      font-size: var(--text-md);
+      line-height: var(--leading-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-8);
+    }
+    .section-intro p { margin-bottom: var(--space-4); }
+
+    /* Impact counters */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--grid-gap-tight);
+    }
+    @media (max-width: 768px) {
+      .impact-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Team photo */
+    .team-photo-container {
+      margin: var(--space-8) 0;
+      position: relative;
+    }
+    .team-photo {
+      width: 100%;
+      display: block;
+      filter: grayscale(40%);
+      transition: filter 600ms var(--ease-out);
+    }
+    .team-photo:hover {
+      filter: grayscale(0%);
+    }
+
+    /* Growth chart */
+    .growth-chart-container {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-6);
+      margin: var(--space-8) 0;
+      position: relative;
+      height: 340px;
+    }
+    .growth-chart-container canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Topology SVG */
+    .topology-container {
+      position: relative;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-8);
+      margin: var(--space-8) 0;
+      overflow: hidden;
+    }
+    .topology-svg {
+      width: 100%;
+      height: auto;
+      max-height: 500px;
+    }
+    .topo-node {
+      cursor: pointer;
+      transition: filter var(--duration-normal) var(--ease-default);
+    }
+    .topo-node:hover { filter: brightness(1.3); }
+    @keyframes pulseNode {
+      0%, 100% { r: 6; opacity: 0.8; }
+      50% { r: 8; opacity: 1; }
+    }
+    @keyframes flowPacket {
+      0% { offset-distance: 0%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+    .topo-pulse { animation: pulseNode 2s ease-in-out infinite; }
+    .topo-packet {
+      offset-rotate: 0deg;
+      animation: flowPacket 3s linear infinite;
+    }
+
+    /* Sine wave canvas */
+    .sine-wave-container {
+      position: relative;
+      height: 120px;
+      margin: var(--space-8) 0;
+      opacity: 0.6;
+    }
+    .sine-wave-container canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Power Flow SVG */
+    .power-flow-container {
+      position: relative;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-6) var(--space-4);
+      margin: var(--space-8) 0;
+      overflow-x: auto;
+    }
+    .power-flow-svg {
+      width: 100%;
+      min-width: 700px;
+      height: auto;
+    }
+    @keyframes flowParticle {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+    .power-particle {
+      offset-rotate: 0deg;
+      animation: flowParticle 4s linear infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .led-blink { animation: blink 1.5s ease-in-out infinite; }
+
+    /* Cloud architecture diagram */
+    .arch-diagram {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-8);
+      margin: var(--space-8) 0;
+    }
+    .arch-svg {
+      width: 100%;
+      height: auto;
+    }
+
+    /* Code rain behind section */
+    .code-rain-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .code-rain-section canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .code-rain-section .container { position: relative; z-index: 2; }
+
+    /* Photo grid */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+    .photo-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+    }
+    .photo-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+    }
+    @media (max-width: 768px) {
+      .photo-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Deal timeline */
+    .deal-timeline {
+      position: relative;
+      padding: var(--space-8) 0;
+      overflow-x: auto;
+    }
+    .deal-timeline-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      min-width: 700px;
+      position: relative;
+    }
+    .deal-timeline-inner::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--color-border);
+    }
+    .deal-stage {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      padding-top: var(--space-12);
+    }
+    .deal-stage .node {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--color-border);
+      background: var(--color-bg-primary);
+      border-radius: 50%;
+      position: absolute;
+      top: 13px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: all var(--duration-normal) var(--ease-default);
+      z-index: 2;
+    }
+    .deal-stage.active .node {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: 0 0 12px rgba(255, 107, 26, 0.4);
+    }
+    .deal-stage:last-child .node {
+      width: 18px;
+      height: 18px;
+      top: 11px;
+      border-color: #f5c542;
+      background: #f5c542;
+      box-shadow: 0 0 16px rgba(245, 197, 66, 0.4);
+    }
+    .deal-stage .stage-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-2);
+    }
+    .deal-stage .stage-desc {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      line-height: var(--leading-normal);
+      padding: 0 var(--space-2);
+    }
+
+    /* Milestone counters */
+    .milestone-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-12);
+      padding: var(--space-8) 0;
+      flex-wrap: wrap;
+    }
+    .milestone-item { text-align: center; }
+    .milestone-number {
+      font-family: var(--font-mono);
+      font-weight: var(--weight-bold);
+      font-size: clamp(36px, 4vw, 56px);
+      color: var(--color-accent);
+      line-height: 1;
+      margin-bottom: var(--space-2);
+    }
+    .milestone-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .milestone-sep {
+      font-size: 48px;
+      color: var(--color-text-muted);
+      opacity: 0.3;
+      user-select: none;
+    }
+    @media (max-width: 768px) {
+      .milestone-grid { gap: var(--space-8); }
+      .milestone-sep { display: none; }
+    }
+
+    /* Gallery grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+    .gallery-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      filter: grayscale(40%) contrast(1.05);
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-normal) var(--ease-default);
+    }
+    .gallery-grid img:hover {
+      filter: grayscale(0%) contrast(1.1);
+      transform: scale(1.02);
+    }
+    @media (max-width: 1024px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li class="nav-dropdown">
+            <a href="../index.html" class="active">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../early-career.html">Early Career</a>
+              <a href="../liquid-web/">Liquid Web</a>
+              <a href="../power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../../projects/">Projects</a></li>
+          <li><a href="../../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a href="../../index.html">Home</a>
+    <a href="../../about.html">About</a>
+    <a href="../index.html" class="active">Experience</a>
+    <a href="../early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../../projects/">Projects</a>
+    <a href="../../contact.html">Contact</a>
+    <a href="../../assets/resume.pdf" download>Download Resume</a>
+  </nav>
+
+  <main id="main-content" style="padding-top: var(--header-height);">
+    <!-- Breadcrumbs -->
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="../index.html">Experience</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" aria-current="page">Liquid Web</span>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <section class="lw-hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="lw-hero-content">
+          <div class="lw-hero-text">
+            <div class="section-label">// Career Chapter</div>
+            <div class="era-label">2002 - 2015</div>
+            <h1>Liquid Web</h1>
+            <div class="hero-meta">
+              <span>Lansing, Michigan</span>
+              <span>Network Engineer to COO</span>
+              <span><span class="counter" data-target="7">0</span> to <span class="counter" data-target="450">0</span> Employees</span>
+            </div>
+            <p class="hero-tagline">I spent thirteen years building a <span class="accent">managed hosting company</span> from a small team into a <span class="accent">$225M acquisition</span> target.</p>
+          </div>
+          <div class="lw-hero-logo">
+            <img src="../../assets/images/liquidweb-logo.png" alt="Liquid Web logo">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 1: Leadership & Growth (#leadership) -->
+    <!-- ============================================ -->
+    <section class="section" id="leadership" aria-labelledby="leadership-heading">
+      <div class="container">
+        <div class="section-label reveal">// Leadership</div>
+        <h2 id="leadership-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Building the Company</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>I joined Liquid Web as employee number seven and grew with the company to COO over 450. I built the recruiting pipelines, stood up management structures, scaled support teams, and led compliance programs including <span class="tag" style="display:inline;">SSAE16</span>, <span class="tag" style="display:inline;">HIPAA</span>, and <span class="tag" style="display:inline;">PCI DSS</span>. I shaped the culture, made the day-to-day operational decisions, and helped drive the company to a $225M exit.</p>
+        </div>
+
+        <!-- Impact Counters -->
+        <div class="impact-grid reveal" data-delay="150">
+          <div class="impact-card">
+            <div class="number counter" data-target="450" aria-live="polite">0</div>
+            <div class="label">Employees</div>
+            <div class="desc">Scaled from a 7-person startup</div>
+          </div>
+          <div class="impact-card">
+            <div class="number counter" data-target="13" aria-live="polite">0</div>
+            <div class="label">Years</div>
+            <div class="desc">From IC to executive leadership</div>
+          </div>
+          <div class="impact-card">
+            <div class="number counter" data-target="6" data-suffix="+" aria-live="polite">0</div>
+            <div class="label">Departments</div>
+            <div class="desc">Operations, Support, Engineering, Facilities, and more</div>
+          </div>
+        </div>
+
+        <!-- Team Photo -->
+        <div class="team-photo-container reveal" data-delay="200">
+          <img src="../../assets/materials/lw-team-outside.jpg" alt="Liquid Web team group photo outside the company headquarters" class="team-photo" loading="lazy">
+        </div>
+
+        <!-- Growth Chart -->
+        <div class="growth-chart-container reveal" data-delay="250">
+          <canvas id="growth-chart" aria-label="Employee growth chart from 7 to 450 over 13 years"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2: Networking (#networking)          -->
+    <!-- ============================================ -->
+    <section class="section section--alt" id="networking" aria-labelledby="networking-heading">
+      <div class="container">
+        <div class="section-label reveal">// Networking</div>
+        <h2 id="networking-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Designing the Network</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>I built a carrier-grade network from scratch in a secondary city. I sourced dark fiber IRUs, connected to the local ILEC over a <span class="tag" style="display:inline;">DWDM</span> ring, and extended lit services to upstream providers in larger metros. I ran <span class="tag" style="display:inline;">BGP</span> with full tables for external routing, <span class="tag" style="display:inline;">EIGRP</span> internally, and managed <span class="tag" style="display:inline;">IX Peering</span>, <span class="tag" style="display:inline;">ARIN</span> IP allocations, AS numbers, and <span class="tag" style="display:inline;">DDoS</span> mitigation through Arbor Networks. I owned the entire lifecycle — provider selection, contract negotiation, equipment procurement, Cisco and Arista configuration, fiber termination, and ongoing monitoring with Cacti, SNMP, and Netflow.</p>
+        </div>
+
+        <!-- Network Topology SVG Diagram -->
+        <div class="topology-container reveal" data-delay="200">
+          <svg class="topology-svg" viewBox="0 0 900 660" role="img" aria-label="Network topology diagram showing layered architecture: border routers with BGP at top, DWDM ring, redundant core routers with infrastructure services and DDoS mitigation, redundant distribution switches for VLAN gateways, and L2 rack switching at the bottom.">
+            <!-- Background grid -->
+            <defs>
+              <pattern id="topoGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,107,26,0.04)" stroke-width="0.5"/>
+              </pattern>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect width="900" height="660" fill="url(#topoGrid)"/>
+
+            <!-- ===== LAYER 1: BORDER (L3 / BGP) ===== -->
+            <text x="450" y="18" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// BORDER LAYER — L3 ROUTING / BGP</text>
+
+            <!-- Border 1 - ISP Transit -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Border Router 1: ISP transit with BGP full tables">
+              <rect x="100" y="30" width="140" height="50" fill="var(--color-bg-card)" stroke="var(--color-accent)" stroke-width="1.5"/>
+              <text x="170" y="50" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">BORDER 1</text>
+              <text x="170" y="68" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">ISP TRANSIT</text>
+              <circle cx="170" cy="80" r="3" fill="#ff6b1a" class="topo-pulse"/>
+            </g>
+
+            <!-- Border 2 - Upstream -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Border Router 2: Upstream provider with BGP">
+              <rect x="380" y="30" width="140" height="50" fill="var(--color-bg-card)" stroke="var(--color-accent)" stroke-width="1.5"/>
+              <text x="450" y="50" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">BORDER 2</text>
+              <text x="450" y="68" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">UPSTREAM</text>
+              <circle cx="450" cy="80" r="3" fill="#ff6b1a" class="topo-pulse" style="animation-delay: 0.4s;"/>
+            </g>
+
+            <!-- Border 3 - IX Peering -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Border Router 3: Internet Exchange peering">
+              <rect x="660" y="30" width="140" height="50" fill="var(--color-bg-card)" stroke="var(--color-accent)" stroke-width="1.5"/>
+              <text x="730" y="50" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">BORDER 3</text>
+              <text x="730" y="68" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">IX PEERING</text>
+              <circle cx="730" cy="80" r="3" fill="#ff6b1a" class="topo-pulse" style="animation-delay: 0.8s;"/>
+            </g>
+
+            <!-- BGP labels above borders -->
+            <text x="170" y="26" text-anchor="middle" fill="rgba(255,107,26,0.35)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">BGP</text>
+            <text x="450" y="26" text-anchor="middle" fill="rgba(255,107,26,0.35)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">BGP</text>
+            <text x="730" y="26" text-anchor="middle" fill="rgba(255,107,26,0.35)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">BGP</text>
+
+            <!-- Border → DWDM connections -->
+            <line x1="170" y1="80" x2="170" y2="125" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+            <line x1="450" y1="80" x2="450" y2="125" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+            <line x1="730" y1="80" x2="730" y2="125" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+
+            <!-- ===== DWDM RING ===== -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="ILEC DWDM Ring: Dense Wavelength Division Multiplexing fiber ring connecting all sites">
+              <rect x="80" y="125" width="740" height="40" fill="var(--color-bg-card)" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+              <text x="450" y="150" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="10" font-weight="700" letter-spacing="2">ILEC DWDM RING</text>
+              <circle cx="120" cy="145" r="3" fill="#3b82f6" class="topo-pulse" style="animation-delay: 0.2s;"/>
+              <circle cx="780" cy="145" r="3" fill="#3b82f6" class="topo-pulse" style="animation-delay: 0.6s;"/>
+            </g>
+
+            <!-- DWDM → Core connections -->
+            <line x1="350" y1="165" x2="350" y2="220" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+            <line x1="550" y1="165" x2="550" y2="220" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+
+            <!-- ===== LAYER 2: CORE (L3 / ROUTING) ===== -->
+            <text x="450" y="212" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// CORE LAYER — L3 ROUTING (REDUNDANT PAIR)</text>
+
+            <!-- Core 1 -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Core Router 1: Primary core, L3 routing, EIGRP">
+              <rect x="280" y="225" width="140" height="55" fill="var(--color-bg-card)" stroke="rgba(16,185,129,0.6)" stroke-width="2"/>
+              <text x="350" y="248" text-anchor="middle" fill="#10b981" font-family="'Space Mono', monospace" font-size="10" font-weight="700" letter-spacing="1">CORE 1</text>
+              <text x="350" y="268" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">EIGRP / L3</text>
+              <circle cx="350" cy="280" r="3" fill="#10b981" class="topo-pulse" style="animation-delay: 0.3s;"/>
+            </g>
+
+            <!-- Core 2 -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Core Router 2: Redundant core, L3 routing, EIGRP">
+              <rect x="480" y="225" width="140" height="55" fill="var(--color-bg-card)" stroke="rgba(16,185,129,0.6)" stroke-width="2"/>
+              <text x="550" y="248" text-anchor="middle" fill="#10b981" font-family="'Space Mono', monospace" font-size="10" font-weight="700" letter-spacing="1">CORE 2</text>
+              <text x="550" y="268" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">EIGRP / L3</text>
+              <circle cx="550" cy="280" r="3" fill="#10b981" class="topo-pulse" style="animation-delay: 0.7s;"/>
+            </g>
+
+            <!-- Core interconnect (redundancy) -->
+            <line x1="420" y1="252" x2="480" y2="252" stroke="rgba(16,185,129,0.4)" stroke-width="2"/>
+            <text x="450" y="247" text-anchor="middle" fill="rgba(16,185,129,0.4)" font-family="'Space Mono', monospace" font-size="6">HSRP</text>
+
+            <!-- ===== INFRASTRUCTURE OFF CORE (left side) ===== -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Key infrastructure services connected to core: recursive DNS, cloud management, OS mirrors, cloud storage">
+              <rect x="30" y="220" width="185" height="115" fill="var(--color-bg-card)" stroke="rgba(139,92,246,0.3)" stroke-width="1"/>
+              <text x="122" y="238" text-anchor="middle" fill="rgba(139,92,246,0.7)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">INFRASTRUCTURE</text>
+              <text x="122" y="260" text-anchor="start" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">
+                <tspan x="45" dy="0">RECURSIVE DNS</tspan>
+                <tspan x="45" dy="14">CLOUD MANAGEMENT</tspan>
+                <tspan x="45" dy="14">OS / UPDATE MIRRORS</tspan>
+                <tspan x="45" dy="14">CLOUD STORAGE</tspan>
+              </text>
+            </g>
+            <!-- Infrastructure → Core connection -->
+            <line x1="215" y1="260" x2="280" y2="252" stroke="rgba(139,92,246,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+            <!-- ===== DDOS OFF CORE (right side) ===== -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Arbor Networks DDoS Mitigation connected to core layer">
+              <rect x="690" y="225" width="150" height="50" fill="var(--color-bg-card)" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+              <text x="765" y="248" text-anchor="middle" fill="rgba(239,68,68,0.7)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">DDOS MITIGATION</text>
+              <text x="765" y="264" text-anchor="middle" fill="rgba(239,68,68,0.5)" font-family="'Space Mono', monospace" font-size="7">ARBOR NETWORKS</text>
+            </g>
+            <!-- DDoS → Core connection -->
+            <line x1="690" y1="252" x2="620" y2="252" stroke="rgba(239,68,68,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+            <!-- Core → Distribution connections (full mesh, both cores to all dists) -->
+            <!-- Core 1 to all dists -->
+            <line x1="350" y1="280" x2="200" y2="370" stroke="rgba(245,158,11,0.2)" stroke-width="1.5"/>
+            <line x1="350" y1="280" x2="350" y2="370" stroke="rgba(245,158,11,0.2)" stroke-width="1.5"/>
+            <line x1="350" y1="280" x2="550" y2="370" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+            <line x1="350" y1="280" x2="700" y2="370" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+            <!-- Core 2 to all dists -->
+            <line x1="550" y1="280" x2="200" y2="370" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+            <line x1="550" y1="280" x2="350" y2="370" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+            <line x1="550" y1="280" x2="550" y2="370" stroke="rgba(245,158,11,0.2)" stroke-width="1.5"/>
+            <line x1="550" y1="280" x2="700" y2="370" stroke="rgba(245,158,11,0.2)" stroke-width="1.5"/>
+
+            <!-- ===== LAYER 3: DISTRIBUTION (L3 / VLAN GATEWAYS) ===== -->
+            <text x="450" y="355" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// DISTRIBUTION — L3 VLAN GATEWAYS (REDUNDANT PAIRS)</text>
+
+            <!-- Dist 1A -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Distribution Switch 1A: VLAN gateway, redundant pair with 1B">
+              <rect x="120" y="370" width="110" height="45" fill="var(--color-bg-card)" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+              <text x="175" y="390" text-anchor="middle" fill="#f59e0b" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">DIST 1A</text>
+              <text x="175" y="406" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">SECTION 1</text>
+            </g>
+
+            <!-- Dist 1B -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Distribution Switch 1B: VLAN gateway, redundant pair with 1A">
+              <rect x="270" y="370" width="110" height="45" fill="var(--color-bg-card)" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+              <text x="325" y="390" text-anchor="middle" fill="#f59e0b" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">DIST 1B</text>
+              <text x="325" y="406" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">SECTION 1</text>
+            </g>
+
+            <!-- Dist pair 1 interconnect -->
+            <line x1="230" y1="392" x2="270" y2="392" stroke="rgba(245,158,11,0.3)" stroke-width="1.5"/>
+
+            <!-- Dist 2A -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Distribution Switch 2A: VLAN gateway, redundant pair with 2B">
+              <rect x="470" y="370" width="110" height="45" fill="var(--color-bg-card)" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+              <text x="525" y="390" text-anchor="middle" fill="#f59e0b" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">DIST 2A</text>
+              <text x="525" y="406" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">SECTION 2</text>
+            </g>
+
+            <!-- Dist 2B -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Distribution Switch 2B: VLAN gateway, redundant pair with 2A">
+              <rect x="620" y="370" width="110" height="45" fill="var(--color-bg-card)" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+              <text x="675" y="390" text-anchor="middle" fill="#f59e0b" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">DIST 2B</text>
+              <text x="675" y="406" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">SECTION 2</text>
+            </g>
+
+            <!-- Dist pair 2 interconnect -->
+            <line x1="580" y1="392" x2="620" y2="392" stroke="rgba(245,158,11,0.3)" stroke-width="1.5"/>
+
+            <!-- Distribution → Rack connections -->
+            <!-- Dist pair 1 to racks -->
+            <line x1="175" y1="415" x2="130" y2="490" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="175" y1="415" x2="250" y2="490" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="175" y1="415" x2="370" y2="490" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="325" y1="415" x2="130" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
+            <line x1="325" y1="415" x2="250" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
+            <line x1="325" y1="415" x2="370" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
+            <!-- Dist pair 2 to racks -->
+            <line x1="525" y1="415" x2="530" y2="490" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="525" y1="415" x2="650" y2="490" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="525" y1="415" x2="770" y2="490" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="675" y1="415" x2="530" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
+            <line x1="675" y1="415" x2="650" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
+            <line x1="675" y1="415" x2="770" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
+
+            <!-- ===== LAYER 4: RACK SWITCHING (L2) ===== -->
+            <text x="450" y="478" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// RACK SWITCHING — L2</text>
+
+            <!-- Rack switches -->
+            <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
+              <rect x="90" y="490" width="80" height="40" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="130" y="510" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">TOR SW</text>
+              <text x="130" y="522" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RACK 1</text>
+            </g>
+            <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
+              <rect x="210" y="490" width="80" height="40" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="250" y="510" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">TOR SW</text>
+              <text x="250" y="522" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RACK 2</text>
+            </g>
+            <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
+              <rect x="330" y="490" width="80" height="40" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="370" y="510" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">TOR SW</text>
+              <text x="370" y="522" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RACK 3</text>
+            </g>
+            <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
+              <rect x="490" y="490" width="80" height="40" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="530" y="510" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">TOR SW</text>
+              <text x="530" y="522" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RACK 4</text>
+            </g>
+            <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
+              <rect x="610" y="490" width="80" height="40" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="650" y="510" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">TOR SW</text>
+              <text x="650" y="522" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RACK 5</text>
+            </g>
+            <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
+              <rect x="730" y="490" width="80" height="40" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="770" y="510" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">TOR SW</text>
+              <text x="770" y="522" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RACK 6</text>
+            </g>
+
+            <!-- Server LED indicators in rack area -->
+            <g opacity="0.5">
+              <circle cx="110" cy="540" r="1.5" fill="#22c55e" class="led-blink"/>
+              <circle cx="120" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.3s;"/>
+              <circle cx="130" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.7s;"/>
+              <circle cx="140" cy="540" r="1.5" fill="#f59e0b" class="led-blink" style="animation-delay: 1.1s;"/>
+              <circle cx="150" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.5s;"/>
+              <circle cx="230" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.2s;"/>
+              <circle cx="240" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.9s;"/>
+              <circle cx="250" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.4s;"/>
+              <circle cx="260" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 1.3s;"/>
+              <circle cx="270" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.6s;"/>
+              <circle cx="510" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.8s;"/>
+              <circle cx="520" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.1s;"/>
+              <circle cx="530" cy="540" r="1.5" fill="#f59e0b" class="led-blink" style="animation-delay: 1.0s;"/>
+              <circle cx="540" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.5s;"/>
+              <circle cx="550" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 1.2s;"/>
+              <circle cx="630" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.3s;"/>
+              <circle cx="640" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.7s;"/>
+              <circle cx="650" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 1.4s;"/>
+              <circle cx="660" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.2s;"/>
+              <circle cx="670" cy="540" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.9s;"/>
+            </g>
+
+            <!-- Animated packets -->
+            <!-- Border → DWDM -->
+            <circle r="3" fill="#ff6b1a" class="topo-packet" style="offset-path: path('M 170 80 L 170 125'); animation-delay: 0s; animation-duration: 1.5s;"/>
+            <circle r="3" fill="#ff6b1a" class="topo-packet" style="offset-path: path('M 450 80 L 450 125'); animation-delay: 0.5s; animation-duration: 1.5s;"/>
+            <circle r="3" fill="#ff6b1a" class="topo-packet" style="offset-path: path('M 730 80 L 730 125'); animation-delay: 1s; animation-duration: 1.5s;"/>
+            <!-- DWDM → Core -->
+            <circle r="3" fill="#3b82f6" class="topo-packet" style="offset-path: path('M 350 165 L 350 220'); animation-delay: 0.3s; animation-duration: 1.8s;"/>
+            <circle r="3" fill="#3b82f6" class="topo-packet" style="offset-path: path('M 550 165 L 550 220'); animation-delay: 0.8s; animation-duration: 1.8s;"/>
+            <!-- Core → Distribution -->
+            <circle r="3" fill="#f59e0b" class="topo-packet" style="offset-path: path('M 350 280 L 200 370'); animation-delay: 0.2s; animation-duration: 2s;"/>
+            <circle r="3" fill="#f59e0b" class="topo-packet" style="offset-path: path('M 550 280 L 700 370'); animation-delay: 0.7s; animation-duration: 2s;"/>
+            <!-- Distribution → Rack -->
+            <circle r="2" fill="#ff6b1a" class="topo-packet" style="offset-path: path('M 175 415 L 250 490'); animation-delay: 0.4s; animation-duration: 2.2s;"/>
+            <circle r="2" fill="#ff6b1a" class="topo-packet" style="offset-path: path('M 525 415 L 650 490'); animation-delay: 1.1s; animation-duration: 2.2s;"/>
+
+            <!-- Legend -->
+            <g transform="translate(30, 575)">
+              <text x="0" y="-8" fill="rgba(255,255,255,0.3)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">LEGEND</text>
+              <rect x="0" y="2" width="12" height="12" fill="none" stroke="var(--color-accent)" stroke-width="1.5"/>
+              <text x="18" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">BORDER (BGP)</text>
+              <rect x="130" y="2" width="12" height="12" fill="none" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+              <text x="148" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">DWDM</text>
+              <rect x="220" y="2" width="12" height="12" fill="none" stroke="rgba(16,185,129,0.6)" stroke-width="2"/>
+              <text x="238" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">CORE (EIGRP)</text>
+              <rect x="350" y="2" width="12" height="12" fill="none" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+              <text x="368" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">DISTRIBUTION</text>
+              <rect x="490" y="2" width="12" height="12" fill="none" stroke="rgba(255,107,26,0.3)" stroke-width="1"/>
+              <text x="508" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">RACK (L2)</text>
+              <rect x="600" y="2" width="12" height="12" fill="none" stroke="rgba(139,92,246,0.3)" stroke-width="1"/>
+              <text x="618" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">INFRA</text>
+              <rect x="680" y="2" width="12" height="12" fill="none" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+              <text x="698" y="12" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">DDOS</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Three-phase Sine Wave Decoration -->
+    <div class="sine-wave-container" aria-hidden="true">
+      <canvas id="sine-wave"></canvas>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3: Data Centers (#data-centers)      -->
+    <!-- ============================================ -->
+    <section class="section" id="data-centers" aria-labelledby="dc-heading">
+      <div class="container">
+        <div class="section-label reveal">// Data Centers</div>
+        <h2 id="dc-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Building Data Centers</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>I designed three data center facilities from scratch — hand-drew the floor plans, designed the complete power chain from utility feed through rack-level branch circuit monitoring, and led an $80M ground-up build with a dedicated electrical substation. I managed all contractors, utility coordination, and equipment procurement across every build. I also drywalled the first data center, drilled through concrete walls for fiber, and terminated Cat 5e — when you're building from nothing, you do whatever needs doing.</p>
+        </div>
+
+        <!-- Inline Tags -->
+        <div class="tags reveal" data-delay="150" style="margin-bottom: var(--space-8);">
+          <span class="tag">UPS</span>
+          <span class="tag">Generators</span>
+          <span class="tag">Three-Phase</span>
+          <span class="tag">HVAC</span>
+          <span class="tag">Construction Management</span>
+          <span class="tag">Arc Flash</span>
+          <span class="tag">Switchgear</span>
+        </div>
+
+        <!-- Power Flow SVG Diagram -->
+        <div class="power-flow-container reveal" data-delay="200">
+          <svg class="power-flow-svg" viewBox="0 0 900 280" role="img" aria-label="Animated power flow diagram showing the complete power chain: Utility through Transformer, ATS with Generator, UPS N+1 with maintenance bypass and batteries, PDU with branch circuit monitoring, to Server Rack.">
+            <defs>
+              <filter id="glowBlue">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <!-- Main power path line -->
+            <path d="M 80 120 L 200 120 L 320 120 L 460 120 L 590 120 L 720 120" fill="none" stroke="rgba(59,130,246,0.15)" stroke-width="3"/>
+
+            <!-- Generator branch (only to ATS) -->
+            <path d="M 320 90 L 320 42" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="2" stroke-dasharray="6,4"/>
+
+            <!-- Maintenance bypass path (around UPS) -->
+            <path d="M 395 120 L 395 62 L 525 62 L 525 120" fill="none" stroke="rgba(245,158,11,0.25)" stroke-width="1.5" stroke-dasharray="5,4"/>
+            <text x="460" y="56" text-anchor="middle" fill="rgba(245,158,11,0.5)" font-family="'Space Mono', monospace" font-size="6" letter-spacing="1">MAINT. BYPASS</text>
+
+            <!-- Battery branch (below UPS) -->
+            <path d="M 460 150 L 460 185" fill="none" stroke="rgba(139,92,246,0.3)" stroke-width="2"/>
+
+            <!-- Branch circuit monitor branch (below PDU) -->
+            <path d="M 590 150 L 590 185" fill="none" stroke="rgba(255,107,26,0.2)" stroke-width="1.5"/>
+
+            <!-- Animated particles -->
+            <circle r="3" fill="#3b82f6" class="power-particle" style="offset-path: path('M 80 120 L 200 120 L 320 120 L 460 120 L 590 120 L 720 120'); animation-delay: 0s; animation-duration: 5s;" filter="url(#glowBlue)"/>
+            <circle r="3" fill="#3b82f6" class="power-particle" style="offset-path: path('M 80 120 L 200 120 L 320 120 L 460 120 L 590 120 L 720 120'); animation-delay: 1.2s; animation-duration: 5s;" filter="url(#glowBlue)"/>
+            <circle r="3" fill="#3b82f6" class="power-particle" style="offset-path: path('M 80 120 L 200 120 L 320 120 L 460 120 L 590 120 L 720 120'); animation-delay: 2.5s; animation-duration: 5s;" filter="url(#glowBlue)"/>
+
+            <!-- Utility Power -->
+            <g>
+              <rect x="30" y="90" width="100" height="60" fill="var(--color-bg-card)" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+              <text x="80" y="115" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">UTILITY</text>
+              <text x="80" y="128" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">POWER</text>
+              <text x="80" y="143" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">13.8kV FEED</text>
+            </g>
+
+            <!-- Transformer -->
+            <g>
+              <rect x="150" y="90" width="100" height="60" fill="var(--color-bg-card)" stroke="rgba(59,130,246,0.4)" stroke-width="1.5"/>
+              <text x="200" y="115" text-anchor="middle" fill="var(--color-text-primary)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">TRANSFORMER</text>
+              <text x="200" y="128" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">STEP-DOWN</text>
+              <text x="200" y="141" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">480V 3-PHASE</text>
+            </g>
+
+            <!-- ATS -->
+            <g>
+              <rect x="270" y="90" width="100" height="60" fill="var(--color-bg-card)" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+              <text x="320" y="115" text-anchor="middle" fill="#f59e0b" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">ATS</text>
+              <text x="320" y="128" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">AUTO TRANSFER</text>
+              <text x="320" y="141" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">SWITCH</text>
+            </g>
+
+            <!-- Generator (connected only to ATS) -->
+            <g>
+              <rect x="270" y="10" width="100" height="45" fill="var(--color-bg-card)" stroke="rgba(16,185,129,0.5)" stroke-width="1.5"/>
+              <text x="320" y="30" text-anchor="middle" fill="#ff6b1a" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">GENERATOR</text>
+              <text x="320" y="44" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">DIESEL STANDBY</text>
+              <circle cx="360" cy="20" r="3" fill="#ff6b1a" class="led-blink" style="animation-delay: 0.3s;"/>
+            </g>
+
+            <!-- UPS (N+1) -->
+            <g>
+              <rect x="395" y="90" width="130" height="60" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.5)" stroke-width="1.5"/>
+              <text x="460" y="110" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">UPS (N+1)</text>
+              <text x="460" y="123" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">UNINTERRUPTIBLE</text>
+              <text x="460" y="136" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">POWER SUPPLY</text>
+              <circle cx="515" cy="100" r="3" fill="#22c55e" class="led-blink" style="animation-delay: 0.5s;"/>
+            </g>
+
+            <!-- Batteries (below UPS) -->
+            <g>
+              <rect x="410" y="185" width="100" height="45" fill="var(--color-bg-card)" stroke="rgba(139,92,246,0.4)" stroke-width="1.5"/>
+              <text x="460" y="205" text-anchor="middle" fill="rgba(139,92,246,0.8)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">BATTERIES</text>
+              <text x="460" y="219" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">VRLA / FLYWHEEL</text>
+              <circle cx="500" cy="195" r="3" fill="#22c55e" class="led-blink" style="animation-delay: 0.8s;"/>
+            </g>
+
+            <!-- PDU -->
+            <g>
+              <rect x="545" y="90" width="90" height="60" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.4)" stroke-width="1.5"/>
+              <text x="590" y="115" text-anchor="middle" fill="var(--color-text-primary)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">PDU</text>
+              <text x="590" y="128" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">DISTRIBUTION</text>
+              <text x="590" y="141" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">METERED</text>
+            </g>
+
+            <!-- Branch Circuit Monitor (below PDU) -->
+            <g>
+              <rect x="540" y="185" width="100" height="45" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.2)" stroke-width="1"/>
+              <text x="590" y="203" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">BRANCH CIRCUIT</text>
+              <text x="590" y="218" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7" letter-spacing="1">MONITORING</text>
+            </g>
+
+            <!-- Rack -->
+            <g>
+              <rect x="660" y="75" width="100" height="90" fill="var(--color-bg-card)" stroke="rgba(255,107,26,0.3)" stroke-width="1.5"/>
+              <text x="710" y="95" text-anchor="middle" fill="var(--color-text-primary)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="1">42U RACK</text>
+              <rect x="675" y="102" width="70" height="6" fill="rgba(255,107,26,0.1)" stroke="rgba(255,107,26,0.2)" stroke-width="0.5"/>
+              <rect x="675" y="111" width="70" height="6" fill="rgba(255,107,26,0.1)" stroke="rgba(255,107,26,0.2)" stroke-width="0.5"/>
+              <rect x="675" y="120" width="70" height="6" fill="rgba(255,107,26,0.1)" stroke="rgba(255,107,26,0.2)" stroke-width="0.5"/>
+              <rect x="675" y="129" width="70" height="6" fill="rgba(255,107,26,0.1)" stroke="rgba(255,107,26,0.2)" stroke-width="0.5"/>
+              <rect x="675" y="138" width="70" height="6" fill="rgba(255,107,26,0.1)" stroke="rgba(255,107,26,0.2)" stroke-width="0.5"/>
+              <rect x="675" y="147" width="70" height="6" fill="rgba(255,107,26,0.1)" stroke="rgba(255,107,26,0.2)" stroke-width="0.5"/>
+              <circle cx="680" cy="105" r="1.5" fill="#22c55e" class="led-blink"/>
+              <circle cx="680" cy="114" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.4s;"/>
+              <circle cx="680" cy="123" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.8s;"/>
+              <circle cx="680" cy="132" r="1.5" fill="#f59e0b" class="led-blink" style="animation-delay: 1.2s;"/>
+              <circle cx="680" cy="141" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 0.6s;"/>
+              <circle cx="680" cy="150" r="1.5" fill="#22c55e" class="led-blink" style="animation-delay: 1s;"/>
+            </g>
+
+            <!-- Flow direction arrows (main path) -->
+            <polygon points="135,117 145,120 135,123" fill="rgba(59,130,246,0.5)"/>
+            <polygon points="255,117 265,120 255,123" fill="rgba(59,130,246,0.5)"/>
+            <polygon points="380,117 390,120 380,123" fill="rgba(255,107,26,0.5)"/>
+            <polygon points="530,117 540,120 530,123" fill="rgba(255,107,26,0.5)"/>
+            <polygon points="645,117 655,120 645,123" fill="rgba(255,107,26,0.5)"/>
+          </svg>
+        </div>
+
+        <!-- Data Center Photos -->
+        <div class="photo-grid reveal" data-delay="250">
+          <img src="../../assets/materials/liquidweb generators.jpg" alt="Diesel standby generators at Liquid Web data center" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/liquidweb electrical room.jpg" alt="Electrical distribution room at Liquid Web data center" loading="lazy" data-lightbox>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4: Cloud Platform (#cloud)           -->
+    <!-- ============================================ -->
+    <section class="section section--alt" id="cloud" aria-labelledby="cloud-heading">
+      <div class="container">
+        <div class="section-label reveal">// Cloud Platform</div>
+        <h2 id="cloud-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Storm on Demand</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>I helped build our IaaS platform before "cloud" was mainstream — <span class="tag" style="display:inline;">Xen</span> and <span class="tag" style="display:inline;">KVM</span> hypervisors, self-service provisioning, object storage, load balancing, and firewall configuration. I helped recruit the engineering team, define the product spec, and build the physical and network infrastructure that powered it.</p>
+        </div>
+
+        <!-- Cloud Architecture SVG Diagram -->
+        <div class="arch-diagram reveal" data-delay="200">
+          <svg class="arch-svg" viewBox="0 0 700 420" role="img" aria-label="Cloud architecture diagram showing three layers: physical hardware at bottom, hypervisor virtualization in middle, cloud services at top.">
+            <defs>
+              <pattern id="archGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,107,26,0.03)" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="700" height="420" fill="url(#archGrid)"/>
+
+            <!-- Storm API / Management Layer (top) -->
+            <rect x="100" y="10" width="500" height="35" fill="var(--color-bg-primary)" stroke="rgba(255,107,26,0.4)" stroke-width="1.5"/>
+            <text x="350" y="32" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="9" letter-spacing="1">STORM API / MANAGEMENT</text>
+
+            <!-- Connections from API to Cloud Services -->
+            <line x1="200" y1="45" x2="200" y2="95" stroke="rgba(255,107,26,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="350" y1="45" x2="350" y2="95" stroke="rgba(255,107,26,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="500" y1="45" x2="500" y2="95" stroke="rgba(255,107,26,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+
+            <!-- Cloud Services Layer -->
+            <rect x="50" y="75" width="600" height="80" rx="0" fill="none" stroke="rgba(255,107,26,0.3)" stroke-width="1.5" stroke-dasharray="6,4"/>
+            <text x="350" y="72" text-anchor="middle" fill="var(--color-accent)" font-family="'Space Mono', monospace" font-size="9" letter-spacing="2">CLOUD SERVICES LAYER</text>
+
+            <g>
+              <rect x="90" y="95" width="140" height="45" fill="var(--color-bg-primary)" stroke="rgba(59,130,246,0.4)" stroke-width="1"/>
+              <text x="160" y="113" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="9" font-weight="700">COMPUTE</text>
+              <text x="160" y="129" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">VM PROVISIONING</text>
+            </g>
+            <g>
+              <rect x="280" y="95" width="140" height="45" fill="var(--color-bg-primary)" stroke="rgba(16,185,129,0.4)" stroke-width="1"/>
+              <text x="350" y="113" text-anchor="middle" fill="#ff6b1a" font-family="'Space Mono', monospace" font-size="9" font-weight="700">STORAGE</text>
+              <text x="350" y="129" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">OBJECT STORAGE</text>
+            </g>
+            <g>
+              <rect x="470" y="95" width="140" height="45" fill="var(--color-bg-primary)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+              <text x="540" y="113" text-anchor="middle" fill="#f59e0b" font-family="'Space Mono', monospace" font-size="9" font-weight="700">NETWORK</text>
+              <text x="540" y="129" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">LB / FIREWALL</text>
+            </g>
+
+            <!-- Connections from Cloud Services to Hypervisor -->
+            <line x1="160" y1="155" x2="160" y2="185" stroke="rgba(59,130,246,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="350" y1="155" x2="350" y2="185" stroke="rgba(16,185,129,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="540" y1="155" x2="540" y2="185" stroke="rgba(245,158,11,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+
+            <!-- Hypervisor Layer -->
+            <rect x="50" y="185" width="600" height="110" rx="0" fill="none" stroke="rgba(129,140,248,0.3)" stroke-width="1.5" stroke-dasharray="6,4"/>
+            <text x="350" y="180" text-anchor="middle" fill="#ff6b1a" font-family="'Space Mono', monospace" font-size="9" letter-spacing="2">HYPERVISOR LAYER (XEN / KVM)</text>
+
+            <!-- VMs -->
+            <g>
+              <rect x="80" y="205" width="90" height="70" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+              <text x="125" y="220" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" font-weight="700">VM-01</text>
+              <rect x="90" y="228" width="70" height="6" fill="rgba(59,130,246,0.15)" rx="1"/>
+              <rect x="90" y="228" width="50" height="6" fill="rgba(59,130,246,0.4)" rx="1"/>
+              <text x="90" y="244" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">CPU 72%</text>
+              <rect x="90" y="250" width="70" height="6" fill="rgba(16,185,129,0.15)" rx="1"/>
+              <rect x="90" y="250" width="40" height="6" fill="rgba(16,185,129,0.4)" rx="1"/>
+              <text x="90" y="266" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RAM 58%</text>
+            </g>
+            <g>
+              <rect x="195" y="205" width="90" height="70" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+              <text x="240" y="220" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" font-weight="700">VM-02</text>
+              <rect x="205" y="228" width="70" height="6" fill="rgba(59,130,246,0.15)" rx="1"/>
+              <rect x="205" y="228" width="30" height="6" fill="rgba(59,130,246,0.4)" rx="1"/>
+              <text x="205" y="244" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">CPU 43%</text>
+              <rect x="205" y="250" width="70" height="6" fill="rgba(16,185,129,0.15)" rx="1"/>
+              <rect x="205" y="250" width="55" height="6" fill="rgba(16,185,129,0.4)" rx="1"/>
+              <text x="205" y="266" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RAM 79%</text>
+            </g>
+            <g>
+              <rect x="310" y="205" width="90" height="70" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+              <text x="355" y="220" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" font-weight="700">VM-03</text>
+              <rect x="320" y="228" width="70" height="6" fill="rgba(59,130,246,0.15)" rx="1"/>
+              <rect x="320" y="228" width="60" height="6" fill="rgba(59,130,246,0.4)" rx="1"/>
+              <text x="320" y="244" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">CPU 86%</text>
+              <rect x="320" y="250" width="70" height="6" fill="rgba(245,158,11,0.15)" rx="1"/>
+              <rect x="320" y="250" width="62" height="6" fill="rgba(245,158,11,0.4)" rx="1"/>
+              <text x="320" y="266" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RAM 89%</text>
+            </g>
+            <g>
+              <rect x="425" y="205" width="90" height="70" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+              <text x="470" y="220" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" font-weight="700">VM-04</text>
+              <rect x="435" y="228" width="70" height="6" fill="rgba(59,130,246,0.15)" rx="1"/>
+              <rect x="435" y="228" width="15" height="6" fill="rgba(22,197,94,0.5)" rx="1"/>
+              <text x="435" y="244" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">CPU 21%</text>
+              <rect x="435" y="250" width="70" height="6" fill="rgba(16,185,129,0.15)" rx="1"/>
+              <rect x="435" y="250" width="25" height="6" fill="rgba(16,185,129,0.4)" rx="1"/>
+              <text x="435" y="266" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RAM 36%</text>
+            </g>
+            <g>
+              <rect x="540" y="205" width="90" height="70" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+              <text x="585" y="220" text-anchor="middle" fill="#3b82f6" font-family="'Space Mono', monospace" font-size="8" font-weight="700">VM-05</text>
+              <rect x="550" y="228" width="70" height="6" fill="rgba(59,130,246,0.15)" rx="1"/>
+              <rect x="550" y="228" width="45" height="6" fill="rgba(59,130,246,0.4)" rx="1"/>
+              <text x="550" y="244" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">CPU 64%</text>
+              <rect x="550" y="250" width="70" height="6" fill="rgba(16,185,129,0.15)" rx="1"/>
+              <rect x="550" y="250" width="35" height="6" fill="rgba(16,185,129,0.4)" rx="1"/>
+              <text x="550" y="266" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="6">RAM 50%</text>
+            </g>
+
+            <!-- Physical Hardware Layer -->
+            <rect x="50" y="320" width="600" height="80" rx="0" fill="none" stroke="rgba(255,107,26,0.2)" stroke-width="1.5"/>
+            <text x="350" y="315" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="9" letter-spacing="2">PHYSICAL HARDWARE</text>
+
+            <rect x="90" y="335" width="160" height="50" fill="var(--color-bg-primary)" stroke="rgba(255,107,26,0.2)" stroke-width="1"/>
+            <text x="170" y="360" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="9">COMPUTE HOST 1</text>
+            <text x="170" y="375" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">SUPERMICRO / CENTOS</text>
+
+            <rect x="270" y="335" width="160" height="50" fill="var(--color-bg-primary)" stroke="rgba(255,107,26,0.2)" stroke-width="1"/>
+            <text x="350" y="360" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="9">COMPUTE HOST 2</text>
+            <text x="350" y="375" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">SUPERMICRO / CENTOS</text>
+
+            <rect x="450" y="335" width="160" height="50" fill="var(--color-bg-primary)" stroke="rgba(255,107,26,0.2)" stroke-width="1"/>
+            <text x="530" y="360" text-anchor="middle" fill="var(--color-text-secondary)" font-family="'Space Mono', monospace" font-size="9">COMPUTE HOST 3</text>
+            <text x="530" y="375" text-anchor="middle" fill="var(--color-text-muted)" font-family="'Space Mono', monospace" font-size="7">SUPERMICRO / CENTOS</text>
+
+            <!-- Connections -->
+            <line x1="170" y1="295" x2="170" y2="335" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="350" y1="295" x2="350" y2="335" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+            <line x1="530" y1="295" x2="530" y2="335" stroke="rgba(255,107,26,0.15)" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 5: Linux at Scale (#linux)           -->
+    <!-- ============================================ -->
+    <section class="section code-rain-section" id="linux" aria-labelledby="linux-heading">
+      <canvas id="code-rain" aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="section-label reveal">// Linux</div>
+        <h2 id="linux-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Linux at Scale</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>About 85% of our fleet ran <span class="tag" style="display:inline;">CentOS</span> — thousands of servers with custom <span class="tag" style="display:inline;">Kernel</span> builds, RPM packaging, <span class="tag" style="display:inline;">PXE</span> bare-metal provisioning, <span class="tag" style="display:inline;">Apache</span>, Nginx, and <span class="tag" style="display:inline;">MySQL</span> optimization. We hardened servers, monitored hardware and software, managed security patches, and kept uptime high across the entire fleet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 6: The Exit (#the-exit)              -->
+    <!-- ============================================ -->
+    <section class="section section--alt" id="the-exit" aria-labelledby="exit-heading">
+      <div class="container">
+        <div class="section-label reveal">// The Exit</div>
+        <h2 id="exit-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">$225M Exit</h2>
+        <div class="section-intro reveal" data-delay="100">
+          <p>I was one of five executives who led the sale to Madison Dearborn Partners in 2015. I prepared most of the data room, built financial models with our accountants, and personally presented to every potential acquirer throughout a multi-month process that culminated in a successful close.</p>
+        </div>
+
+        <!-- Deal Timeline -->
+        <div class="deal-timeline reveal" data-delay="200">
+          <div class="deal-timeline-inner">
+            <div class="deal-stage active">
+              <div class="node"></div>
+              <div class="stage-label">Decision</div>
+              <div class="stage-desc">Ownership decides to explore strategic options</div>
+            </div>
+            <div class="deal-stage active">
+              <div class="node"></div>
+              <div class="stage-label">Broker</div>
+              <div class="stage-desc">Engaged Bankstreet to manage the process</div>
+            </div>
+            <div class="deal-stage active">
+              <div class="node"></div>
+              <div class="stage-label">Data Room</div>
+              <div class="stage-desc">Financial and operational data assembly</div>
+            </div>
+            <div class="deal-stage active">
+              <div class="node"></div>
+              <div class="stage-label">Model</div>
+              <div class="stage-desc">Financial projections and valuation</div>
+            </div>
+            <div class="deal-stage active">
+              <div class="node"></div>
+              <div class="stage-label">Present</div>
+              <div class="stage-desc">Presentations to potential acquirers</div>
+            </div>
+            <div class="deal-stage active">
+              <div class="node"></div>
+              <div class="stage-label">Diligence</div>
+              <div class="stage-desc">Deep technical and financial review</div>
+            </div>
+            <div class="deal-stage">
+              <div class="node"></div>
+              <div class="stage-label">Close</div>
+              <div class="stage-desc">$225M to Madison Dearborn Partners</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Milestone Counters -->
+        <div class="milestone-grid reveal" data-delay="300">
+          <div class="milestone-item">
+            <div class="milestone-number">$<span class="counter" data-target="225">0</span>M</div>
+            <div class="milestone-label">Acquisition</div>
+          </div>
+          <div class="milestone-sep" aria-hidden="true">/</div>
+          <div class="milestone-item">
+            <div class="milestone-number"><span class="counter" data-target="450">0</span></div>
+            <div class="milestone-label">Employees</div>
+          </div>
+          <div class="milestone-sep" aria-hidden="true">/</div>
+          <div class="milestone-item">
+            <div class="milestone-number"><span class="counter" data-target="13">0</span></div>
+            <div class="milestone-label">Years</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 7: Photo Gallery                     -->
+    <!-- ============================================ -->
+    <section class="section" aria-labelledby="gallery-heading">
+      <div class="container">
+        <div class="section-label reveal">// Gallery</div>
+        <h2 id="gallery-heading" class="sr-only">Gallery</h2>
+        <div class="gallery-grid reveal" data-delay="100">
+          <img src="../../assets/materials/liquidweb front of building.jpg" alt="Liquid Web headquarters in Lansing, Michigan" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/liquidweb marketing photo.jpg" alt="Liquid Web team photo showcasing company culture" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/liquidweb electrical distribution.jpg" alt="Electrical distribution infrastructure at Liquid Web" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/liquidweb medium voltage switchgear.jpg" alt="Medium voltage switchgear at Liquid Web data center" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/liquidweb ups maintenance.jpg" alt="UPS maintenance at Liquid Web data center" loading="lazy" data-lightbox>
+          <img src="../../assets/materials/liquidweb 3d color site layout.jpg" alt="3D rendered site layout of Liquid Web campus" loading="lazy" data-lightbox>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Navigation -->
+    <div class="container">
+      <nav class="page-nav" aria-label="Chapter navigation">
+        <a href="../early-career.html#innoveda" aria-label="Previous: Innoveda / Early Career">
+          <span aria-hidden="true">&larr;</span> Innoveda / Early Career
+        </a>
+        <a href="../power-gauge-pro/index.html" aria-label="Next: Power Gauge Pro">
+          Power Gauge Pro <span aria-hidden="true">&rarr;</span>
+        </a>
+      </nav>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../about.html">About</a></li>
+          <li><a href="../index.html">Experience</a></li>
+          <li><a href="../../projects/">Projects</a></li>
+          <li><a href="../../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div>
+        <div class="footer-social">
+          <a href="mailto:chris@strandt.com" aria-label="Email Chris Strandt">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
+          </a>
+          <a href="https://linkedin.com/in/liquidwebchris" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://github.com/strandtc" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" role="dialog" aria-label="Image lightbox" aria-modal="true">
+    <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="">
+  </div>
+
+  <script src="../../js/forge.js"></script>
+</body>
+</html>

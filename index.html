@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chris Strandt - Builder of Systems, Teams &amp; Products</title>
+  <meta name="description" content="Portfolio of Chris Strandt: 25+ years building networks, data centers, software products, and high-performance teams. From sysadmin to COO to founder.">
+  <meta name="author" content="Chris Strandt">
+  <meta property="og:title" content="Chris Strandt - Builder of Systems, Teams &amp; Products">
+  <meta property="og:description" content="25+ years building networks, data centers, software products, and high-performance teams. From sysadmin to COO to founder.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    /* =========================================================================
+       HOME PAGE - Hero Layout & Page-Specific Styles
+       ========================================================================= */
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--header-height);
+      overflow: hidden;
+    }
+
+    .hero-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    .hero-canvas canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero .grid-bg {
+      z-index: 1;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 400;
+      letter-spacing: var(--tracking-ultra);
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-weight: var(--weight-black);
+      font-size: clamp(48px, 6vw, 88px);
+      line-height: 0.95;
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-primary);
+    }
+
+    .hero-name .outlined {
+      display: block;
+    }
+
+    .hero-statement {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-regular);
+      line-height: var(--leading-relaxed);
+      color: var(--color-text-secondary);
+      max-width: 520px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .hero-image-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 384px;
+      width: 100%;
+    }
+
+    .hero-image-outer {
+      position: relative;
+      display: block;
+      padding: 6px;
+      background: var(--color-bg-card);
+      clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+    }
+
+    .hero-image-outer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--color-accent-border);
+      clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-image {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      object-position: center 15%;
+      filter: grayscale(30%) contrast(1.1);
+    }
+
+    .hero-image-caption {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-3);
+      letter-spacing: 1px;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: var(--space-8);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--color-text-muted);
+      animation: scrollBounce 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator span {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+    }
+
+    .scroll-indicator svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* =========================================================================
+       Career Snapshot
+       ========================================================================= */
+    .career-section {
+      background: var(--color-bg-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .career-section .section-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('assets/images/home-sections-bg.png') center/cover no-repeat;
+      opacity: 0.2;
+      filter: grayscale(30%);
+      z-index: 0;
+    }
+    .career-section > .container { position: relative; z-index: 1; }
+
+    .career-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+    }
+
+    .career-header h2 {
+      margin-bottom: var(--space-4);
+    }
+
+    .career-header .subtitle {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      font-style: italic;
+    }
+
+    .career-cards {
+      display: flex;
+      gap: var(--space-6);
+    }
+
+    .career-card {
+      flex: 1;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: var(--space-6);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      position: relative;
+      transition: all var(--duration-normal) var(--ease-default);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    }
+
+    .career-card:hover {
+      border-color: var(--color-accent-border);
+      background: var(--color-bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .career-card.featured {
+      border-color: var(--color-accent-border);
+      background: linear-gradient(135deg, var(--color-accent-dim), transparent 60%), var(--color-bg-card);
+    }
+
+    .career-card .era-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .career-card .years {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .career-card .company {
+      font-family: var(--font-display);
+      font-weight: var(--weight-bold);
+      font-size: var(--text-xl);
+      color: var(--color-text-primary);
+      line-height: var(--leading-snug);
+    }
+
+    .career-card .role {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .career-card .one-liner {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--leading-normal);
+      flex-grow: 1;
+    }
+
+    .career-card .card-arrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .career-card .card-arrow .arrow {
+      transition: transform var(--duration-fast) var(--ease-default);
+    }
+
+    .career-card:hover .card-arrow .arrow {
+      transform: translateX(4px);
+    }
+
+    /* =========================================================================
+       Impact Numbers
+       ========================================================================= */
+    .impact-section {
+      padding: var(--space-16) 0 var(--space-12);
+    }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--grid-gap-tight);
+    }
+
+    .impact-section .section-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+    }
+
+    /* =========================================================================
+       Skill Clusters
+       ========================================================================= */
+    .skills-section {
+      background: var(--color-bg-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .skills-section .section-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('assets/images/home-sections-bg.png') center bottom/cover no-repeat;
+      opacity: 0.06;
+      filter: grayscale(30%);
+      z-index: 0;
+      transform: scaleX(-1);
+    }
+    .skills-section > .container { position: relative; z-index: 1; }
+
+    .skills-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+    }
+
+    .skills-header h2 {
+      margin-bottom: var(--space-4);
+    }
+
+    .skills-header .subtitle {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      font-style: italic;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--grid-gap-tight);
+      margin-bottom: var(--space-12);
+    }
+
+    .skill-cluster .cluster-icon {
+      font-size: 24px;
+      margin-bottom: var(--space-3);
+      filter: grayscale(100%);
+      transition: filter var(--duration-slow) var(--ease-default);
+    }
+
+    .skill-cluster:hover .cluster-icon {
+      filter: grayscale(0%);
+    }
+
+    .skill-cluster .cluster-name {
+      font-family: var(--font-display);
+      font-weight: var(--weight-bold);
+      font-size: var(--text-lg);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-3);
+      line-height: var(--leading-snug);
+    }
+
+    .skill-cluster .cluster-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+    }
+
+    .skills-cta {
+      text-align: center;
+    }
+
+    /* =========================================================================
+       Responsive
+       ========================================================================= */
+
+    @media (max-width: 1024px) {
+      .hero-inner {
+        padding: 0 var(--gutter-tablet);
+        gap: 40px;
+      }
+
+      .career-cards {
+        flex-wrap: wrap;
+      }
+
+      .career-card {
+        flex: 1 1 calc(50% - var(--space-6));
+        min-width: 250px;
+      }
+
+      .impact-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: var(--space-10);
+        padding: 0 var(--gutter-mobile);
+        text-align: center;
+      }
+
+      .hero-text {
+        order: 1;
+        align-items: center;
+      }
+
+      .hero-image-wrapper {
+        order: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-self: center;
+        width: auto;
+      }
+
+      .hero-image {
+        max-width: 300px;
+      }
+
+      .hero-image-wrapper::before {
+        display: none;
+      }
+
+      .hero-statement {
+        max-width: 100%;
+      }
+
+      .hero-ctas {
+        justify-content: center;
+      }
+
+      .career-cards {
+        flex-direction: column;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: var(--space-4);
+        padding-bottom: var(--space-4);
+      }
+
+      .career-card {
+        flex: 0 0 85%;
+        min-width: 280px;
+        scroll-snap-align: start;
+      }
+
+      @media (min-width: 481px) {
+        .career-cards {
+          flex-direction: row;
+        }
+      }
+
+      .impact-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .scroll-indicator {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .impact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .hero-ctas a {
+        text-align: center;
+        justify-content: center;
+      }
+    }
+
+    /* =========================================================================
+       Skill Highlight Reel - Auto-scrolling marquee
+       ========================================================================= */
+    .marquee {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin-top: var(--space-4);
+      mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
+      cursor: grab;
+      user-select: none;
+    }
+
+    .marquee.dragging {
+      cursor: grabbing;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: var(--space-4);
+      width: max-content;
+      animation: marquee-scroll 80s linear infinite;
+    }
+
+    .marquee.dragging .marquee-track,
+    .marquee.paused .marquee-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .skill-card {
+      position: relative;
+      width: 300px;
+      height: 220px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color var(--duration-fast) var(--ease-default);
+    }
+
+    .skill-card:hover {
+      border-color: var(--color-accent-border);
+    }
+
+    .skill-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(0%) contrast(1.1) brightness(1);
+      transition: filter var(--duration-slow) var(--ease-default),
+                  transform var(--duration-slow) var(--ease-default);
+      pointer-events: none;
+    }
+
+    .skill-card:hover img {
+      filter: grayscale(0%) contrast(1.1) brightness(1);
+      transform: scale(1.08);
+    }
+
+    .skill-card-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: var(--space-5);
+      background: linear-gradient(0deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.1) 100%);
+      pointer-events: none;
+    }
+
+    .skill-card-overlay h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      font-weight: var(--weight-bold);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-1);
+    }
+
+    .skill-card-overlay p {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      line-height: var(--leading-normal);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track {
+        animation: none;
+      }
+      .skill-card-overlay p {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .skill-card {
+        width: 220px;
+        height: 160px;
+      }
+      .skill-card-overlay p {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to content -->
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- =====================================================================
+       HEADER
+       ====================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="Strandt - Home">STRANDT<span class="slash">//</span></a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li class="nav-dropdown">
+            <a href="experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="experience/early-career.html">Early Career</a>
+              <a href="experience/liquid-web/">Liquid Web</a>
+              <a href="experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="projects/">Projects</a></li>
+
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+
+      <a href="assets/resume.pdf" class="nav-resume" download aria-label="Download resume as PDF">
+        Download Resume
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style="margin-left: 4px;">
+          <path d="M6 1v8M2 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a href="index.html" class="active" aria-current="page">Home</a>
+    <a href="about.html">About</a>
+    <a href="experience/index.html">Experience</a>
+    <a href="experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="projects/">Projects</a>
+
+    <a href="contact.html">Contact</a>
+    <a href="assets/resume.pdf" download>Download Resume</a>
+  </nav>
+
+  <!-- =====================================================================
+       MAIN CONTENT
+       ====================================================================== -->
+  <main id="main">
+
+    <!-- =================================================================
+         HERO SECTION
+         ================================================================== -->
+    <section class="hero" aria-label="Introduction">
+      <!-- Animated particle background -->
+      <div class="hero-canvas">
+        <canvas id="network-anim" aria-hidden="true"></canvas>
+      </div>
+
+      <!-- Grid pattern overlay -->
+      <div class="grid-bg" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <!-- Left column: Text content -->
+        <div class="hero-text">
+          <div class="hero-eyebrow" data-hero-delay="300">// Builder. Leader. Maker.</div>
+
+          <h1 class="hero-name" data-hero-delay="600">
+            Chris
+            <span class="outlined">Strandt</span>
+          </h1>
+
+          <p class="hero-statement" data-hero-delay="1000">
+            25 years turning complex problems into running systems - from copper and fiber to cloud platforms to embedded firmware. I build the thing, then I build the team that scales it.
+          </p>
+
+          <div class="hero-ctas" data-hero-delay="1300">
+            <a href="experience/index.html" class="btn-primary">
+              Explore My Work
+              <span class="arrow" aria-hidden="true">&rarr;</span>
+            </a>
+            <a href="contact.html" class="btn-secondary">Get in Touch</a>
+          </div>
+        </div>
+
+        <!-- Right column: Hero image -->
+        <div class="hero-image-wrapper" data-hero-delay="800">
+          <div class="hero-image-outer">
+            <img
+              src="assets/materials/headshot2.jpg"
+              alt="Chris Strandt - builder, leader, and maker with 25 years of hands-on technical experience"
+              class="hero-image"
+              loading="eager"
+            >
+          </div>
+          <div class="hero-image-caption">// Pinckney, MI</div>
+        </div>
+      </div>
+
+      <!-- Scroll down indicator -->
+      <div class="scroll-indicator" data-hero-delay="2000" aria-hidden="true">
+        <span>Scroll</span>
+        <svg viewBox="0 0 20 20" fill="none">
+          <path d="M10 3v14M4 11l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         IMPACT NUMBERS
+         ================================================================== -->
+    <section class="section impact-section" aria-label="Impact by the numbers">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label reveal" data-delay="0">// Metrics</div>
+          <h2 class="reveal" data-delay="100">By the Numbers</h2>
+        </div>
+
+        <div class="impact-grid">
+          <!-- 25+ Years -->
+          <div class="impact-card reveal" data-delay="0">
+            <div class="number">
+              <span class="counter" data-target="25" data-suffix="+" aria-live="polite">0</span>
+            </div>
+            <div class="label">Years</div>
+            <p class="desc">Building systems at every layer of the stack - from physical cable to cloud orchestration.</p>
+          </div>
+
+          <!-- 450 Employees -->
+          <div class="impact-card reveal" data-delay="100">
+            <div class="number">
+              <span class="counter" data-target="450" aria-live="polite">0</span>
+            </div>
+            <div class="label">Employees</div>
+            <p class="desc">Grew Liquid Web from a 7-person startup to a 450-person company across 3 data centers.</p>
+          </div>
+
+          <!-- $225M Exit -->
+          <div class="impact-card reveal" data-delay="200">
+            <div class="number">
+              <span class="counter" data-target="225" data-prefix="$" data-suffix="M" aria-live="polite">0</span>
+            </div>
+            <div class="label">Exit</div>
+            <p class="desc">Led operational scale that drove a majority-stake acquisition by Madison Dearborn Partners.</p>
+          </div>
+
+          <!-- 500K+ Websites -->
+          <div class="impact-card reveal" data-delay="300">
+            <div class="number">
+              <span class="counter" data-target="500000" aria-live="polite">0</span><span style="font-size:0.6em;">+</span>
+            </div>
+            <div class="label">Websites Hosted</div>
+            <p class="desc">Infrastructure I built and scaled at Liquid Web now powers over half a million sites worldwide.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         SKILL HIGHLIGHT REEL
+         ================================================================== -->
+    <section class="section" aria-label="Skill highlights" style="overflow:hidden; padding-top:var(--space-12); padding-bottom:var(--space-16);">
+      <div class="container">
+        <div class="section-label reveal" data-delay="0">// What I Do</div>
+        <h2 class="reveal" data-delay="100" style="margin-bottom:var(--space-8);">The Full Stack</h2>
+      </div>
+
+      <!-- Auto-scrolling marquee - row 1 (left to right) -->
+      <div class="marquee">
+        <div class="marquee-track" id="marquee-track">
+          <a href="experience/liquid-web/index.html#leadership" class="skill-card">
+            <img src="assets/images/skill-leadership.png" alt="Leadership">
+            <div class="skill-card-overlay">
+              <h3>Leadership &amp; Operations</h3>
+              <p>COO of 450. Recruiting, team building, operations, culture.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#data-centers" class="skill-card">
+            <img src="assets/images/card-liquidweb.png" alt="Data Centers">
+            <div class="skill-card-overlay">
+              <h3>Data Center Design</h3>
+              <p>3 facilities from scratch. Power, cooling, $80M build.</p>
+            </div>
+          </a>
+          <a href="experience/power-gauge-pro/index.html#embedded" class="skill-card">
+            <img src="assets/images/skill-software.png" alt="Software Development">
+            <div class="skill-card-overlay">
+              <h3>Software Development</h3>
+              <p>C++, PHP, React, Qt/QML, Flutter. Firmware to web.</p>
+            </div>
+          </a>
+          <a href="experience/power-gauge-pro/index.html#hardware" class="skill-card">
+            <img src="assets/materials/pgp display pcb.JPG" alt="Hardware Engineering">
+            <div class="skill-card-overlay">
+              <h3>Hardware Engineering</h3>
+              <p>Custom PCBs, NXP iMX8MP, ESP32, board bringup.</p>
+            </div>
+          </a>
+          <a href="projects/#fabrication" class="skill-card">
+            <img src="assets/materials/fabrication - welded metal part.jpg" alt="Fabrication">
+            <div class="skill-card-overlay">
+              <h3>Welding &amp; Fabrication</h3>
+              <p>MIG/TIG welding, steel to stainless, hydraulic systems.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#networking" class="skill-card">
+            <img src="assets/images/skill-networking.png" alt="Networking">
+            <div class="skill-card-overlay">
+              <h3>Network Architecture</h3>
+              <p>BGP, DWDM, SONET, Cisco, IX peering, DDoS.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#leadership" class="skill-card">
+            <img src="assets/images/skill-compliance.png" alt="Compliance">
+            <div class="skill-card-overlay">
+              <h3>Compliance &amp; Policy</h3>
+              <p>SSAE16, HIPAA, PCI DSS. Audits, SLAs, policies.</p>
+            </div>
+          </a>
+          <a href="projects/#construction" class="skill-card">
+            <img src="assets/materials/pole barn construction photo.jpg" alt="Construction">
+            <div class="skill-card-overlay">
+              <h3>Construction</h3>
+              <p>30x56 pole barn, basement reno, deck. Design to build.</p>
+            </div>
+          </a>
+          <a href="projects/#digital" class="skill-card">
+            <img src="assets/materials/fusion 360 fuel tank.jpg" alt="CAD/CAM">
+            <div class="skill-card-overlay">
+              <h3>CAD / CAM / CNC</h3>
+              <p>Fusion 360, CNC milling, 3D printing, laser cutting.</p>
+            </div>
+          </a>
+          <a href="experience/power-gauge-pro/index.html#vision" class="skill-card">
+            <img src="assets/images/card-pgp.png" alt="Product Development">
+            <div class="skill-card-overlay">
+              <h3>Product Development</h3>
+              <p>Concept through development. Full lifecycle founder.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#the-exit" class="skill-card">
+            <img src="assets/images/experience-hero-bg.png" alt="M&A">
+            <div class="skill-card-overlay">
+              <h3>M&amp;A / Company Sale</h3>
+              <p>$225M exit. Data room, financial models, acquirer presentations.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#linux" class="skill-card">
+            <img src="assets/images/home-sections-bg.png" alt="Linux">
+            <div class="skill-card-overlay">
+              <h3>Linux &amp; Systems</h3>
+              <p>25 years of Linux. Kernels, RPMs, PXE, config management.</p>
+            </div>
+          </a>
+          <!-- Duplicate set for seamless loop -->
+          <a href="experience/liquid-web/index.html#leadership" class="skill-card">
+            <img src="assets/images/skill-leadership.png" alt="Leadership">
+            <div class="skill-card-overlay">
+              <h3>Leadership &amp; Operations</h3>
+              <p>COO of 450. Recruiting, team building, operations, culture.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#data-centers" class="skill-card">
+            <img src="assets/images/card-liquidweb.png" alt="Data Centers">
+            <div class="skill-card-overlay">
+              <h3>Data Center Design</h3>
+              <p>3 facilities from scratch. Power, cooling, $80M build.</p>
+            </div>
+          </a>
+          <a href="experience/power-gauge-pro/index.html#embedded" class="skill-card">
+            <img src="assets/images/skill-software.png" alt="Software Development">
+            <div class="skill-card-overlay">
+              <h3>Software Development</h3>
+              <p>C++, PHP, React, Qt/QML, Flutter. Firmware to web.</p>
+            </div>
+          </a>
+          <a href="experience/power-gauge-pro/index.html#hardware" class="skill-card">
+            <img src="assets/materials/pgp display pcb.JPG" alt="Hardware Engineering">
+            <div class="skill-card-overlay">
+              <h3>Hardware Engineering</h3>
+              <p>Custom PCBs, NXP iMX8MP, ESP32, board bringup.</p>
+            </div>
+          </a>
+          <a href="projects/#fabrication" class="skill-card">
+            <img src="assets/materials/fabrication - welded metal part.jpg" alt="Fabrication">
+            <div class="skill-card-overlay">
+              <h3>Welding &amp; Fabrication</h3>
+              <p>MIG/TIG welding, steel to stainless, hydraulic systems.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#networking" class="skill-card">
+            <img src="assets/images/skill-networking.png" alt="Networking">
+            <div class="skill-card-overlay">
+              <h3>Network Architecture</h3>
+              <p>BGP, DWDM, SONET, Cisco, IX peering, DDoS.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#leadership" class="skill-card">
+            <img src="assets/images/skill-compliance.png" alt="Compliance">
+            <div class="skill-card-overlay">
+              <h3>Compliance &amp; Policy</h3>
+              <p>SSAE16, HIPAA, PCI DSS. Audits, SLAs, policies.</p>
+            </div>
+          </a>
+          <a href="projects/#construction" class="skill-card">
+            <img src="assets/materials/pole barn construction photo.jpg" alt="Construction">
+            <div class="skill-card-overlay">
+              <h3>Construction</h3>
+              <p>30x56 pole barn, basement reno, deck. Design to build.</p>
+            </div>
+          </a>
+          <a href="projects/#digital" class="skill-card">
+            <img src="assets/materials/fusion 360 fuel tank.jpg" alt="CAD/CAM">
+            <div class="skill-card-overlay">
+              <h3>CAD / CAM / CNC</h3>
+              <p>Fusion 360, CNC milling, 3D printing, laser cutting.</p>
+            </div>
+          </a>
+          <a href="experience/power-gauge-pro/index.html#vision" class="skill-card">
+            <img src="assets/images/card-pgp.png" alt="Product Development">
+            <div class="skill-card-overlay">
+              <h3>Product Development</h3>
+              <p>Concept through development. Full lifecycle founder.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#the-exit" class="skill-card">
+            <img src="assets/images/experience-hero-bg.png" alt="M&A">
+            <div class="skill-card-overlay">
+              <h3>M&amp;A / Company Sale</h3>
+              <p>$225M exit. Data room, financial models, acquirer presentations.</p>
+            </div>
+          </a>
+          <a href="experience/liquid-web/index.html#linux" class="skill-card">
+            <img src="assets/images/home-sections-bg.png" alt="Linux">
+            <div class="skill-card-overlay">
+              <h3>Linux &amp; Systems</h3>
+              <p>25 years of Linux. Kernels, RPMs, PXE, config management.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CAREER SNAPSHOT
+         ================================================================== -->
+    <section class="section career-section" aria-label="Career snapshot">
+      <div class="section-bg-img" aria-hidden="true"></div>
+      <div class="container">
+        <div class="career-header">
+          <div class="section-label reveal" data-delay="0">// Career</div>
+          <h2 class="reveal" data-delay="100">Five Chapters, One Thread</h2>
+          <p class="subtitle reveal" data-delay="200">Each role built on the last - always closer to the full stack.</p>
+        </div>
+
+        <div class="career-cards" role="list">
+          <!-- Card 1: Northville -->
+          <a href="experience/early-career.html#northville" class="career-card reveal" data-delay="100" role="listitem" aria-label="Northville Public Schools - Late 1990s, System Administrator">
+            <div class="years">
+              <span class="era-dot" style="background: var(--color-accent);" aria-hidden="true"></span>
+              Late 1990s
+            </div>
+            <div class="company">Northville Public Schools</div>
+            <div class="role">System Administrator</div>
+            <p class="one-liner">Built and maintained the school district's network - servers, cabling, and OS deployments.</p>
+            <span class="card-arrow">Read More <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+
+          <!-- Card 2: Merit Networks -->
+          <a href="experience/early-career.html#merit" class="career-card reveal" data-delay="200" role="listitem" aria-label="Merit Networks - Early 2000s, Network Operations">
+            <div class="years">
+              <span class="era-dot" style="background: var(--color-accent);" aria-hidden="true"></span>
+              Early 2000s
+            </div>
+            <div class="company">Merit Networks / UofM</div>
+            <div class="role">Network Operations</div>
+            <p class="one-liner">ISP backbone operations - BGP, SONET, and the internet's plumbing.</p>
+            <span class="card-arrow">Read More <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+
+          <!-- Card 3: Innoveda -->
+          <a href="experience/early-career.html#innoveda" class="career-card reveal" data-delay="300" role="listitem" aria-label="Innoveda at Ford Motor Company - Early 2000s, CAD/CAE Software">
+            <div class="years">
+              <span class="era-dot" style="background: var(--color-accent);" aria-hidden="true"></span>
+              Early 2000s
+            </div>
+            <div class="company">Innoveda (Ford Motor)</div>
+            <div class="role">CAD/CAE Software</div>
+            <p class="one-liner">EDA tooling for automotive electrical systems at Ford.</p>
+            <span class="card-arrow">Read More <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+
+          <!-- Card 4: Liquid Web (Featured) -->
+          <a href="experience/liquid-web/index.html" class="career-card featured reveal" data-delay="400" role="listitem" aria-label="Liquid Web - 2002 to 2015, COO, 225 million dollar exit">
+            <div class="years">
+              <span class="era-dot" style="background: var(--color-accent);" aria-hidden="true"></span>
+              2002 &ndash; 2015
+            </div>
+            <div class="company">Liquid Web</div>
+            <div class="role">COO</div>
+            <p class="one-liner">Joined at 7 employees, helped build to 450, exited at $225M.</p>
+            <span class="card-arrow">Read More <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+
+          <!-- Card 5: Power Gauge Pro -->
+          <a href="experience/power-gauge-pro/index.html" class="career-card reveal" data-delay="500" role="listitem" aria-label="Power Gauge Pro - Now, Founder">
+            <div class="years">
+              <span class="era-dot" style="background: var(--color-accent);" aria-hidden="true"></span>
+              Now
+            </div>
+            <div class="company">Power Gauge Pro</div>
+            <div class="role">Founder</div>
+            <p class="one-liner">Custom digital dash for race cars - hardware, firmware, and marketplace from scratch.</p>
+            <span class="card-arrow">Read More <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ====================================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted);">//</span></div>
+        <p class="tagline">"Still building."</p>
+      </div>
+
+      <!-- Navigation -->
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="experience/index.html">Experience</a></li>
+          <li><a href="projects/">Projects</a></li>
+          
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Social -->
+      <div>
+        <div class="footer-social">
+          <a href="mailto:strandtc@gmail.com" aria-label="Email Chris Strandt">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <rect x="2" y="4" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 5l7 5 7-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="https://linkedin.com/in/liquidwebchris" target="_blank" rel="noopener noreferrer" aria-label="Chris Strandt on LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M4.5 7.5v6M4.5 4.5v.01M8 13.5v-4c0-1.1.9-2 2-2s2 .9 2 2v4M8 7.5v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="https://github.com/strandtc" target="_blank" rel="noopener noreferrer" aria-label="Chris Strandt on GitHub">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 14.5c-3 1-3-1.5-4-2m8 4v-2.5c0-1-.1-1.4-.5-2 2.2-.3 4.5-1.1 4.5-5a4 4 0 00-1-2.7c.1-.3.4-1.3-.1-2.7 0 0-.8-.3-2.7 1A9.4 9.4 0 009 4.5c-.9 0-1.8.1-2.7.4C4.4 3.1 3.6 3.4 3.6 3.4c-.5 1.4-.2 2.4-.1 2.7a4 4 0 00-1 2.7c0 3.9 2.3 4.7 4.5 5-.3.3-.5.8-.5 1.5V16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status">
+        <span class="status-dot" aria-hidden="true"></span>
+        Open to opportunities
+      </span>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       LIGHTBOX
+       ====================================================================== -->
+  <div class="lightbox" role="dialog" aria-label="Image lightbox" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="">
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/forge.js"></script>
+  <script>
+    // Drag-to-scroll for marquee
+    (function() {
+      var marquee = document.querySelector('.marquee');
+      var track = document.getElementById('marquee-track');
+      if (!marquee || !track) return;
+
+      var isDragging = false;
+      var startX = 0;
+      var scrollStart = 0;
+      var hasDragged = false;
+
+      // Get current translateX from the animation
+      function getCurrentTranslate() {
+        var style = window.getComputedStyle(track);
+        var matrix = new DOMMatrix(style.transform);
+        return matrix.m41;
+      }
+
+      marquee.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        hasDragged = false;
+        startX = e.clientX;
+        // Pause animation and capture current position
+        var currentX = getCurrentTranslate();
+        track.style.animation = 'none';
+        track.style.transform = 'translateX(' + currentX + 'px)';
+        marquee.classList.add('dragging');
+        scrollStart = currentX;
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.clientX - startX;
+        if (Math.abs(dx) > 3) hasDragged = true;
+        track.style.transform = 'translateX(' + (scrollStart + dx) + 'px)';
+      });
+
+      function resumeScroll() {
+        isDragging = false;
+        marquee.classList.remove('dragging');
+        var currentX = getCurrentTranslate();
+        var halfWidth = track.scrollWidth / 2;
+        // Wrap position into valid range (0 to -halfWidth)
+        currentX = currentX % halfWidth;
+        if (currentX > 0) currentX -= halfWidth;
+        // Calculate what percentage through the animation we are
+        // Animation goes from 0 to -halfWidth, so progress = -currentX / halfWidth
+        var progress = -currentX / halfWidth;
+        track.style.transform = '';
+        track.style.animation = 'none';
+        // Force reflow so animation restarts
+        void track.offsetHeight;
+        track.style.animation = 'marquee-scroll 80s linear infinite';
+        track.style.animationDelay = '-' + (progress * 80) + 's';
+      }
+
+      window.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+        resumeScroll();
+      });
+
+      // Prevent link clicks after drag
+      marquee.addEventListener('click', function(e) {
+        if (hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+
+      // Touch support
+      marquee.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        hasDragged = false;
+        startX = e.touches[0].clientX;
+        var currentX = getCurrentTranslate();
+        track.style.animation = 'none';
+        track.style.transform = 'translateX(' + currentX + 'px)';
+        marquee.classList.add('dragging');
+        scrollStart = currentX;
+      }, { passive: true });
+
+      marquee.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        var dx = e.touches[0].clientX - startX;
+        if (Math.abs(dx) > 3) hasDragged = true;
+        track.style.transform = 'translateX(' + (scrollStart + dx) + 'px)';
+      }, { passive: true });
+
+      marquee.addEventListener('touchend', function() {
+        if (!isDragging) return;
+        resumeScroll();
+      });
+    })();
+  </script>
+</body>
+</html>
