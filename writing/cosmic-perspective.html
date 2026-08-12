@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How we know what the universe is — Chris Strandt</title>
+  <meta name="description" content="An atheist's account of why finite time is worth more, the measured age and scale of the universe, and how those numbers were produced.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Practice</p>
+      <h1 class="wr-title">How we know what the universe is</h1>
+      <p class="wr-dek">An atheist's account of why finite time is worth more, the measured age and scale of the universe, and how those numbers were produced.</p>
+      <div class="wr-meta"><span>Practice</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>I am an atheist. I do not believe there is an afterlife. When I die the thing that is me stops, and there is no continuation of it anywhere. I have thought this for a long time and it does not distress me. It has the opposite effect. A finite quantity of something is worth more than an unlimited supply, and the time you get is finite by an enormous margin relative to everything around it.</p>
+<p>What I find remarkable is not the shortness. It is how much has been worked out inside it. Not asserted — measured, published with error bars, and checked by people actively trying to prove it wrong.</p>
+<h2 id="what-we-can-detect-at-the-small-end">What we can detect at the small end</h2>
+<p>At CERN, protons are accelerated to a center-of-mass energy of 13.6 TeV in the current run and collided inside detectors the size of a building. ATLAS is designed to handle up to 1.7 billion proton-proton collisions per second, generating more than 60 million megabytes per second of raw data. Nothing can store that. So the first-level trigger decides in under 2.5 microseconds whether an event is worth keeping, cutting the rate to roughly 100,000 events per second, and the rest of the chain reduces it to about 1,000 events per second actually written to storage.</p>
+<p>I like that part more than the physics, honestly, because it is a monitoring problem. Instrument everything, decide in microseconds what to keep, discard the overwhelming majority of it, and be right about the discard. Anybody who has built telemetry for a facility recognizes the shape of it several orders of magnitude down.</p>
+<p>And consider what comes out the end: nobody has ever seen a Higgs boson. It does not survive long enough to reach any detector. What ATLAS and CMS see is an excess of events over a calculated background, at a reconstructed invariant mass around 125 GeV, in the particles it decays into. The existence of the thing is inferred from the debris, the background is predicted in advance, and the claim is made only when the excess is statistically overwhelming and both experiments see it independently. That is what "detected" means here, and it is a stronger statement than the word usually implies rather than a weaker one.</p>
+<p>Neutrinos are handled by building something so large that a few will interact by accident. Super-Kamiokande is 50,000 tons of pure water in a tank a kilometer underground in a Japanese zinc mine, watched by 11,146 photomultiplier tubes half a meter across. IceCube is more than 5,000 optical sensors frozen into a cubic kilometer of Antarctic ice at the South Pole. Both are waiting for the faint cone of Cherenkov light thrown off when a neutrino finally hits something.</p>
+<p>The precision at this end is not approximate. The electron's magnetic moment has been measured as g/2 = 1.001 159 652 180 59, with an uncertainty of 0.13 parts per trillion. The Standard Model's prediction for that number agrees with the measurement to about one part in 10^12. A theory written down by people, checked against an apparatus built by people, agreeing out to twelve digits.</p>
+<h2 id="what-we-can-see-at-the-large-end">What we can see at the large end</h2>
+<p>The observable universe has a comoving radius of about 46.5 billion light-years — 93 billion light-years across, or 28.5 gigaparsecs. Its age is 13.787 billion years, with a stated uncertainty of 20 million years.</p>
+<p>Those two figures look contradictory and are not. Nothing traveled 46.5 billion light-years in 13.8 billion years. Space expanded while the light was in transit, so whatever emitted the oldest light we can see is now much farther away than the distance that light actually covered.</p>
+<p>Galaxy counts are less settled, which is worth saying plainly. Direct counts from deep surveys give hundreds of billions. Extrapolating to galaxies too faint to have been detected yet gives estimates as high as two trillion. Both numbers are in circulation and the difference between them is entirely in how much you assume is hiding below the detection limit. Total stars follows from that and lands somewhere around 10^24, a figure with no useful intuition attached to it whatsoever.</p>
+<p>Closer to home, more than six thousand planets around other stars have been confirmed, essentially all of them since the 1990s. That field went from zero confirmed instances to a catalog inside one working career.</p>
+<h2 id="how-any-of-it-is-known">How any of it is known</h2>
+<p>This is the part that matters, because the numbers above are only interesting if the methods behind them hold up.</p>
+<p>Distance is built as a ladder, each rung calibrated against the one below it. The bottom rung is pure geometry: <strong>parallax</strong>, the apparent shift of a nearby star against the background as the Earth moves along its orbit. It is the same triangulation a surveyor uses, with a baseline of two astronomical units. Gaia measured positions for more than 1.8 billion objects at precisions in the tens of microarcseconds — the standard comparison is resolving the width of a human hair from a thousand kilometers away.</p>
+<p>Above parallax sit objects of known intrinsic brightness, Cepheid variables and then Type Ia supernovae, calibrated against the stars whose distances were established geometrically and then used much farther out. Above those, <strong>redshift</strong>: the spectral lines of known elements appear at the wrong wavelengths, stretched by expansion, and the amount of stretch gives distance and lookback time. That is how MoM-z14, confirmed with JWST in 2025, was pinned at a redshift of 14.44 — light that left when the universe was 280 million years old. Confirmed spectroscopically, not estimated from colors.</p>
+<p>The age comes from an entirely different direction. About 380,000 years after the beginning the universe cooled enough for atoms to hold together and for photons to travel freely, and that light is still arriving as the <strong>cosmic microwave background</strong>. Planck mapped its temperature across the whole sky, where the variations are of order one part in 100,000. The angular sizes of those fluctuations encode the geometry and contents of the early universe, and the age falls out of fitting a model to them. Hence 13.787 billion years, plus or minus 20 million. An uncertainty of about 0.15 percent on the age of everything.</p>
+<p>The instrument doing the deep infrared work is worth describing as a machine. JWST has a 6.5 meter primary made of eighteen hexagonal beryllium segments coated in gold, folded to fit inside a rocket and unfolded a million and a half kilometers away at L2. A sunshield roughly the size of a tennis court holds the optics near 40 K; the mid-infrared instrument runs at 7 K on its own cryocooler. It works in the infrared, 0.6 to 28 microns, because expansion has stretched the light from the earliest galaxies clean out of the visible band. Every deployment had to work the first time, in sequence, with no possibility of a site visit.</p>
+<h2 id="where-the-numbers-disagree">Where the numbers disagree</h2>
+<p>Two independent routes to the current expansion rate do not agree. The cosmic microwave background, run through the standard model of cosmology, gives about 67.4 km/s/Mpc. The distance ladder — parallax to Cepheids to supernovae — gives about 73. The disagreement is roughly nine percent, and it has survived a decade of serious effort to blame it on measurement error on one side or the other. It now sits at a statistical significance high enough that "somebody made a mistake" is a strained explanation.</p>
+<p>That is the Hubble tension and it is unresolved. So is the composition problem: most of what determines how the universe behaves is inferred from its gravitational effects and has never been detected any other way.</p>
+<p>I include this deliberately. The disagreement is published, argued about in the open, and being actively worked by people who would very much like to be the one who resolves it. That is what separates the whole enterprise from assertion. A body of knowledge that cannot show you its unresolved problems is not showing you its work.</p>
+<h2 id="what-that-is-worth">What that is worth</h2>
+<p>The portable habit that comes out of all this is small: for any number you are handed, ask what measurement produced it and what the uncertainty is. "13.787 plus or minus 0.020" is trustworthy in a way that "roughly fourteen billion" is not, and the reason is the second figure. Very few claims you encounter, in a data center or anywhere else, survive that question intact.</p>
+<p>The rest of it is not a lesson. Everything above was worked out by people with one life each and no continuation afterward, who spent part of a finite allocation building instruments and checking each other's arithmetic, knowing they would not be around for the answer. Neither will I. The observable universe is 93 billion light-years across and 13.8 billion years old, and I get to know that, which is a strange and specific piece of luck. The correct response to a short window onto something that large is to spend it looking.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

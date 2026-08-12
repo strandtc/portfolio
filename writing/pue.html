@@ -119,7 +119,9 @@
       <h1 class="wr-title">What PUE tells you and what it hides</h1>
       <p class="wr-dek">How power usage effectiveness is defined and metered, the ways a good number covers for a badly run facility, and what to measure instead.</p>
       <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
-      
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/pue.jpg" alt="" loading="eager">
+      </figure>
     </div>
   </section>
 
@@ -131,7 +133,7 @@
 <p>The numerator is everything that crosses the meter into the facility: IT load, cooling, lighting, UPS and transformer losses, humidification, the office, the security system, the parking lot lights. The denominator is the IT equipment energy.</p>
 <p>Two consequences fall straight out of that fraction and both matter.</p>
 <p><strong>PUE has no concept of useful work.</strong> A data hall full of servers running at 4% utilization has exactly the same PUE as the same hall doing real work, and if you decommission the idle servers your PUE gets <em>worse</em>, because you shrank the denominator while the fixed overhead stayed put. PUE is an infrastructure efficiency metric. It says nothing about whether the IT it is supporting deserves to exist.</p>
-<p><strong>Anything you move out of the denominator improves the ratio.</strong> Push a load off the IT bus and into the facility bus and PUE goes up; do the reverse and it goes down. That is where most of the disagreement between two published numbers comes from.</p>
+<p><strong>Anything you move into the denominator improves the ratio.</strong> Push a load off the IT bus and into the facility bus and PUE goes up; count more of the distribution chain as IT load and it goes down. That is where most of the disagreement between two published numbers comes from.</p>
 <p>You will still occasionally see <strong>DCiE</strong>, data center infrastructure efficiency, which is just the reciprocal expressed as a percentage. Same information, different direction.</p>
 <h2 id="where-you-put-the-meters">Where you put the meters</h2>
 <p>This is the part everyone skips and it is the part that determines whether two PUE numbers can be compared at all. The metric defines measurement categories by where the IT energy is measured.</p>
@@ -142,7 +144,7 @@
 <h2 id="a-low-pue-can-hide-a-badly-run-facility">A low PUE can hide a badly run facility</h2>
 <p>Three ways this happens routinely.</p>
 <p><strong>Running the hall too hot for the equipment in it.</strong> Raise supply air temperature far enough and PUE falls beautifully. It also pushes server inlet temperatures toward or past the top of the ASHRAE recommended envelope, which drives server fan speeds up. Server fan power is inside the denominator, so the extra fan energy improves your PUE twice: once by cutting facility energy and once by inflating IT energy. Meanwhile the racks at the top of the aisle are running hot and you are trading IT reliability for a number on a slide.</p>
-<p><strong>Counting the boundary generously.</strong> Excluding an office wing that shares the mechanical plant. Excluding a shared chiller serving an adjacent building. Not metering the electrical room's own lighting and cooling. Each of these is defensible in isolation and together they are worth several points.</p>
+<p><strong>Counting the boundary generously.</strong> Excluding an office wing that shares the mechanical plant. Excluding a shared chiller serving an adjacent building. Not metering the electrical room's own lighting and cooling. Each is defensible in isolation, and together they are easily worth a tenth of a point.</p>
 <p><strong>Reporting the good months.</strong> A single-month PUE from a facility in February is not an annual PUE and cannot be compared to one.</p>
 <p>None of that requires dishonesty. It requires nobody asking the follow-up question.</p>
 <p>For context on what normal looks like: Uptime Institute's 2024 global survey put the industry average at about 1.56, and noted it has been roughly flat for five consecutive years, held up by the large installed base of older facilities even as new large sites do considerably better. If someone quotes you a number far below that, ask about the category, the boundary and the period before you're impressed.</p>

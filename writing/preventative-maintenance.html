@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building a maintenance calendar that does not collide with itself — Chris Strandt</title>
+  <meta name="description" content="Load banks, generator runs, battery testing, thermography and breaker injection — what each proves, what it costs you in redundancy, and how to sequence it.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">Building a maintenance calendar that does not collide with itself</h1>
+      <p class="wr-dek">Load banks, generator runs, battery testing, thermography and breaker injection — what each proves, what it costs you in redundancy, and how to sequence it.</p>
+      <div class="wr-meta"><span>Facilities</span><span>9 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/preventative-maintenance.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Preventative maintenance is not a chore list. It is a schedule of deliberate risk. Every task on it takes a piece of the plant out of service, puts a technician's hands inside energized equipment, or discharges something you were relying on. So build the calendar the way you would build a change plan: what does this prove, what does it cost in redundancy, and what happens if it goes wrong halfway through.</p>
+<p>Two documents anchor the electrical side. NFPA 70B became a standard in its 2023 edition — mandatory "shall" language rather than the recommended practice it had been — and its Chapter 9 sets maintenance intervals by equipment type based on a condition assessment across physical condition, criticality and operating environment. ANSI/NETA MTS-2023 gives the field test procedures and pass criteria for maintenance testing; ANSI/NETA ATS-2021 is its counterpart for acceptance testing on new gear.</p>
+<h2 id="generators">Generators</h2>
+<p>NFPA 110 sets the floor. Section 8.4.2 requires monthly exercise for a minimum of 30 continuous minutes, timed from when the engine accepts load, at a load of at least 30% of nameplate kW or at a load that maintains exhaust gas temperature at the manufacturer's recommended minimum, followed by a cool-down period. Section 8.4.6 requires monthly electrical operation of transfer switches from normal to emergency and back.</p>
+<p>If the monthly run cannot reach that load, 8.4.2.4 requires an annual supplemental load test: 50% of nameplate kW for 30 continuous minutes and 75% for one continuous hour — 1.5 hours total. And for Level 1 EPSS installations, 8.4.9 requires a triennial test running for the duration of the assigned class or four continuous hours, whichever is less.</p>
+<p>The 30% threshold is not bureaucratic. Diesels run below it do not reach cylinder pressures and temperatures high enough for complete combustion. Unburned fuel and carbon accumulate in the exhaust, turbo and liners — <strong>wet stacking</strong> — giving you glazed liners, fouled injectors and an engine that will not make rated output when you need it.</p>
+<p>The important thing to understand about NFPA 110 in a data center is that it is a life safety standard, written for a generator carrying emergency lighting and an elevator for a couple of hours. A plant that is the primary source for a full IT load during any utility event needs more than the minimum, and the specification should say so.</p>
+<h2 id="load-bank-testing">Load bank testing</h2>
+<p>A monthly exercise proves the engine starts. A load bank test proves the plant makes power.</p>
+<p><strong>Resistive</strong> load banks operate at unity power factor. They load the engine to its rated kW and exercise the cooling system, fuel system and governor. They do not meaningfully load the alternator's reactive capability or the automatic voltage regulator.</p>
+<p><strong>Resistive plus reactive</strong> at around 0.8 power factor matches the nameplate rating most gensets are sold at, and exercises the alternator, the AVR and the governor together. If you only ever load bank resistively, you have never confirmed the machine can hold voltage into a real inductive load.</p>
+<p>Where you connect matters as much as what you connect. At the generator terminals you test the genset and nothing else. At the switchgear or downstream of the ATS you test the transfer, the paralleling scheme and the distribution. At a PDU or busway tap you test the whole chain including UPS bypass behavior, and — if you dump the heat into the hall — the cooling plant's ability to reject it.</p>
+<p>A permanent load bank tap and a documented path to isolate the side under test are worth specifying at design. Retrofitting a way to safely load bank a live building is expensive and usually results in the test not being done.</p>
+<h2 id="batteries">Batteries</h2>
+<p>Three IEEE recommended practices cover the common chemistries: <strong>IEEE 450</strong> for vented lead-acid, <strong>IEEE 1188</strong> for VRLA, and <strong>IEEE 1106</strong> for vented nickel-cadmium. NETA MTS covers the same equipment with its own intervals, and the two do not line up perfectly — worth reconciling once rather than every year.</p>
+<p>For a VRLA plant, IEEE 1188 shapes up roughly like this:</p>
+<div class="tw"><table><thead><tr><th>Interval</th><th>What gets done</th></tr></thead><tbody><tr><td>Monthly</td><td>Float voltage at the battery terminals, general appearance and cleanliness, charger output current and voltage, evidence of corrosion, ambient temperature and ventilation</td></tr><tr><td>Quarterly</td><td>Cell or unit internal ohmic values, plus the monthly items</td></tr><tr><td>Annual / 18-month</td><td>Cell-to-cell and terminal connection resistance, structural integrity of the rack, AC ripple on the battery, negative terminal temperature per cell</td></tr><tr><td>Capacity</td><td>Internal ohmic values every six months, or a capacity test every three years</td></tr></tbody></table></div>
+<p>Capacity test intervals under both IEEE 450 and IEEE 1188 are set at every 25% of expected service life, or two years, whichever is less. IEEE 450's criteria for going annual are worth memorizing: once the battery reaches 85% of expected service life, or capacity drops more than 10% from the previous test, or falls below 90% of rating, test annually — and replace below 80% of rated capacity.</p>
+<p>Two practical notes.</p>
+<p><strong>Impedance is a screening tool, not a capacity measurement.</strong> Ohmic trending finds the outlier cell before it takes the string down, which is genuinely valuable and cheap. It does not tell you how many minutes of runtime you have. Only a discharge test does that.</p>
+<p><strong>A capacity test spends the thing you are testing.</strong> You discharge the string, then you are without stored energy for the recharge, which is commonly eight hours and can be much longer. Schedule it on the redundant module with the other side healthy, ideally with the plant on generator, and have the abort criterion written before the first amp comes out.</p>
+<p>One NETA convention worth adopting: for verifying battery connection integrity, a torque check, a connection resistance measurement and a thermographic survey under load are treated as alternatives — one of the three, not all three.</p>
+<h2 id="infrared-thermography">Infrared thermography</h2>
+<p>Thermography finds loose and deteriorating connections before they fail, without opening anything if you have installed IR windows. It is the highest-value-per-dollar inspection in the electrical program.</p>
+<p>It only works under load. NETA's guidance is to survey under maximum possible load conditions and not less than 40% of rated load, and every report should state the load at the time of the scan. A survey done at 12% load on a Sunday morning is a document, not a test.</p>
+<p>The delta-T action criteria in NETA's maintenance testing specifications:</p>
+<div class="tw"><table><thead><tr><th>Priority</th><th>ΔT, similar components under similar load</th><th>ΔT over ambient air</th><th>Action</th></tr></thead><tbody><tr><td>4</td><td>1–3 °C</td><td>1–10 °C</td><td>Possible deficiency; warrants investigation</td></tr><tr><td>3</td><td>4–15 °C</td><td>11–20 °C</td><td>Probable deficiency; repair as time permits</td></tr><tr><td>2</td><td>—</td><td>21–40 °C</td><td>Monitor until corrective measures can be accomplished</td></tr><tr><td>1</td><td>&gt;15 °C</td><td>&gt;40 °C</td><td>Major discrepancy; repair immediately</td></tr></tbody></table></div>
+<p>Know the limitation. Infrared sees surface temperature. A hot joint inside a busway housing, behind an insulating boot, or in a sealed enclosure may show nothing. Ultrasonic inspection catches some of what IR misses; connection resistance measurement catches the rest, but requires the gear de-energized.</p>
+<h2 id="breakers-relays-and-torque">Breakers, relays and torque</h2>
+<p>Mechanisms that never move seize. A breaker that has sat closed for six years is a breaker whose ability to open is theoretical.</p>
+<ul><li><strong>Exercise.</strong> Open and close on a schedule. NFPA 110 8.4.7 requires annual exercise of EPSS circuit breakers with the EPS in the off position, and testing of breakers rated above 1000 V under simulated overload conditions every three years.</li><li><strong>Secondary injection</strong> tests the trip unit: you inject a signal at the electronics and confirm it responds per its settings. It is fast, often doable with the breaker racked out, and it proves nothing about the current transformers or the mechanism.</li><li><strong>Primary injection</strong> pushes real current through the pole and confirms the whole chain — sensors, trip unit, actuator, mechanism — actually opens the contacts in the time the curve promises. It is the one that catches the seized mechanism and the miswired CT.</li><li><strong>Contact resistance, insulation resistance and timing or travel analysis</strong> round out the medium-voltage work, and relay settings get verified against the current coordination study rather than against what was in the relay last time.</li></ul>
+<p>On torque: NETA MTS publishes bolt-torque tables, and the usual instruction is to verify against the manufacturer's published values first. The trap is over-servicing. Repeatedly re-torquing a joint that was correct can damage plated aluminum and crush Belleville washers. Torque at installation, verify by one of the three methods above thereafter, and only re-torque when something tells you to.</p>
+<h2 id="building-the-calendar">Building the calendar</h2>
+<p>The scheduling problem is not fitting the tasks into a year. It is stopping them from stacking.</p>
+<p><strong>Never both sides in the same window.</strong> Not the same day, not the same week if the work has a tail. If the vendor asks for A-side switchgear on Tuesday and B-side on Wednesday because their crew is in town, the answer is no.</p>
+<p><strong>Write the redundancy state for every activity.</strong> Each calendar line should say the site's posture while the work happens: 2N, N+1, or N. Anything that puts you at N gets escalated approval and a shorter window.</p>
+<p><strong>Every task gets a MOP with an abort criterion written before the work starts.</strong> It has to be objective and decided in advance, because three hours into a battery discharge nobody wants to be the person who calls it.</p>
+<p><strong>Sequence around seasons.</strong> Load bank the cooling plant when the answer will be meaningful, which is not February. Do not take a cooling train out in the first week of a heat wave. Fuel polishing goes before the winter, not during it.</p>
+<p><strong>Parts and people before the outage.</strong> Spares on the shelf, the vendor's engineer confirmed by name, and the escalation number for after hours. A window that stalls waiting for a part turns a planned N into an unplanned overnight N.</p>
+<p><strong>Track completion rate as a number.</strong> A program at 70% completion is not 70% as good as one at 100% — it is one where the hardest and most disruptive tasks are the ones that keep slipping, which are also the ones that matter.</p>
+<p>The thing most people get wrong is thinking the test is the risk. It usually is not. The risk is in the racking, the transfer, the bypass operation and the restoration — the switching around the test. So the metric worth reducing is not hours of maintenance per year, it is <strong>switching operations per year</strong>. And that is set at design, by how the plant is arranged and how much work can be done without moving load. Ask that question while there are still drawings to change.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

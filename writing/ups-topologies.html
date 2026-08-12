@@ -119,18 +119,19 @@
       <h1 class="wr-title">UPS topologies and what N+1 really means</h1>
       <p class="wr-dek">The four UPS topologies, the honest case for and against eco mode, and why module-level redundancy is not the same as a redundant system.</p>
       <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
-      
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/ups-topologies.jpg" alt="" loading="eager">
+      </figure>
     </div>
   </section>
 
   <section class="wr-body">
     <div class="wr-wrap">
       <p>Every UPS answers the same question — what sits between the utility and the load, and what does it do when the utility misbehaves — and there are only four common answers. IEC 62040-3 classifies them by how much of the input the output depends on: VFD (voltage and frequency dependent), VI (voltage independent), and VFI (voltage and frequency independent). The standard actually uses a three-part code, so a good online unit is VFI-SS-11: input-independent, sinusoidal output in both modes, best dynamic performance class.</p>
-<h2 id="standby">Standby</h2>
-<p>The load runs on utility through a relay. A battery charger keeps the battery topped up and an inverter sits idle. When the input fails, the relay throws and the inverter picks up the load in a handful of milliseconds. VFD class.</p>
+<h2 id="standby-and-line-interactive">Standby and line-interactive</h2>
+<p><strong>Standby.</strong> The load runs on utility through a relay. A battery charger keeps the battery topped up and an inverter sits idle. When the input fails, the relay throws and the inverter picks up the load in a handful of milliseconds. VFD class.</p>
 <p>This is what is under a desk. It is cheap, it is efficient because there is almost nothing in the path, and its output is whatever the utility is doing right up until the moment it is not. Output waveform on battery is often a stepped approximation rather than a sinusoid. Nothing in a data hall should be on one.</p>
-<h2 id="line-interactive">Line-interactive</h2>
-<p>Same basic idea, with a tap-changing autotransformer or buck-boost stage added so the unit can correct voltage without going to battery. A sag that would send a standby unit to battery is instead corrected by changing a tap. VI class: output voltage is regulated, output frequency still follows the input.</p>
+<p><strong>Line-interactive.</strong> Same basic idea, with a tap-changing autotransformer or buck-boost stage added so the unit can correct voltage without going to battery. A sag that would send a standby unit to battery is instead corrected by changing a tap. VI class: output voltage is regulated, output frequency still follows the input.</p>
 <p>The important benefit is battery life. Batteries fail from cycling and from heat, and a line-interactive unit stops cycling the battery for every brownout. Good for network closets, edge cabinets, small comms rooms. Frequency still passes through, so anything sensitive to frequency is unprotected.</p>
 <h2 id="double-conversion">Double conversion</h2>
 <p>Rectifier to a DC bus, DC bus to an inverter, always, with the battery sitting on the DC bus. The output is synthesized from scratch. Input voltage and frequency never touch the load, and there is no transfer when utility fails because nothing changes — the DC bus just starts drawing from the battery instead of the rectifier. VFI class.</p>

@@ -119,7 +119,9 @@
       <h1 class="wr-title">Commercial power from 480 volts down to the receptacle</h1>
       <p class="wr-dek">How three-phase distribution works in a commercial building, why the neutral can carry more current than a phase, and what harmonics cost you.</p>
       <div class="wr-meta"><span>Critical Power</span><span>7 min read</span></div>
-      
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/commercial-power-480v.jpg" alt="" loading="eager">
+      </figure>
     </div>
   </section>
 
@@ -145,7 +147,7 @@
 <h2 id="the-neutral-that-carries-more-than-the-phases">The neutral that carries more than the phases</h2>
 <p>On a balanced wye system with linear loads, the three phase currents are equal and 120 degrees apart and their vector sum in the neutral is zero. Load the phases unequally and the neutral carries the difference. Nothing about that requires the neutral to be full-sized, and for decades code and practice treated it as a lightly loaded conductor.</p>
 <p>Then everything got a switching power supply.</p>
-<p>A rectifier front end does not draw a sinusoid. It draws a short, tall pulse of current near the peak of the voltage waveform, twice a cycle, while it tops up a capacitor. Fourier says a waveform like that contains a fundamental plus a stack of odd harmonics. The <strong>triplen harmonics</strong> — the third and its odd multiples, so 3rd, 9th, 15th — are the interesting ones, because in a three-phase system they are zero-sequence. Shift a third-harmonic component by 120 degrees of the fundamental and you have shifted it by 360 degrees of itself, which is no shift at all. All three phases' triplen content arrives at the neutral in phase and adds arithmetically instead of cancelling.</p>
+<p>A rectifier front end does not draw a sinusoid. It draws a short, tall pulse of current near the peak of the voltage waveform, twice a cycle, while it tops up a capacitor. Fourier says a waveform like that contains a fundamental plus a stack of odd harmonics. The <strong>triplen harmonics</strong> — the third and its odd multiples, so 3rd, 9th, 15th — are the interesting ones, because in a three-phase system they are zero-sequence. Shift a third-harmonic component by 120 degrees of the fundamental and you have shifted it by 360 degrees of itself, which is no shift at all. All three phases' triplen content arrives at the neutral in phase and adds arithmetically instead of canceling.</p>
 <p>The consequence is that the neutral of a perfectly balanced panel can carry substantial current, and in bad cases more than any phase conductor. The theoretical worst case is about 1.73 times phase current; loads like older computer power supplies were commonly measured somewhere in the neighborhood of 1.6 times.</p>
 <p>The code caught up. NEC 310.15(E)(3) says that on a four-wire, three-phase wye circuit where the major portion of the load — more than half — is nonlinear, the neutral counts as a current-carrying conductor for ampacity adjustment. In practice, data center panelboards and PDUs get a 200 percent rated neutral bus and oversized neutral conductors as a matter of course.</p>
 <p>There is good news that people rarely mention. Server power supplies with active power factor correction pull near-sinusoidal current and have very little third harmonic; 80 PLUS certification requires power factor of 0.9 or better at full load, and real supplies do considerably better. The triplen nightmare of the 1990s, when every PC had an unfiltered capacitive input, is much reduced in a modern data hall. It has not gone away. LED drivers, small wall-wart supplies, older gear and lightly loaded PFC stages all still contribute, and the failure mode is quiet: a hot neutral that nobody measures.</p>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer service is a deliverable, not an overhead — Chris Strandt</title>
+  <meta name="description" content="What an uptime SLA actually promises, why the credit matters less than the conversation, measuring satisfaction without gaming it, and staffing support as you grow.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Practice</p>
+      <h1 class="wr-title">Customer service is a deliverable, not an overhead</h1>
+      <p class="wr-dek">What an uptime SLA actually promises, why the credit matters less than the conversation, measuring satisfaction without gaming it, and staffing support as you grow.</p>
+      <div class="wr-meta"><span>Practice</span><span>7 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Nobody has ever been made happy by uptime. They have been made unhappy by the absence of it, which is a different thing. Uptime is the floor — what you promised — and delivering what you promised buys you nothing except the right to keep the account.</p>
+<p>Everything a customer actually feels about a hosting company happens when they need something: an outage, a migration, a question at two in the morning, an invoice that looks wrong. That is where the product lives, and it is why customer service has to be treated as something you ship, with the same discipline as a platform release, rather than as a cost center that answers the phone.</p>
+<h2 id="what-an-sla-actually-promises">What an SLA actually promises</h2>
+<p>Less than people think, and something different from what they think.</p>
+<p>The arithmetic first, because it is the part everyone quotes and few people work out:</p>
+<pre><code>1 year  = 525,600 minutes
+30 days =  43,200 minutes
+
+            per year              per 30-day month
+99.9%     525.6 min (8 h 46 m)    43.2 min
+99.95%    262.8 min (4 h 23 m)    21.6 min
+99.99%     52.6 min                4.3 min
+99.999%     5.3 min                0.4 min</code></pre>
+<p>Four nines is under an hour a year. Five nines is five minutes — less time than it takes a person to log in and work out what is happening — so five nines is a claim about automated failover, not about a response process.</p>
+<p>The number is the least interesting part of the document. What an SLA really specifies is definitions.</p>
+<ul><li><strong>What counts as down.</strong> Total unreachability, or degraded performance? Packet loss above what</li></ul>
+<p>  threshold, for how long? A service that is up but useless is a dispute waiting to happen.</p>
+<ul><li><strong>Who measures it, and from where.</strong> Your monitoring or theirs, inside your network or from the</li></ul>
+<p>  public internet. These produce different numbers and both are honest.</p>
+<ul><li><strong>Over what window.</strong> Monthly is much stricter than annual, because annual leaves you a bad month</li></ul>
+<p>  to average away.</p>
+<ul><li><strong>What is excluded.</strong> Scheduled maintenance, customer-caused outages, upstream failures, force</li></ul>
+<p>  majeure. Exclusions are where a strong-looking SLA quietly becomes a weak one.</p>
+<ul><li><strong>What you owe, and how it is claimed.</strong> Automatically, or only if the customer notices and files</li></ul>
+<p>  within thirty days?</p>
+<p>Nearly every SLA argument I have seen was about a definition, not minutes. Write them so a customer can compute their own credit without you.</p>
+<p>The other function of an SLA is internal, and more valuable: it tells your own organization what the company considers serious. A fifteen-minute first-response commitment shapes the shift schedule, the escalation path and the alert thresholds. An SLA you cannot staff is a promise made by sales and paid for by operations.</p>
+<h2 id="the-credit-is-not-the-remedy">The credit is not the remedy</h2>
+<p>A credit does not compensate anybody for anything. Ten percent of a monthly fee against a day when a customer could not take orders is not restitution, and everyone knows it.</p>
+<p>So stop treating the credit as the response. It is an admission: you failed against a standard you set yourself. Two things follow.</p>
+<p>Pay it without making them fight. If your monitoring says you breached, issue the credit before the customer asks and tell them you did. Making someone prove an outage you already know about costs more goodwill than the money is worth, and it converts a recoverable failure into a reason to leave.</p>
+<p>Then put the effort into the conversation, because the conversation decides whether the account survives. During an incident: tell them early, before you have a diagnosis, and say what you do not know. Describe what is affected in their terms — their database node is unreachable — rather than in yours. Give a next-update time and honor it even when there is no news. Afterward, tell them what happened and what is changing because of it.</p>
+<p>Customers are remarkably tolerant of failure. They are not tolerant of being managed: hedged updates, a status page that reads "investigating" for six hours, finding out from a forum. The failure is the event. The handling is the relationship.</p>
+<h2 id="measuring-satisfaction-without-gaming-it">Measuring satisfaction without gaming it</h2>
+<p>Any single number tied to compensation gets gamed, and mostly not by cynical people. Decent people respond rationally to whatever you chose to measure.</p>
+<p>The standard distortions: agents asking for a good score, closing and reopening tickets to reset a clock, choosing who gets surveyed, leaving tickets open so they never enter the resolution stats, and avoiding hard tickets because hard tickets score worse however well they are handled.</p>
+<p>What holds up better:</p>
+<p><strong>Survey the interaction, not the relationship, and survey all of it.</strong> Per ticket, sent automatically, with no human choosing who receives one. The moment an agent can influence the sample, the sample is finished.</p>
+<p><strong>Read the free text. The score is an index, not the data.</strong> The comments are where you find that three customers were confused by the same thing. The score gives you the temperature, the comment gives you the cause. If nobody reads them, you are collecting scores as decoration.</p>
+<p><strong>Watch the distribution, not the mean.</strong> An average of 4.4 made of mostly fives and a hard core of ones is a different organization from a uniform 4.4, and it is the ones that churn.</p>
+<p><strong>Track what customers do not choose.</strong> Reopen rate, contacts per account per month, escalation rate, and the share of tickets resolved by the first person who touched them. These are behavioral and hard to influence. A rising contact rate is a product problem being paid for by support, and it shows up here long before it shows up in survey scores.</p>
+<p><strong>Do not tie individual pay to survey scores.</strong> Use them to find coaching cases and systemic problems. Once a score sets a bonus, you have stopped measuring satisfaction and started measuring score production.</p>
+<h2 id="staffing-from-seven-people-to-four-hundred-and-fifty">Staffing from seven people to four hundred and fifty</h2>
+<p>I joined a hosting company as employee number seven and left when it was 450 people. Support does not scale smoothly across that range. It changes character at specific points, and each transition arrives as a surprise.</p>
+<p>At seven there is no support organization. Everyone does everything and the whole thing runs on shared context. It works better than it should, which is the trap, because the practices that work at seven stop working without announcing it.</p>
+<p>The first break is memory. Past some size you cannot hold the customers in your head, and the symptom is repeated questions and context lost between shifts. The fix is boring: everything in the ticket system, every account note written for a stranger.</p>
+<p>The second break is coverage. Overnight and weekend coverage sustained by goodwill has a shelf life of about a year, and it ends abruptly, with a resignation. Real shift structure and a paid rotation cost less than replacing the people who held it together.</p>
+<p>The third break is tiering, and done badly it causes the most damage. Tiers are necessary — not every question can reach a senior engineer — but a tier one that only routes tickets adds delay, destroys ownership and teaches customers to bypass it. It has to resolve a real share of what it receives, which means runbooks and training rather than scripts to read out.</p>
+<p>The fourth break is training throughput, and it is the real constraint on growth. You can hire faster than you can train, and when you do, quality falls in a way surveys detect a month after customers do. Growth rate is set by how many new people one experienced person can bring to competence at once, which is a small number. Tested runbooks are what raise it — they are the scaling mechanism, not headcount.</p>
+<p>The number to watch throughout is tickets per customer per month. If it does not fall as you grow, support headcount tracks revenue forever. A falling contact rate is not support becoming more efficient; it is the product needing less help, which is the only version of this that compounds.</p>
+<h2 id="delivering-happiness">Delivering happiness</h2>
+<p>The phrase is Tony Hsieh's — the title of his book about building Zappos — and I use it because it names a target that the operational metrics do not reach.</p>
+<p>Uptime, response time and satisfaction scores are proxies. Worth measuring, and none of them is the thing. The thing is a customer who is glad they chose you and says so to somebody else, and that state is produced almost entirely by how the company behaves when something is difficult: whether the person who answers takes ownership instead of routing, whether they are honest about what they do not know, whether the answer stays the same across three different people.</p>
+<p>None of that appears in an availability figure. You can hit four nines and lose the account, and you can have a bad month and keep it, and both times the difference is the conversation.</p>
+<h2 id="the-test-that-actually-tells-you">The test that actually tells you</h2>
+<p>Pick ten tickets at random from last week and read them end to end. Not the escalations and not the complaints — random ones, including the ones that scored well.</p>
+<p>You will learn more in an hour than from a quarter of dashboards: whether your people sound like humans, whether they took ownership or handed off, whether the same question keeps arriving, whether the answer depended on who happened to pick it up. Then do it again next month.</p>
+<p>If reading them is uncomfortable, that is the finding.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

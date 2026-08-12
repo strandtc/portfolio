@@ -119,7 +119,9 @@
       <h1 class="wr-title">What N+1 actually buys you</h1>
       <p class="wr-dek">Decoding N, N+1, 2N and 2N+1, the difference between capacity and paths, and the failures that survive all of them.</p>
       <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
-      
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/redundancy-n-plus-one.jpg" alt="" loading="eager">
+      </figure>
     </div>
   </section>
 
@@ -131,7 +133,7 @@
 <p>That is the whole reason the notation goes wrong. If the design load is 1,200 kW and the UPS modules are 400 kW, N is three modules. Install four and you have N+1. Nothing about that fourth module is special — the plus-one is a relationship between installed capacity and required capacity, and either side can move.</p>
 <p>N is also specific to a system. The UPS plant, the generator plant, the chilled water plant and the CRAH fan wall each have their own N, and they are frequently different. A site advertised as N+1 is usually quoting the weakest one, or the one that sounds best.</p>
 <h2 id="the-notation">The notation</h2>
-<div class="tw"><table><thead><tr><th>Notation</th><th>Installed capacity</th><th>Survives</th><th>Typical behaviour</th></tr></thead><tbody><tr><td><strong>N</strong></td><td>Exactly what the load needs</td><td>Nothing</td><td>Any component out, planned or not, means load shed or shutdown</td></tr><tr><td><strong>N+1</strong></td><td>One spare unit</td><td>Loss of any one unit</td><td>Full capacity with one unit out. Two out and you are short</td></tr><tr><td><strong>N+2</strong></td><td>Two spare units</td><td>Loss of any two units</td><td>Lets you do planned work and still tolerate a failure</td></tr><tr><td><strong>2N</strong></td><td>Two complete systems</td><td>Loss of any one system</td><td>Each side carries the whole load alone</td></tr><tr><td><strong>2N+1</strong></td><td>Two complete systems, each with a spare</td><td>Loss of a system and a unit</td><td>Say which you mean — see below</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Notation</th><th>Installed capacity</th><th>Survives</th><th>Typical behavior</th></tr></thead><tbody><tr><td><strong>N</strong></td><td>Exactly what the load needs</td><td>Nothing</td><td>Any component out, planned or not, means load shed or shutdown</td></tr><tr><td><strong>N+1</strong></td><td>One spare unit</td><td>Loss of any one unit</td><td>Full capacity with one unit out. Two out and you are short</td></tr><tr><td><strong>N+2</strong></td><td>Two spare units</td><td>Loss of any two units</td><td>Lets you do planned work and still tolerate a failure</td></tr><tr><td><strong>2N</strong></td><td>Two complete systems</td><td>Loss of any one system</td><td>Each side carries the whole load alone</td></tr><tr><td><strong>2N+1</strong></td><td>Two complete systems, each with a spare</td><td>Loss of a system and a unit</td><td>Say which you mean — see below</td></tr></tbody></table></div>
 <p><strong>2N+1</strong> is used two different ways and both are in circulation. Some people mean two complete independent systems where each side is itself N+1. Others mean 2N plus a single shared spare unit that can be switched to either side. Those are very different buys. Write out which one you have.</p>
 <p>There is also the distinction between <strong>redundant</strong> and <strong>distributed redundant</strong>. A 3-to-make-2 or "catcher" arrangement, sometimes written N+1 across a shared bus, spreads load across three systems any two of which can carry it. It is cheaper per kW than 2N and it fails differently — the loss of one system redistributes load onto the others rather than transferring it wholesale. Neither is better in the abstract. They have different failure modes and different loading rules.</p>
 <h2 id="capacity-components-and-distribution-paths">Capacity components and distribution paths</h2>
