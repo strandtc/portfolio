@@ -107,6 +107,16 @@
       border: 1px solid var(--color-border); background: var(--color-bg-secondary);
     }
 
+    .dc-gallery--third { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 900px) { .dc-gallery--third { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 600px) { .dc-gallery--third { grid-template-columns: 1fr; } }
+    .dc-gallery figure.is-generated figcaption::before {
+      content: "Illustrative"; display: inline-block; margin-right: 8px; padding: 1px 6px;
+      border: 1px solid var(--color-border-light); color: var(--color-text-muted);
+      font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; vertical-align: 1px;
+    }
+    .dc-gallery figure.is-generated img { opacity: .92; }
+
     /* ---------- cta ---------- */
     .dc-cta { border-top: 1px solid var(--color-border); margin-top: var(--space-12); padding-top: var(--space-12); }
     .dc-cta-actions { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-6); }
@@ -230,6 +240,11 @@
       <figure class="dc-fig">
         <img src="../assets/images/datacenters/dc-rendering.jpg" alt="Architectural cutaway rendering of the Liquid Web data center campus, showing the data halls with rack rows, the mechanical and electrical spaces, and the office areas." loading="lazy" width="1400" height="1050" data-lightbox>
         <figcaption>Cutaway of the finished building &mdash; data halls, mechanical and electrical rooms, and the office side. Rendering by Studio Intrigue Architects, Lansing, commissioned for the project.</figcaption>
+      </figure>
+
+      <figure class="dc-fig">
+        <img src="../assets/images/datacenters/dc-building-exterior.jpg" alt="Exterior of the completed Liquid Web data center building in Lansing, Michigan." loading="lazy" data-lightbox>
+        <figcaption>The finished building.</figcaption>
       </figure>
     </div>
   </section>
@@ -388,20 +403,36 @@
 
       <div class="dc-gallery">
         <figure>
-          <img src="../assets/images/datacenters/dc-generators.jpg" alt="Two Generac standby generator sets on concrete pads with belly fuel tanks, alongside an outdoor switchgear lineup." loading="lazy" data-lightbox>
-          <figcaption>Standby generation and the outdoor gear lineup, on the pad.</figcaption>
+          <img src="../assets/images/datacenters/dc-mv-switchgear.jpg" alt="Outdoor medium voltage switchgear lineup with danger high voltage placards." loading="lazy" data-lightbox>
+          <figcaption>Medium voltage switchgear on the 13.8kV service.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-service-entrance.jpg" alt="Service entrance conductors fanned out and landed inside an open gear section." loading="lazy" data-lightbox>
+          <figcaption>Service entrance conductors, landed.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-generator-row.jpg" alt="A long row of Generac standby generator sets alongside the building, with conduit stacked on the ground." loading="lazy" data-lightbox>
+          <figcaption>The standby plant. Conduit still on the ground.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-generators.jpg" alt="Two Generac standby generator sets on concrete pads with belly fuel tanks beside an outdoor switchgear lineup." loading="lazy" data-lightbox>
+          <figcaption>Gensets and the outdoor transfer gear.</figcaption>
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-switchgear-lineup.jpg" alt="Switchgear lineup during installation, cabinet sections open showing copper busbar and breaker compartments." loading="lazy" data-lightbox>
           <figcaption>Switchgear during installation, before energisation.</figcaption>
         </figure>
         <figure>
-          <img src="../assets/images/datacenters/dc-busbar.jpg" alt="Close-up of switchgear terminations: copper busbar with LOAD and EMERGENCY labels and lugged feeder cables." loading="lazy" data-lightbox>
-          <figcaption>Terminations. Load and emergency bus, feeders landed.</figcaption>
+          <img src="../assets/images/datacenters/dc-busbar.jpg" alt="Close-up of switchgear terminations: copper busbar with load and emergency labels and lugged feeder cables." loading="lazy" data-lightbox>
+          <figcaption>Terminations. Load and emergency bus.</figcaption>
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-switchgear-terminations.jpg" alt="Electrician working inside an open switchgear section, banks of conduit entering the electrical room overhead." loading="lazy" data-lightbox>
           <figcaption>Controls termination, conduit banks overhead.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-electrical-room.jpg" alt="Switchgear and distribution lineup in the finished electrical room." loading="lazy" data-lightbox>
+          <figcaption>The electrical room, coming together.</figcaption>
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-ups-room.jpg" alt="Row of UPS cabinets in a finished electrical room with overhead conduit." loading="lazy" data-lightbox>
@@ -409,27 +440,16 @@
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-battery-install.jpg" alt="Technicians installing VRLA battery strings into open UPS battery cabinets." loading="lazy" data-lightbox>
-          <figcaption>Battery plant going in. VRLA strings, cabinet by cabinet.</figcaption>
+          <figcaption>Battery plant going in. VRLA strings.</figcaption>
         </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ MECHANICAL & MONITORING ============ -->
-  <section class="dc-section">
-    <div class="dc-wrap">
-      <p class="dc-label">// Mechanical, Monitoring &amp; Security</p>
-      <h2 class="dc-h2">Keeping it cool, and knowing when it isn't</h2>
-      <div class="dc-narrow">
-        <p>
-          HVAC and heat rejection design for the data halls, including the redundancy scheme and the failure
-          modes that scheme is supposed to survive.
-        </p>
-        <p>
-          I built the facilities telemetry and monitoring from scratch — <strong>UPS, cooling, environmental
-          and physical security systems, with custom internal tooling for alerting and reporting.</strong>
-          Nothing off the shelf did what we needed at the time, so we wrote it.
-        </p>
+        <figure>
+          <img src="../assets/images/datacenters/dc-ups-distribution.jpg" alt="UPS distribution switchboard with breaker sections and metering." loading="lazy" data-lightbox>
+          <figcaption>UPS distribution switchboard.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-ups-maintenance.jpg" alt="Technicians performing maintenance in the UPS room between rows of cabinets." loading="lazy" data-lightbox>
+          <figcaption>Maintenance in the UPS room.</figcaption>
+        </figure>
       </div>
 
       <div class="dc-grid">
@@ -453,6 +473,13 @@
         <img src="../assets/images/datacenters/dc-model.jpg" alt="Three-dimensional layout model of the data center floor showing the data halls, rack rows, mechanical and electrical spaces, and the office area." loading="lazy" data-lightbox>
         <figcaption>Layout model &mdash; data halls and rack rows against the mechanical and electrical spaces that serve them, and the office side beyond.</figcaption>
       </figure>
+
+      <div class="dc-gallery dc-gallery--third">
+        <figure class="is-generated">
+          <img src="../assets/images/datacenters/generated/gen-cooling.jpg" alt="Row of floor standing computer room air handling units along a data hall wall with chilled water piping overhead." loading="lazy" data-lightbox>
+          <figcaption>Computer room air handlers and chilled water distribution &mdash; representative of the heat rejection arrangement, not a photograph of these facilities.</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -472,6 +499,29 @@
           selection, contract negotiation, procurement, Cisco and Arista configuration, fiber termination, and
           monitoring through Cacti, SNMP and Netflow.
         </p>
+      </div>
+
+      <div class="dc-gallery">
+        <figure>
+          <img src="../assets/images/datacenters/dc-racks.jpg" alt="Rows of server racks with dense structured cabling running into vertical managers." loading="lazy" data-lightbox>
+          <figcaption>Racks and structured cabling on the floor.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-branch-distribution.jpg" alt="Branch circuit distribution panel with breakers and feeder cabling." loading="lazy" data-lightbox>
+          <figcaption>Branch distribution feeding the rows.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-server-board.jpg" alt="Interior of a rack server showing a dual socket motherboard, memory banks and cabling." loading="lazy" data-lightbox>
+          <figcaption>Inside the fleet. Thousands of these.</figcaption>
+        </figure>
+        <figure class="is-generated">
+          <img src="../assets/images/datacenters/generated/gen-network.jpg" alt="Rack of network switches with colour coded patch cable bundles dressed into horizontal cable managers." loading="lazy" data-lightbox>
+          <figcaption>Switching and patch aggregation &mdash; representative, not a photograph of these facilities.</figcaption>
+        </figure>
+        <figure class="is-generated">
+          <img src="../assets/images/datacenters/generated/gen-fiber.jpg" alt="Fiber optic patch panel with LC duplex connectors and aqua jumpers in a cable management tray." loading="lazy" data-lightbox>
+          <figcaption>Fiber patching &mdash; representative, not a photograph of these facilities.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
