@@ -380,7 +380,11 @@
     @media (max-width: 768px) {
       .gallery-grid { grid-template-columns: 1fr; }
     }
-  </style>
+  
+    .lw-hero { position: relative; overflow: hidden; }
+    .lw-hero .dot-field { position: absolute; inset: 0; z-index: 1; opacity: 0.55; pointer-events: none; }
+    .lw-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+</style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
@@ -441,6 +445,7 @@
 
     <!-- Hero -->
     <section class="lw-hero">
+      <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="grid-bg" aria-hidden="true"></div>
       <div class="container">
