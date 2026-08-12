@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A hundred small fixes beat one reorganization — Chris Strandt</title>
+  <title>A hundred small fixes beat one reorganization - Chris Strandt</title>
   <meta name="description" content="Why continual improvement outperforms big-bang change in operations, how to make it somebody's actual job, and the way the practice usually dies.">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/base.css">
@@ -127,12 +127,12 @@
 
   <section class="wr-body">
     <div class="wr-wrap">
-      <p>The word we used internally was kaizen. It is borrowed from Japanese manufacturing practice and it means continual improvement — small changes, constantly, by the people doing the work, rather than one large change imposed on them. In a hosting company running three data centers and thousands of servers, it was not a philosophy. It was the only method that produced results we could actually attribute to something we did.</p>
+      <p>The word we used internally was kaizen. It is borrowed from Japanese manufacturing practice and it means continual improvement - small changes, constantly, by the people doing the work, rather than one large change imposed on them. In a hosting company running three data centers and thousands of servers, it was not a philosophy. It was the only method that produced results we could actually attribute to something we did.</p>
 <p>The alternative is the big-bang change. Replace the monitoring system. Reorganize the support department. Migrate the whole fleet to the new platform. These are not always wrong, but they are almost always chosen for the wrong reason, which is that they are legible. A reorganization is something a leader can point at. Two hundred small fixes are not.</p>
 <h2 id="why-the-big-change-loses">Why the big change loses</h2>
 <p>Not because it is ambitious. Because of how it distributes risk and information.</p>
 <div class="tw"><table><thead><tr><th></th><th>Big-bang change</th><th>Continual improvement</th></tr></thead><tbody><tr><td>Blast radius</td><td>Everything, at once</td><td>One system, one process</td></tr><tr><td>If it is wrong</td><td>You find out after committing</td><td>You find out in a day</td></tr><tr><td>Rollback</td><td>A project of its own</td><td>Revert the change</td></tr><tr><td>Attribution</td><td>Nothing is isolated, so nothing is provable</td><td>Each change has a before and an after</td></tr><tr><td>Who must agree</td><td>Everyone, in advance</td><td>The person doing the work</td></tr><tr><td>Cost of being wrong</td><td>Sunk, and defended</td><td>Small, and forgotten</td></tr></tbody></table></div>
-<p>The attribution row is the one that matters most and gets the least attention. When you change forty things at once and the numbers improve, you have learned nothing. You do not know which of the forty did it, whether some of them made things worse, or whether it was the season. Operations is full of confounders — traffic patterns, weather, a single large customer's behavior — and the only reliable way to get signal out of it is to change one thing at a time and watch.</p>
+<p>The attribution row is the one that matters most and gets the least attention. When you change forty things at once and the numbers improve, you have learned nothing. You do not know which of the forty did it, whether some of them made things worse, or whether it was the season. Operations is full of confounders - traffic patterns, weather, a single large customer's behavior - and the only reliable way to get signal out of it is to change one thing at a time and watch.</p>
 <p>There is a second, quieter cost. A large change discards the knowledge encoded in the old thing. Every crufty exception in an aging process is usually a scar from something that went wrong once. Replace the process wholesale and you will rediscover each of those failures individually, at full price.</p>
 <h2 id="what-it-looked-like-in-practice">What it looked like in practice</h2>
 <p>Not a program. A default.</p>
@@ -142,7 +142,7 @@
 <h2 id="making-it-somebody-s-job">Making it somebody's job</h2>
 <p>The slogan version of continual improvement is a poster. The real version has four properties, and if any one of them is missing it reverts to the poster.</p>
 <p><strong>Reserved capacity.</strong> Time for improvement work that is planned, not "as time permits." As time permits means never, because in operations time never permits. Whether it is a fixed share of each sprint, one person rotating through an improvement week, or the on-call engineer's day after their shift, it has to be capacity somebody would notice going missing.</p>
-<p><strong>A named owner per class of problem.</strong> Not per fix — per category. Someone owns provisioning friction. Someone owns alert quality. Their job is not to fix everything themselves, it is to know what the top three recurring problems in their category are this month. That knowledge is what turns anecdotes into a work list.</p>
+<p><strong>A named owner per class of problem.</strong> Not per fix - per category. Someone owns provisioning friction. Someone owns alert quality. Their job is not to fix everything themselves, it is to know what the top three recurring problems in their category are this month. That knowledge is what turns anecdotes into a work list.</p>
 <p><strong>Authority at the smallest level.</strong> The person who noticed can make the change. If a two-line fix needs a committee, the cost of the process exceeds the value of the fix, and everybody learns to stop noticing.</p>
 <p><strong>Visible cause data.</strong> You cannot improve what you cannot count. Categorize tickets and alerts by cause, not by product, and look at the top of the list every month. Cause categories are annoying to maintain and they are the difference between improving what is actually breaking and improving what somebody complained about loudly in a meeting.</p>
 <p>The most common gap is the first one. Everyone agrees improvement matters and nobody is scheduled to do any.</p>
@@ -157,11 +157,11 @@
 <h2 id="how-it-dies">How it dies</h2>
 <p>Almost always the same way: it becomes a meeting.</p>
 <p>It starts as a standing weekly with a rotating chair. Then there is a template. Then someone asks for a metric, so improvements get counted, and the count goes up because people learn to submit things they were going to do anyway. Then the meeting is where improvements get approved, which means they now need to be proposed, which means the two-line fix costs a week of calendar time and nobody bothers. Then attendance drops. Then it is cancelled, and everyone concludes that continual improvement does not work here.</p>
-<p>The other death is promotion. Somebody gives it a name, a logo, and an executive sponsor, and it becomes a program with a launch. Programs have to justify themselves at scale, so the small fixes — the entire point — become too minor to report, and the effort migrates toward things big enough to appear on a slide. Which is a big-bang change, arrived at by a longer route.</p>
+<p>The other death is promotion. Somebody gives it a name, a logo, and an executive sponsor, and it becomes a program with a launch. Programs have to justify themselves at scale, so the small fixes - the entire point - become too minor to report, and the effort migrates toward things big enough to appear on a slide. Which is a big-bang change, arrived at by a longer route.</p>
 <p>Both deaths share a cause: the practice was made accountable upward instead of being protected downward. The right posture from management is not to run it. It is to fund the time, hold people to the review discipline, and otherwise stay out of it.</p>
 <h2 id="the-measurement-that-tells-you-if-it-is-alive">The measurement that tells you if it is alive</h2>
 <p>Not the number of improvements. Measure the time between somebody noticing a small problem and that problem being fixed. Pick five things people grumbled about last month and find out where they are.</p>
-<p>If the answer is measured in days, the practice is working. If the answer is that they are in a backlog awaiting prioritization, you have a meeting, not a method — and the fix for that is the same as everything else here. Make one thing smaller, give it to the person who noticed, and see what happens by Friday.</p>
+<p>If the answer is measured in days, the practice is working. If the answer is that they are in a backlog awaiting prioritization, you have a meeting, not a method - and the fix for that is the same as everything else here. Make one thing smaller, give it to the person who noticed, and see what happens by Friday.</p>
       <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
     </div>
   </section>

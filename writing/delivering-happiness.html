@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer service is a deliverable, not an overhead — Chris Strandt</title>
+  <title>Customer service is a deliverable, not an overhead - Chris Strandt</title>
   <meta name="description" content="What an uptime SLA actually promises, why the credit matters less than the conversation, measuring satisfaction without gaming it, and staffing support as you grow.">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/base.css">
@@ -127,7 +127,7 @@
 
   <section class="wr-body">
     <div class="wr-wrap">
-      <p>Nobody has ever been made happy by uptime. They have been made unhappy by the absence of it, which is a different thing. Uptime is the floor — what you promised — and delivering what you promised buys you nothing except the right to keep the account.</p>
+      <p>Nobody has ever been made happy by uptime. They have been made unhappy by the absence of it, which is a different thing. Uptime is the floor - what you promised - and delivering what you promised buys you nothing except the right to keep the account.</p>
 <p>Everything a customer actually feels about a hosting company happens when they need something: an outage, a migration, a question at two in the morning, an invoice that looks wrong. That is where the product lives, and it is why customer service has to be treated as something you ship, with the same discipline as a platform release, rather than as a cost center that answers the phone.</p>
 <h2 id="what-an-sla-actually-promises">What an SLA actually promises</h2>
 <p>Less than people think, and something different from what they think.</p>
@@ -140,7 +140,7 @@
 99.95%    262.8 min (4 h 23 m)    21.6 min
 99.99%     52.6 min                4.3 min
 99.999%     5.3 min                0.4 min</code></pre>
-<p>Four nines is under an hour a year. Five nines is five minutes — less time than it takes a person to log in and work out what is happening — so five nines is a claim about automated failover, not about a response process.</p>
+<p>Four nines is under an hour a year. Five nines is five minutes - less time than it takes a person to log in and work out what is happening - so five nines is a claim about automated failover, not about a response process.</p>
 <p>The number is the least interesting part of the document. What an SLA really specifies is definitions.</p>
 <ul><li><strong>What counts as down.</strong> Total unreachability, or degraded performance? Packet loss above what</li></ul>
 <p>  threshold, for how long? A service that is up but useless is a dispute waiting to happen.</p>
@@ -158,7 +158,7 @@
 <p>A credit does not compensate anybody for anything. Ten percent of a monthly fee against a day when a customer could not take orders is not restitution, and everyone knows it.</p>
 <p>So stop treating the credit as the response. It is an admission: you failed against a standard you set yourself. Two things follow.</p>
 <p>Pay it without making them fight. If your monitoring says you breached, issue the credit before the customer asks and tell them you did. Making someone prove an outage you already know about costs more goodwill than the money is worth, and it converts a recoverable failure into a reason to leave.</p>
-<p>Then put the effort into the conversation, because the conversation decides whether the account survives. During an incident: tell them early, before you have a diagnosis, and say what you do not know. Describe what is affected in their terms — their database node is unreachable — rather than in yours. Give a next-update time and honor it even when there is no news. Afterward, tell them what happened and what is changing because of it.</p>
+<p>Then put the effort into the conversation, because the conversation decides whether the account survives. During an incident: tell them early, before you have a diagnosis, and say what you do not know. Describe what is affected in their terms - their database node is unreachable - rather than in yours. Give a next-update time and honor it even when there is no news. Afterward, tell them what happened and what is changing because of it.</p>
 <p>Customers are remarkably tolerant of failure. They are not tolerant of being managed: hedged updates, a status page that reads "investigating" for six hours, finding out from a forum. The failure is the event. The handling is the relationship.</p>
 <h2 id="measuring-satisfaction-without-gaming-it">Measuring satisfaction without gaming it</h2>
 <p>Any single number tied to compensation gets gamed, and mostly not by cynical people. Decent people respond rationally to whatever you chose to measure.</p>
@@ -174,15 +174,15 @@
 <p>At seven there is no support organization. Everyone does everything and the whole thing runs on shared context. It works better than it should, which is the trap, because the practices that work at seven stop working without announcing it.</p>
 <p>The first break is memory. Past some size you cannot hold the customers in your head, and the symptom is repeated questions and context lost between shifts. The fix is boring: everything in the ticket system, every account note written for a stranger.</p>
 <p>The second break is coverage. Overnight and weekend coverage sustained by goodwill has a shelf life of about a year, and it ends abruptly, with a resignation. Real shift structure and a paid rotation cost less than replacing the people who held it together.</p>
-<p>The third break is tiering, and done badly it causes the most damage. Tiers are necessary — not every question can reach a senior engineer — but a tier one that only routes tickets adds delay, destroys ownership and teaches customers to bypass it. It has to resolve a real share of what it receives, which means runbooks and training rather than scripts to read out.</p>
-<p>The fourth break is training throughput, and it is the real constraint on growth. You can hire faster than you can train, and when you do, quality falls in a way surveys detect a month after customers do. Growth rate is set by how many new people one experienced person can bring to competence at once, which is a small number. Tested runbooks are what raise it — they are the scaling mechanism, not headcount.</p>
+<p>The third break is tiering, and done badly it causes the most damage. Tiers are necessary - not every question can reach a senior engineer - but a tier one that only routes tickets adds delay, destroys ownership and teaches customers to bypass it. It has to resolve a real share of what it receives, which means runbooks and training rather than scripts to read out.</p>
+<p>The fourth break is training throughput, and it is the real constraint on growth. You can hire faster than you can train, and when you do, quality falls in a way surveys detect a month after customers do. Growth rate is set by how many new people one experienced person can bring to competence at once, which is a small number. Tested runbooks are what raise it - they are the scaling mechanism, not headcount.</p>
 <p>The number to watch throughout is tickets per customer per month. If it does not fall as you grow, support headcount tracks revenue forever. A falling contact rate is not support becoming more efficient; it is the product needing less help, which is the only version of this that compounds.</p>
 <h2 id="delivering-happiness">Delivering happiness</h2>
-<p>The phrase is Tony Hsieh's — the title of his book about building Zappos — and I use it because it names a target that the operational metrics do not reach.</p>
+<p>The phrase is Tony Hsieh's - the title of his book about building Zappos - and I use it because it names a target that the operational metrics do not reach.</p>
 <p>Uptime, response time and satisfaction scores are proxies. Worth measuring, and none of them is the thing. The thing is a customer who is glad they chose you and says so to somebody else, and that state is produced almost entirely by how the company behaves when something is difficult: whether the person who answers takes ownership instead of routing, whether they are honest about what they do not know, whether the answer stays the same across three different people.</p>
 <p>None of that appears in an availability figure. You can hit four nines and lose the account, and you can have a bad month and keep it, and both times the difference is the conversation.</p>
 <h2 id="the-test-that-actually-tells-you">The test that actually tells you</h2>
-<p>Pick ten tickets at random from last week and read them end to end. Not the escalations and not the complaints — random ones, including the ones that scored well.</p>
+<p>Pick ten tickets at random from last week and read them end to end. Not the escalations and not the complaints - random ones, including the ones that scored well.</p>
 <p>You will learn more in an hour than from a quarter of dashboards: whether your people sound like humans, whether they took ownership or handed off, whether the same question keeps arriving, whether the answer depended on who happened to pick it up. Then do it again next month.</p>
 <p>If reading them is uncomfortable, that is the finding.</p>
       <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>

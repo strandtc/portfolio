@@ -520,7 +520,7 @@
         <div class="section-label reveal">// Networking</div>
         <h2 id="networking-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Designing the Network</h2>
         <div class="section-intro reveal" data-delay="100">
-          <p>I built a carrier-grade network from scratch in a secondary city. I sourced dark fiber IRUs, connected to the local ILEC over a <span class="tag" style="display:inline;">DWDM</span> ring, and extended lit services to upstream providers in larger metros. I ran <span class="tag" style="display:inline;">BGP</span> with full tables for external routing, <span class="tag" style="display:inline;">EIGRP</span> internally, and managed <span class="tag" style="display:inline;">IX Peering</span>, <span class="tag" style="display:inline;">ARIN</span> IP allocations, AS numbers, and <span class="tag" style="display:inline;">DDoS</span> mitigation through Arbor Networks. I owned the entire lifecycle — provider selection, contract negotiation, equipment procurement, Cisco and Arista configuration, fiber termination, and ongoing monitoring with Cacti, SNMP, and Netflow.</p>
+          <p>I built a carrier-grade network from scratch in a secondary city. I sourced dark fiber IRUs, connected to the local ILEC over a <span class="tag" style="display:inline;">DWDM</span> ring, and extended lit services to upstream providers in larger metros. I ran <span class="tag" style="display:inline;">BGP</span> with full tables for external routing, <span class="tag" style="display:inline;">EIGRP</span> internally, and managed <span class="tag" style="display:inline;">IX Peering</span>, <span class="tag" style="display:inline;">ARIN</span> IP allocations, AS numbers, and <span class="tag" style="display:inline;">DDoS</span> mitigation through Arbor Networks. I owned the entire lifecycle - provider selection, contract negotiation, equipment procurement, Cisco and Arista configuration, fiber termination, and ongoing monitoring with Cacti, SNMP, and Netflow.</p>
         </div>
 
         <!-- Network Topology SVG Diagram -->
@@ -539,7 +539,7 @@
             <rect width="900" height="660" fill="url(#topoGrid)"/>
 
             <!-- ===== LAYER 1: BORDER (L3 / BGP) ===== -->
-            <text x="450" y="18" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// BORDER LAYER — L3 ROUTING / BGP</text>
+            <text x="450" y="18" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// BORDER LAYER - L3 ROUTING / BGP</text>
 
             <!-- Border 1 - ISP Transit -->
             <g class="topo-node" tabindex="0" role="button" aria-label="Border Router 1: ISP transit with BGP full tables">
@@ -588,7 +588,7 @@
             <line x1="550" y1="165" x2="550" y2="220" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
 
             <!-- ===== LAYER 2: CORE (L3 / ROUTING) ===== -->
-            <text x="450" y="212" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// CORE LAYER — L3 ROUTING (REDUNDANT PAIR)</text>
+            <text x="450" y="212" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// CORE LAYER - L3 ROUTING (REDUNDANT PAIR)</text>
 
             <!-- Core 1 -->
             <g class="topo-node" tabindex="0" role="button" aria-label="Core Router 1: Primary core, L3 routing, EIGRP">
@@ -646,7 +646,7 @@
             <line x1="550" y1="280" x2="700" y2="370" stroke="rgba(245,158,11,0.2)" stroke-width="1.5"/>
 
             <!-- ===== LAYER 3: DISTRIBUTION (L3 / VLAN GATEWAYS) ===== -->
-            <text x="450" y="355" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// DISTRIBUTION — L3 VLAN GATEWAYS (REDUNDANT PAIRS)</text>
+            <text x="450" y="355" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// DISTRIBUTION - L3 VLAN GATEWAYS (REDUNDANT PAIRS)</text>
 
             <!-- Dist 1A -->
             <g class="topo-node" tabindex="0" role="button" aria-label="Distribution Switch 1A: VLAN gateway, redundant pair with 1B">
@@ -699,7 +699,7 @@
             <line x1="675" y1="415" x2="770" y2="490" stroke="rgba(255,107,26,0.1)" stroke-width="1"/>
 
             <!-- ===== LAYER 4: RACK SWITCHING (L2) ===== -->
-            <text x="450" y="478" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// RACK SWITCHING — L2</text>
+            <text x="450" y="478" text-anchor="middle" fill="rgba(255,107,26,0.4)" font-family="'Space Mono', monospace" font-size="8" letter-spacing="2">// RACK SWITCHING - L2</text>
 
             <!-- Rack switches -->
             <g class="topo-node" tabindex="0" role="button" aria-label="Top-of-rack L2 switch">
@@ -808,7 +808,7 @@
         <div class="section-label reveal">// Data Centers</div>
         <h2 id="dc-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Building Data Centers</h2>
         <div class="section-intro reveal" data-delay="100">
-          <p>I designed three data center facilities from scratch — hand-drew the floor plans, designed the complete power chain from utility feed through rack-level branch circuit monitoring, and led an $80M ground-up build with a dedicated electrical substation. I managed all contractors, utility coordination, and equipment procurement across every build. I also drywalled the first data center, drilled through concrete walls for fiber, and terminated Cat 5e — when you're building from nothing, you do whatever needs doing.</p>
+          <p>I designed three data center facilities from scratch - hand-drew the floor plans, designed the complete power chain from utility feed through rack-level branch circuit monitoring, and led an $80M ground-up build with a dedicated electrical substation. I managed all contractors, utility coordination, and equipment procurement across every build. I also drywalled the first data center, drilled through concrete walls for fiber, and terminated Cat 5e - when you're building from nothing, you do whatever needs doing.</p>
         </div>
 
         <!-- Inline Tags -->
@@ -960,7 +960,7 @@
         <div class="section-label reveal">// Cloud Platform</div>
         <h2 id="cloud-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Storm on Demand</h2>
         <div class="section-intro reveal" data-delay="100">
-          <p>I helped build our IaaS platform before "cloud" was mainstream — <span class="tag" style="display:inline;">Xen</span> and <span class="tag" style="display:inline;">KVM</span> hypervisors, self-service provisioning, object storage, load balancing, and firewall configuration. I helped recruit the engineering team, define the product spec, and build the physical and network infrastructure that powered it.</p>
+          <p>I helped build our IaaS platform before "cloud" was mainstream - <span class="tag" style="display:inline;">Xen</span> and <span class="tag" style="display:inline;">KVM</span> hypervisors, self-service provisioning, object storage, load balancing, and firewall configuration. I helped recruit the engineering team, define the product spec, and build the physical and network infrastructure that powered it.</p>
         </div>
 
         <!-- Cloud Architecture SVG Diagram -->
@@ -1097,7 +1097,7 @@
         <div class="section-label reveal">// Linux</div>
         <h2 id="linux-heading" class="reveal" data-delay="50" style="font-size: clamp(28px, 3vw, 42px); margin-bottom: var(--space-4);">Linux at Scale</h2>
         <div class="section-intro reveal" data-delay="100">
-          <p>About 85% of our fleet ran <span class="tag" style="display:inline;">CentOS</span> — thousands of servers with custom <span class="tag" style="display:inline;">Kernel</span> builds, RPM packaging, <span class="tag" style="display:inline;">PXE</span> bare-metal provisioning, <span class="tag" style="display:inline;">Apache</span>, Nginx, and <span class="tag" style="display:inline;">MySQL</span> optimization. We hardened servers, monitored hardware and software, managed security patches, and kept uptime high across the entire fleet.</p>
+          <p>About 85% of our fleet ran <span class="tag" style="display:inline;">CentOS</span> - thousands of servers with custom <span class="tag" style="display:inline;">Kernel</span> builds, RPM packaging, <span class="tag" style="display:inline;">PXE</span> bare-metal provisioning, <span class="tag" style="display:inline;">Apache</span>, Nginx, and <span class="tag" style="display:inline;">MySQL</span> optimization. We hardened servers, monitored hardware and software, managed security patches, and kept uptime high across the entire fleet.</p>
         </div>
       </div>
     </section>

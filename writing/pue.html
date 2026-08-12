@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What PUE tells you and what it hides — Chris Strandt</title>
+  <title>What PUE tells you and what it hides - Chris Strandt</title>
   <meta name="description" content="How power usage effectiveness is defined and metered, the ways a good number covers for a badly run facility, and what to measure instead.">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/base.css">
@@ -128,7 +128,7 @@
   <section class="wr-body">
     <div class="wr-wrap">
       <p>Power usage effectiveness is total facility energy divided by IT equipment energy. That is the whole metric. The Green Grid introduced it in 2007 and it was later standardized as ISO/IEC 30134-2. A PUE of 2.0 means you burn a watt of overhead for every watt of compute. A PUE of 1.3 means you burn 0.3.</p>
-<p>It is a useful number and it is the only efficiency figure most people in this industry can quote from memory. It is also, on its own, close to meaningless, and it is trivially gamed — usually not deliberately, just by measuring in a convenient place at a convenient time.</p>
+<p>It is a useful number and it is the only efficiency figure most people in this industry can quote from memory. It is also, on its own, close to meaningless, and it is trivially gamed - usually not deliberately, just by measuring in a convenient place at a convenient time.</p>
 <h2 id="what-it-actually-measures">What it actually measures</h2>
 <p>The numerator is everything that crosses the meter into the facility: IT load, cooling, lighting, UPS and transformer losses, humidification, the office, the security system, the parking lot lights. The denominator is the IT equipment energy.</p>
 <p>Two consequences fall straight out of that fraction and both matter.</p>
@@ -164,11 +164,11 @@
 <p>What to do about it: design the plant to stage down. Modular UPS you can right-size as load grows, chillers that can run one small machine rather than one big machine at 15%, variable speed on everything that moves fluid, and containment from the first row so you are not conditioning the whole hall to cool one aisle.</p>
 <h2 id="the-metrics-that-tell-you-more">The metrics that tell you more</h2>
 <p>PUE is one line on a dashboard. These are the others I would want.</p>
-<p><strong>WUE</strong> — water usage effectiveness, liters of site water per kilowatt-hour of IT energy, standardized as ISO/IEC 30134-9. It is the natural companion to PUE, because most of the easy ways to improve PUE spend water. A facility can drive PUE down by leaning harder on evaporative cooling and the PUE number will never show you the cost. Reporting one without the other is an incomplete picture.</p>
-<p><strong>CUE</strong> — carbon usage effectiveness, standardized as ISO/IEC 30134-8, which weights your energy by the carbon intensity of what supplies it. This is the metric that distinguishes an efficient facility on a dirty grid from a mediocre one on a clean grid, and increasingly it is the one customers ask about.</p>
-<p><strong>Delta-T across the IT equipment.</strong> The cheapest, most diagnostic number in the building and almost nobody trends it. Delta-T is the temperature rise from cold aisle to hot aisle. If your delta-T is low, you are moving far more air than the servers need — bypass air is going around the load and back to the cooling units without doing any work. That means oversized fan energy, blanking panels missing, floor tiles in the wrong places, cable cutouts unsealed. If delta-T is high in one spot, you have recirculation and something is running hot.</p>
+<p><strong>WUE</strong> - water usage effectiveness, liters of site water per kilowatt-hour of IT energy, standardized as ISO/IEC 30134-9. It is the natural companion to PUE, because most of the easy ways to improve PUE spend water. A facility can drive PUE down by leaning harder on evaporative cooling and the PUE number will never show you the cost. Reporting one without the other is an incomplete picture.</p>
+<p><strong>CUE</strong> - carbon usage effectiveness, standardized as ISO/IEC 30134-8, which weights your energy by the carbon intensity of what supplies it. This is the metric that distinguishes an efficient facility on a dirty grid from a mediocre one on a clean grid, and increasingly it is the one customers ask about.</p>
+<p><strong>Delta-T across the IT equipment.</strong> The cheapest, most diagnostic number in the building and almost nobody trends it. Delta-T is the temperature rise from cold aisle to hot aisle. If your delta-T is low, you are moving far more air than the servers need - bypass air is going around the load and back to the cooling units without doing any work. That means oversized fan energy, blanking panels missing, floor tiles in the wrong places, cable cutouts unsealed. If delta-T is high in one spot, you have recirculation and something is running hot.</p>
 <p>The formal versions of this are worth knowing: <strong>RTI</strong>, the return temperature index, where above 100% indicates recirculation and below 100% indicates bypass, and <strong>RCI</strong>, the rack cooling index, which scores how well rack inlet temperatures stay inside the recommended envelope, split into high and low components.</p>
-<p><strong>Overhead in kilowatts, by system.</strong> Not a ratio — actual metered energy for chillers, pumps, tower fans, CRAH fans, UPS losses and everything else. A ratio tells you that you have a problem. A breakdown tells you which pump it is.</p>
+<p><strong>Overhead in kilowatts, by system.</strong> Not a ratio - actual metered energy for chillers, pumps, tower fans, CRAH fans, UPS losses and everything else. A ratio tells you that you have a problem. A breakdown tells you which pump it is.</p>
 <h2 id="the-thing-people-get-wrong">The thing people get wrong</h2>
 <p>They optimize the number instead of the facility.</p>
 <p>The useful discipline is not "get PUE below 1.4." It is: meter at a consistent, declared category, report annually, publish WUE alongside it, and trend delta-T and per-system overhead so that when the ratio moves you know why. A facility where the operators can tell you within a minute which pump is running and why is a well-run facility, whatever the ratio says.</p>
