@@ -116,7 +116,8 @@
       border: 1px solid var(--color-border); background: var(--color-bg-secondary);
     }
 
-    .dc-gallery--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dc-gallery--two { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .dc-gallery--two img { aspect-ratio: auto; object-fit: contain; height: auto; background: var(--color-bg-secondary); }
     @media (max-width: 700px) { .dc-gallery--two { grid-template-columns: 1fr; } }
     .dc-gallery--third { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     @media (max-width: 900px) { .dc-gallery--third { grid-template-columns: repeat(2, minmax(0,1fr)); } }
@@ -416,10 +417,6 @@
           <figcaption>Medium voltage switchgear on the 13.8kV service.</figcaption>
         </figure>
         <figure>
-          <img src="../assets/images/datacenters/dc-service-entrance.jpg" alt="Service entrance conductors fanned out and landed inside an open gear section." loading="lazy" data-lightbox>
-          <figcaption>Service entrance conductors, landed.</figcaption>
-        </figure>
-        <figure>
           <img src="../assets/images/datacenters/dc-generator-row.jpg" alt="A long row of Generac standby generator sets alongside the building, with conduit stacked on the ground." loading="lazy" data-lightbox>
           <figcaption>The standby plant. Conduit still on the ground.</figcaption>
         </figure>
@@ -434,10 +431,6 @@
         <figure>
           <img src="../assets/images/datacenters/dc-switchgear-terminations.jpg" alt="Electrician working inside an open switchgear section, banks of conduit entering the electrical room overhead." loading="lazy" data-lightbox>
           <figcaption>Controls termination, conduit banks overhead.</figcaption>
-        </figure>
-        <figure>
-          <img src="../assets/images/datacenters/dc-electrical-room.jpg" alt="Switchgear and distribution lineup in the finished electrical room." loading="lazy" data-lightbox>
-          <figcaption>The electrical room, coming together.</figcaption>
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-ups-room.jpg" alt="Row of UPS cabinets in a finished electrical room with overhead conduit." loading="lazy" data-lightbox>
@@ -496,6 +489,14 @@
       </div>
 
       <div class="dc-gallery">
+        <figure>
+          <img src="../assets/images/datacenters/dc-network-aisle.jpg" alt="A data hall aisle with equipment cabinets along the wall and overhead cable tray carrying bundled network cabling." loading="lazy" data-lightbox>
+          <figcaption>Overhead tray carrying the copper and fiber down the hall.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-switches.jpg" alt="Close-up of stacked network switches showing banks of RJ45 ports and uplink modules." loading="lazy" data-lightbox>
+          <figcaption>Access switching. Ports, uplinks, and a lot of patching.</figcaption>
+        </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-racks.jpg" alt="Rows of server racks with dense structured cabling running into vertical managers." loading="lazy" data-lightbox>
           <figcaption>Racks and structured cabling on the floor.</figcaption>
@@ -607,7 +608,7 @@
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-steel-shell.jpg" alt="Interior of the building shell during construction, steel structure and mezzanine with scissor lifts on the floor." loading="lazy" data-lightbox>
-          <figcaption>The shell, before it was anything.</figcaption>
+          <figcaption>The shell, before it was anything. We put a 20,000 sq ft mezzanine into this volume to carry additional office space.</figcaption>
         </figure>
         <figure>
           <img src="../assets/images/datacenters/dc-framing.jpg" alt="Metal stud framing dividing the interior, stacked drywall waiting on the floor." loading="lazy" data-lightbox>
