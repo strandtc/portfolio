@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPS topologies and what N+1 really means — Chris Strandt</title>
+  <meta name="description" content="The four UPS topologies, the honest case for and against eco mode, and why module-level redundancy is not the same as a redundant system.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">UPS topologies and what N+1 really means</h1>
+      <p class="wr-dek">The four UPS topologies, the honest case for and against eco mode, and why module-level redundancy is not the same as a redundant system.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Every UPS answers the same question — what sits between the utility and the load, and what does it do when the utility misbehaves — and there are only four common answers. IEC 62040-3 classifies them by how much of the input the output depends on: VFD (voltage and frequency dependent), VI (voltage independent), and VFI (voltage and frequency independent). The standard actually uses a three-part code, so a good online unit is VFI-SS-11: input-independent, sinusoidal output in both modes, best dynamic performance class.</p>
+<h2 id="standby">Standby</h2>
+<p>The load runs on utility through a relay. A battery charger keeps the battery topped up and an inverter sits idle. When the input fails, the relay throws and the inverter picks up the load in a handful of milliseconds. VFD class.</p>
+<p>This is what is under a desk. It is cheap, it is efficient because there is almost nothing in the path, and its output is whatever the utility is doing right up until the moment it is not. Output waveform on battery is often a stepped approximation rather than a sinusoid. Nothing in a data hall should be on one.</p>
+<h2 id="line-interactive">Line-interactive</h2>
+<p>Same basic idea, with a tap-changing autotransformer or buck-boost stage added so the unit can correct voltage without going to battery. A sag that would send a standby unit to battery is instead corrected by changing a tap. VI class: output voltage is regulated, output frequency still follows the input.</p>
+<p>The important benefit is battery life. Batteries fail from cycling and from heat, and a line-interactive unit stops cycling the battery for every brownout. Good for network closets, edge cabinets, small comms rooms. Frequency still passes through, so anything sensitive to frequency is unprotected.</p>
+<h2 id="double-conversion">Double conversion</h2>
+<p>Rectifier to a DC bus, DC bus to an inverter, always, with the battery sitting on the DC bus. The output is synthesized from scratch. Input voltage and frequency never touch the load, and there is no transfer when utility fails because nothing changes — the DC bus just starts drawing from the battery instead of the rectifier. VFI class.</p>
+<p>That is the topology in essentially every data center. The cost is that you convert the power twice, all day, forever. Real efficiency is typically 94 to 97 percent depending on load point and vintage, and the losses come out as heat that then costs cooling energy to remove.</p>
+<p>Two details people forget. First, a double conversion UPS is only frequency-independent while the inverter is running: on static bypass, the load is on raw utility. Second, the rectifier is a nonlinear load on whatever feeds it, which is a real problem when what feeds it is a generator.</p>
+<h2 id="delta-conversion">Delta conversion</h2>
+<p>A less common online topology. Instead of converting all the power twice, a series converter rated at roughly 30 percent of output handles only the difference — the delta — between input and output, working alongside a full-rated shunt converter. Less power passes through a full conversion, so efficiency is higher, and the input current is drawn near-sinusoidally with good power factor.</p>
+<p>It is patented, which is why you see it from a narrow set of suppliers rather than across the market. Worth understanding so you recognize it on a one-line, but it is not usually a choice you get to make independently of picking a vendor.</p>
+<h2 id="eco-mode-and-the-argument">Eco mode, and the argument</h2>
+<p>Eco mode runs a double conversion UPS with the load on its static bypass, inverter idle but ready, and fires the inverter only when the input goes out of tolerance. The bypass path is typically 98 to 99 percent efficient against a base of 94 to 97 percent.</p>
+<p>That sounds small until you put load behind it. Four points of efficiency on a 1 MW load is roughly 40 kW of loss removed, plus the cooling that loss no longer needs. Over a year that is real money, and it is why the question keeps coming back no matter how many times an engineering group says no.</p>
+<p>The argument against is transfer time. The UPS has to detect a problem, decide, energize the inverter and actuate the switch, and published figures for that sequence land somewhere in the range of 1 to 16 milliseconds. Until it completes, the load is on raw utility. Most modern server power supplies ride through that easily; the things that do not are older gear, some network hardware, and anything with a marginal power supply already.</p>
+<p>My real objection is different and it is not about milliseconds. In eco mode, the inverter is the component you are betting the site on, and it is idle almost all the time. You find out whether it works when you need it. Double conversion runs the inverter continuously, which means a failing inverter announces itself on a normal Tuesday rather than during a utility event.</p>
+<p>The newer high-efficiency modes — vendors call them things like advanced eco or eConversion — are a genuinely different animal. The inverter stays active in parallel with the bypass path, doing harmonic and power factor correction, and the vendors claim the same IEC 62040-3 class 1 dynamic performance as double conversion at around 99 percent efficiency. If someone says "eco mode," find out which of these two things they mean before you argue.</p>
+<h2 id="static-bypass">Static bypass</h2>
+<p>Every online UPS has a static bypass: back-to-back SCRs, one pair per phase, in parallel with the inverter, capable of transferring the load to raw utility in under a quarter cycle — about 4 milliseconds at 60 Hz.</p>
+<p>It exists for three reasons.</p>
+<p><strong>Overload.</strong> A UPS inverter is a current-limited device, typically able to deliver something like 125 to 150 percent of rating for a short time. It cannot deliver the tens of kiloamps needed to clear a downstream short circuit. When a branch breaker faults, the UPS dumps to bypass so the utility source can supply enough current to blow the breaker, then comes back. If it could not do that, one shorted power supply in one rack would take down the whole UPS output.</p>
+<p><strong>Internal fault.</strong> Inverter fails, load stays up.</p>
+<p><strong>Maintenance.</strong> Static bypass lets you take the inverter down.</p>
+<p>Two things about it get overlooked. It only works if the bypass source is present and within tolerance and reasonably in sync with the inverter output — a UPS running on battery during a utility outage has no bypass, which is exactly when an overload is most likely. And the bypass SCRs themselves are a single point of failure in the load path, sitting there for fifteen years, rarely tested.</p>
+<p>Static bypass is not maintenance bypass. <strong>Maintenance bypass</strong> is a manual wrap-around switch, internal or external, that lets you fully de-energize and isolate the UPS while the load runs. If a site does not have one, the UPS can never be worked on. Specify it, and specify it as a bypass-isolation arrangement if you can afford the space.</p>
+<h2 id="what-n-1-actually-means">What N+1 actually means</h2>
+<p>N is the capacity required to carry the load. N+1 is that plus one more unit of whatever the granularity is. The entire argument is about what "unit" means.</p>
+<p>Take a 1 MW load.</p>
+<ul><li>Four 500 kW UPS in parallel: 2N. Any two can fail.</li><li>Three 500 kW UPS in parallel: N+1 at the system level. One whole UPS can fail.</li><li>One modular frame rated 1 MW containing six 250 kW power modules: N+2 at the <em>module</em> level, and N at the <em>frame</em> level.</li></ul>
+<p>That last one is where people fool themselves. Module redundancy protects you against a power module failing. It does not protect you against a fault on the common output bus, a failure in the shared controller, a bad firmware update applied to the frame, a shared static bypass, a shared battery string, or an operator opening the wrong breaker on the frame. Those are all single points of failure that the module count says nothing about.</p>
+<p>The other trap is that N+1 stops being N+1 the moment you touch it. Pull a module for service and you are running N. If the plan is "we'll swap it during a maintenance window," then during that window the site has no UPS redundancy at all. Redundancy and concurrent maintainability are different properties. A system that is N+1 only when nothing is being maintained is really an N system with a spare parts strategy.</p>
+<p>True system redundancy means two independent paths from the utility service all the way to the rack: separate switchgear sections, separate transfer switches, separate UPS, separate distribution, separate cords into a dual-corded server. Anything common to both paths is where the outage will come from.</p>
+<h2 id="the-ups-is-usually-not-the-thing-that-fails">The UPS is usually not the thing that fails</h2>
+<p>Uptime Institute's outage work consistently puts power at the top of the list of causes of significant outages, and UPS-related failures at the top of the power category. Read that carefully, though, because "UPS-related" is doing a lot of work. The chain is almost never a spontaneously exploding inverter. It is a battery string that had degraded past the point of carrying the load and nobody load-tested it. It is a static bypass that would not transfer. It is a maintenance procedure performed on the wrong cabinet.</p>
+<p>Uptime's own numbers put human factors squarely in the frame: close to 40 percent of organizations report a major outage caused by human error in the past three years, and roughly 85 percent of those trace to staff not following procedures or to the procedures themselves being wrong.</p>
+<p>Which means the money spent moving from N+1 to 2N buys you less than it looks like on the one-line if the operating practice does not change with it. Two things determine whether a UPS plant does its job: whether the batteries can actually deliver rated runtime, which only a discharge test under real load tells you, and whether the people who work on it have a correct, current, rehearsed procedure. The topology diagram is the easy part.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

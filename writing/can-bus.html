@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How CAN survives an engine bay — Chris Strandt</title>
+  <meta name="description" content="The physical layer, arbitration, bit timing and error handling that let a two-wire bus work next to an alternator, plus the protocols layered on top.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Embedded</p>
+      <h1 class="wr-title">How CAN survives an engine bay</h1>
+      <p class="wr-dek">The physical layer, arbitration, bit timing and error handling that let a two-wire bus work next to an alternator, plus the protocols layered on top.</p>
+      <div class="wr-meta"><span>Embedded</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>An engine bay is one of the worse electrical environments anyone has tried to run a data bus through. Ignition coils, an alternator putting ripple on everything, injector solenoids switching inductive loads, ground potential that differs by hundreds of millivolts between one end of the vehicle and the other, and a temperature range no office equipment would tolerate. CAN was designed for that in the 1980s and it is still there, largely unchanged, because the design decisions were the right ones.</p>
+<h2 id="two-wires-and-a-difference">Two wires and a difference</h2>
+<p>CAN is a <strong>differential</strong> bus. Two conductors, CAN_H and CAN_L, twisted together, and the receiver looks only at the voltage between them. Noise coupled into the harness lands on both conductors roughly equally, and subtracting one from the other cancels it. That is the whole trick, and it's why a twisted pair matters more than shielding for most installations.</p>
+<p>There are two bus states, and they are not symmetric.</p>
+<p><strong>Recessive</strong> is the idle state. Both conductors sit near the same potential — typically around 2.5 V on a 5 V high-speed transceiver — and the differential voltage is essentially zero. Per ISO 11898-2, a receiver reads anything below about 0.5 V differential as recessive. Recessive is logical 1.</p>
+<p><strong>Dominant</strong> is when a transmitter actively drives the conductors apart, CAN_H up and CAN_L down. The standard requires the driver to produce at least 1.5 V of differential across the bus load, and receivers read above about 0.9 V as dominant. Dominant is logical 0.</p>
+<p>The asymmetry is deliberate: a node driving dominant overrides every node sitting recessive. That single property is what makes the rest of the protocol work.</p>
+<p>The bus needs a <strong>120 Ω termination resistor</strong> across CAN_H and CAN_L at each physical end, matching the characteristic impedance of the cable, so signal edges don't reflect back down the line. Two of them, at the ends, not in the middle and not one per node. The diagnostic follows directly: power down the bus and measure across CAN_H and CAN_L. Two 120 Ω resistors in parallel read about 60 Ω. If you read 120, one is missing or a segment is broken. If you read 40, someone added a third.</p>
+<h2 id="arbitration-without-a-master">Arbitration without a master</h2>
+<p>CAN has no bus master and no token. Every node that wants to transmit waits for idle and starts sending. Collisions are resolved as they happen.</p>
+<p>While transmitting the identifier field, each node monitors the bus. If it sends recessive and reads back dominant, another node is transmitting a lower identifier value — a higher priority message. It stops immediately and becomes a receiver. It doesn't retry from scratch on a random backoff; it lost cleanly, mid-frame, and the winner's frame continues uncorrupted.</p>
+<p>Two consequences fall out of this and they are the ones people miss.</p>
+<p>Bus bandwidth is never wasted on collisions. Unlike Ethernet's original CSMA/CD, the arbitration <em>is</em> the transmission. Nothing is discarded.</p>
+<p>Priority is baked into the identifier. Lower numeric identifier wins, always. A message you assigned ID 0x0C0 will preempt one at 0x7A0 every single time, forever, regardless of how long the low-priority message has been waiting. Which means identifier allocation is a real-time engineering decision made at design time, and a low-priority frame on a heavily loaded bus can be starved indefinitely. Work out your worst-case latency per message during design, not after you see a dropped frame on a prototype.</p>
+<h2 id="identifiers-standard-and-extended">Identifiers, standard and extended</h2>
+<p>CAN 2.0A uses an <strong>11-bit identifier</strong> — 2048 values. CAN 2.0B adds the <strong>29-bit extended identifier</strong>, giving you half a billion. Both can coexist on the same bus: an IDE bit in the frame says which form follows, and the arbitration rules still work across the mix, with the standard frame winning if the first 11 bits are equal.</p>
+<p>Eleven bits is enough for a vehicle designed as a whole by one team. Twenty-nine bits is what you use when the identifier has to carry structure — a source address, a message type, a priority field — because devices from different manufacturers must share the bus without a central allocator. That is precisely why J1939 uses extended IDs.</p>
+<p>The payload in classical CAN is at most 8 bytes. That constraint shapes every application protocol above it.</p>
+<h2 id="bit-timing-which-is-where-the-debugging-happens">Bit timing, which is where the debugging happens</h2>
+<p>There is no clock line. Every node runs its own oscillator and stays aligned by resynchronizing on the recessive-to-dominant edges in the data. Getting that right is the single most common source of "the bus works on the bench and not in the vehicle."</p>
+<p>Each bit is divided into an integer number of <strong>time quanta</strong> (tq), derived from the controller clock by a prescaler, and grouped into four segments:</p>
+<div class="tw"><table><thead><tr><th>Segment</th><th>Length</th><th>Purpose</th></tr></thead><tbody><tr><td>SYNC_SEG</td><td>1 tq</td><td>Where an edge is expected</td></tr><tr><td>PROP_SEG</td><td>1–8 tq</td><td>Compensates round-trip propagation delay</td></tr><tr><td>PHASE_SEG1</td><td>1–8 tq</td><td>Absorbs early edges; may be lengthened</td></tr><tr><td>PHASE_SEG2</td><td>≥ PHASE_SEG1 and the information processing time</td><td>Absorbs late edges; may be shortened</td></tr></tbody></table></div>
+<p>The bus is sampled at the end of PHASE_SEG1. Where that falls in the bit, expressed as a percentage, is the <strong>sample point</strong>, and 87.5% is the conventional target for automotive rates. Late sampling gives propagation delay time to settle; sampling too late leaves no margin to shorten PHASE_SEG2 during resynchronization.</p>
+<p>The <strong>synchronization jump width</strong> is how many tq the controller may add or subtract per bit to correct for oscillator drift. It cannot exceed PHASE_SEG1, and setting it to 1 tq is the safe default on a bus with decent crystals.</p>
+<p>PROP_SEG is why bit rate and bus length trade off. A node arbitrating must see the far end's dominant bit before it samples, so the round trip has to fit inside the bit time. Signal propagation in cable is around 5 ns per meter, and the classical figure is roughly 40 m at 1 Mbit/s, with the transceiver and controller delays eating a substantial part of that budget too. Halve the bit rate and you roughly double the length. This is why a 250 kbit/s truck bus can be tens of meters long and a 1 Mbit/s bus is a within-one-box affair.</p>
+<p>The practical failure: every node on a bus must be configured for the same bit rate <em>and</em> compatible sample points. Two controllers at 500 kbit/s with sample points at 75% and 87.5% may communicate fine on a short bench harness and start throwing errors when you put the real cable in.</p>
+<h2 id="errors-and-a-node-taking-itself-off-the-bus">Errors, and a node taking itself off the bus</h2>
+<p>CAN checks a frame five ways — CRC, frame format, acknowledgment, bit monitoring by the transmitter, and bit stuffing. <strong>Bit stuffing</strong> inserts an opposite-polarity bit after five consecutive identical bits, which guarantees edges for resynchronization; six identical bits in a row is by definition an error condition.</p>
+<p>Any node detecting an error transmits an error flag immediately, which destroys the frame for everyone, and the transmitter retries. That's the right behavior for a real-time control bus, and it's also how one broken node can take down an entire vehicle network. So CAN adds fault confinement.</p>
+<p>Each node keeps a transmit error counter and a receive error counter, incremented on errors and decremented on successes. Above 127 the node goes <strong>error passive</strong>: it still communicates, but its error flags are passive — six recessive bits — and no longer destroy other traffic. If the transmit error counter passes 255 the node goes <strong>bus off</strong> and stops transmitting entirely until it is deliberately recovered.</p>
+<p>That escalation is worth understanding because it explains a specific symptom. A node with a bad transceiver, wrong termination, or a bit timing mismatch will typically work for a moment, degrade the bus, then remove itself. If a device "works for ten seconds after power-up and then goes quiet," check for bus-off before you check anything else.</p>
+<h2 id="can-fd">CAN FD</h2>
+<p>Classical CAN's ceiling is 1 Mbit/s and 8 bytes, and arbitration is what enforces the ceiling — every node must hear every other node within one bit time.</p>
+<p><strong>CAN FD</strong>, standardized in ISO 11898-1:2015, notices that arbitration only matters during the arbitration field. Once a node has won the bus, nobody else is transmitting, so the propagation constraint no longer applies. So CAN FD switches to a faster bit rate after arbitration and switches back before the acknowledgment. Arbitration at 500 kbit/s; data phase at 2 or 5 Mbit/s, which is the common automotive range. Payload rises to 64 bytes, and the CRC widens to 17 or 21 bits to match.</p>
+<p>Two things to plan for. Classical controllers do not tolerate FD frames on the bus — they see a malformed frame and generate errors — so a mixed bus needs every controller to be FD-capable, even the ones that only send classical frames. And your termination and stub lengths, which were forgiving at 500 kbit/s, are not forgiving at 5 Mbit/s.</p>
+<h2 id="what-rides-on-top">What rides on top</h2>
+<p>Raw CAN gives you an identifier and up to 8 bytes. Everything meaningful is a convention above that.</p>
+<p><strong>OBD-II</strong> over CAN is defined by ISO 15765-4, with the services and PIDs in SAE J1979. Most light vehicles use 11-bit identifiers at 500 kbit/s; a tester broadcasts a functional request on 0x7DF, and responding ECUs answer on 0x7E8 through 0x7EF, with 0x7E8 usually the engine controller. Some vehicles use 29-bit identifiers, and 250 kbit/s is also permitted. Payloads longer than 8 bytes are segmented by ISO-TP, the transport protocol in the rest of ISO 15765.</p>
+<p><strong>J1939</strong> covers heavy-duty vehicles and off-highway equipment. Extended 29-bit identifiers, classically 250 kbit/s with 500 kbit/s in newer systems, and the identifier is structured: a priority field, plus a Parameter Group Number identifying the message content, plus a source address. Signals within a message are Suspect Parameter Numbers. It also defines address claiming, so devices negotiate addresses at power-up rather than being configured.</p>
+<p><strong>Everything else is proprietary.</strong> The bus carrying real vehicle behavior — the one where a frame means "brake pressure" — is usually a manufacturer-internal database, and the diagnostic port often doesn't reach it at all. You can reverse-engineer it by watching frames while you actuate things. Whether you are permitted to is a separate question from whether you can.</p>
+<p>If you take one thing to the bench: when a CAN bus misbehaves, measure 60 Ω across the powered-down bus before you touch a single line of code. More CAN problems are terminations, stubs, and grounds than are protocol bugs, and the resistance check takes ten seconds.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What N+1 actually buys you — Chris Strandt</title>
+  <meta name="description" content="Decoding N, N+1, 2N and 2N+1, the difference between capacity and paths, and the failures that survive all of them.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">What N+1 actually buys you</h1>
+      <p class="wr-dek">Decoding N, N+1, 2N and 2N+1, the difference between capacity and paths, and the failures that survive all of them.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Somebody tells you the site is N+1 and you have learned nothing useful. You do not know what N is, whether the redundancy is in the capacity or in the paths, whether it survives a fault or only a planned outage, or whether the load has since grown enough to eat it. The notation is a shorthand for a sentence, and the sentence is what matters.</p>
+<h2 id="what-n-means">What N means</h2>
+<p><strong>N</strong> is the capacity required to carry the design load. It is defined by the load, not by the equipment.</p>
+<p>That is the whole reason the notation goes wrong. If the design load is 1,200 kW and the UPS modules are 400 kW, N is three modules. Install four and you have N+1. Nothing about that fourth module is special — the plus-one is a relationship between installed capacity and required capacity, and either side can move.</p>
+<p>N is also specific to a system. The UPS plant, the generator plant, the chilled water plant and the CRAH fan wall each have their own N, and they are frequently different. A site advertised as N+1 is usually quoting the weakest one, or the one that sounds best.</p>
+<h2 id="the-notation">The notation</h2>
+<div class="tw"><table><thead><tr><th>Notation</th><th>Installed capacity</th><th>Survives</th><th>Typical behaviour</th></tr></thead><tbody><tr><td><strong>N</strong></td><td>Exactly what the load needs</td><td>Nothing</td><td>Any component out, planned or not, means load shed or shutdown</td></tr><tr><td><strong>N+1</strong></td><td>One spare unit</td><td>Loss of any one unit</td><td>Full capacity with one unit out. Two out and you are short</td></tr><tr><td><strong>N+2</strong></td><td>Two spare units</td><td>Loss of any two units</td><td>Lets you do planned work and still tolerate a failure</td></tr><tr><td><strong>2N</strong></td><td>Two complete systems</td><td>Loss of any one system</td><td>Each side carries the whole load alone</td></tr><tr><td><strong>2N+1</strong></td><td>Two complete systems, each with a spare</td><td>Loss of a system and a unit</td><td>Say which you mean — see below</td></tr></tbody></table></div>
+<p><strong>2N+1</strong> is used two different ways and both are in circulation. Some people mean two complete independent systems where each side is itself N+1. Others mean 2N plus a single shared spare unit that can be switched to either side. Those are very different buys. Write out which one you have.</p>
+<p>There is also the distinction between <strong>redundant</strong> and <strong>distributed redundant</strong>. A 3-to-make-2 or "catcher" arrangement, sometimes written N+1 across a shared bus, spreads load across three systems any two of which can carry it. It is cheaper per kW than 2N and it fails differently — the loss of one system redistributes load onto the others rather than transferring it wholesale. Neither is better in the abstract. They have different failure modes and different loading rules.</p>
+<h2 id="capacity-components-and-distribution-paths">Capacity components and distribution paths</h2>
+<p>The most useful split in the whole subject, and the one Uptime Institute's Tier Standard is built on, is between <strong>capacity components</strong> and <strong>distribution paths</strong>.</p>
+<p>Capacity components make power and cooling: generators, UPS modules, chillers, pumps, CRAHs. Distribution paths carry it: switchgear, feeders, busway, PDUs, piping, valves.</p>
+<p>You can be redundant in one and not the other, and the notation does not distinguish them. Four UPS modules on a single output bus feeding a single PDU is N+1 in capacity with one path. Lose a module and you are fine. Lose the bus, the tie breaker, or the PDU and you are down. Two independent systems, A and B, each with its own switchgear, UPS, distribution and PDU, feeding dual-corded servers, is redundant in both.</p>
+<p>This is exactly the line the Tier definitions draw. Tier II is redundant capacity components with a single distribution path. Tier III adds multiple independent distribution paths, one of which is active. Tier IV requires multiple independent, physically isolated, simultaneously active distribution paths, with the systems compartmentalized so a single event cannot take both.</p>
+<p>So when somebody says N+1, ask: N+1 in what? Capacity, or paths, or both?</p>
+<h2 id="concurrent-maintainability-versus-fault-tolerance">Concurrent maintainability versus fault tolerance</h2>
+<p>These are two different properties and buying one does not get you the other.</p>
+<p><strong>Concurrently maintainable</strong> means you can remove any single capacity component or any single element of a distribution path from service on a planned basis without impacting the IT load. It is a property about planned work.</p>
+<p><strong>Fault tolerant</strong> means an unplanned single failure — a component dying, a path interrupting — is stopped short of the IT load. It is a property about surprises.</p>
+<p>The gap between them is the thing operations lives in. A concurrently maintainable site <em>while maintenance is in progress</em> is not fault tolerant. You have deliberately spent the redundancy to do the work. Every maintenance window is a window where the site is N. That is not an argument against maintenance; it is an argument for knowing the exposure, keeping the window short, having an abort criterion written before you start, and never doing planned work on both sides on the same day.</p>
+<p>Fault tolerance costs more because the system has to ride through a failure with no human in the loop and no advance notice. It requires the automation to work correctly on the worst day, which is why the integrated systems test matters so much and why it needs to be re-run after major changes.</p>
+<h2 id="what-survives-2n">What survives 2N</h2>
+<p>Here is the useful exercise: assume both sides are genuinely independent and then go hunting for the things that are still single.</p>
+<p><strong>Single-corded equipment.</strong> Network gear, appliances, environmental controllers, security panels, that one array with a single supply. A rack ATS or STS covers it and reintroduces a single device in the path — a good trade, but a trade. Inventory single-corded loads and know which ones you have.</p>
+<p><strong>Shared controls.</strong> A single BMS, a single EPMS, one PLC handling generator paralleling, one controls network with both sides' devices on it. The power topology can be 2N and the logic that runs it a single point of failure.</p>
+<p><strong>Fuel.</strong> One tank farm, one fill point, one transfer pump, one polishing skid, one supplier, one road. Fuel is the classic common-mode failure in an otherwise redundant generator plant, and contaminated fuel reaches every engine.</p>
+<p><strong>Physical adjacency.</strong> A and B in the same electrical room, in the same cable tray, through the same wall penetration, in the same fire zone. This is what compartmentalization is for. A conduit bank carrying both feeds is a 2N system on the drawing and an N system in the ground.</p>
+<p><strong>Common firmware and settings.</strong> Identical modules with identical firmware fail identically given identical inputs. Staggering firmware versions across sides has its own risks, but so does not thinking about it. Same for a settings error applied to both sides by the same technician on the same afternoon.</p>
+<p><strong>Everything downstream of the last transfer point.</strong> The branch circuit, the PDU output breaker, the rack PDU, the power cord, the server's own supply. 2N stops where the two paths converge, and for a single-supply load that is at the cord.</p>
+<p><strong>The people and the procedures.</strong> Uptime Institute's annual outage analyses consistently find human error among the largest contributors to major outages, and within that category the dominant subcause is staff not following procedure, or the procedure itself being wrong. A topology cannot protect against the wrong breaker being racked out. Procedures, training, labeling and a second set of eyes are part of the redundancy, and they are the cheap part.</p>
+<h2 id="how-redundancy-gets-quietly-eaten">How redundancy gets quietly eaten</h2>
+<p>Nothing physical changes. The load grows, and the ratio moves.</p>
+<pre><code>Design:   4 x 400 kW UPS modules,  load 1,200 kW
+          N = 3 modules,  installed = 4  -&gt;  N+1
+
+Two years later, same hardware, load 1,560 kW
+          N = ceil(1560 / 400) = 4 modules,  installed = 4  -&gt;  N
+
+Nothing was removed. The redundancy was consumed by growth.</code></pre>
+<p>The 2N version is worse because it is less obvious. A 2N system must be able to carry the entire load on one side, so each side has to stay at or below 50% of its own rating. That is a hard ceiling, not a guideline.</p>
+<pre><code>Side A: 620 kW    Side B: 640 kW    Total: 1,260 kW
+System rating per side: 1,200 kW
+
+Side loading:      52% / 53%   -- looks comfortable
+Failover check:    1,260 kW onto a 1,200 kW side  -&gt;  105% overload</code></pre>
+<p>Both sides sitting at just over half looks healthy on every dashboard in the building. It is not 2N any more. The failover overloads the survivor and you find out during the event.</p>
+<p>Derating eats the rest. Generators lose output with ambient temperature and altitude. Batteries lose capacity as they age, so the runtime you sized for is not the runtime you have in year six. Non-100%-rated breakers are limited to 80% continuous. Cooling capacity falls on the hottest day, which is also the day you need it. Every one of those moves N up while the nameplate stays the same.</p>
+<h2 id="the-rule-of-thumb">The rule of thumb</h2>
+<p>Redundancy is a claim with a number in it, and if you cannot state the number the claim is decoration. Write it as a sentence for every system:</p>
+<blockquote><p>Up to 1,200 kW total IT load, the UPS system tolerates the loss of any one 400 kW module with no impact.</p></blockquote>
+<p>Then take the number out of the sentence and put it on the monitoring system as a threshold with an alarm, because that is the only place anyone will see it. Trend load against it monthly. Re-derive it whenever a module is added, a setting changes, or the design load assumption moves.</p>
+<p>And when someone hands you a site described as N+1, the follow-up questions are always the same three: N+1 in capacity or in paths, concurrently maintainable or fault tolerant, and at what load does it stop being true.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

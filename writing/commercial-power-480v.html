@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commercial power from 480 volts down to the receptacle — Chris Strandt</title>
+  <meta name="description" content="How three-phase distribution works in a commercial building, why the neutral can carry more current than a phase, and what harmonics cost you.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">Commercial power from 480 volts down to the receptacle</h1>
+      <p class="wr-dek">How three-phase distribution works in a commercial building, why the neutral can carry more current than a phase, and what harmonics cost you.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>7 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>The receptacle in a cubicle is the last four feet of a chain that started at 13.8 kV or higher. Most of that chain runs at 480 volts three-phase, and almost nothing anyone plugs in runs at 480 volts three-phase. Everything interesting in commercial power distribution lives in the gap between those two facts.</p>
+<h2 id="why-three-phases-exist-at-all">Why three phases exist at all</h2>
+<p>Single-phase AC power is not constant. Voltage and current both cross zero twice per cycle, so instantaneous power pulses at 120 Hz and hits zero 120 times a second. A motor running on it gets a lumpy shove rather than a steady push, which is why single-phase motors need starting windings and capacitors and are generally miserable above a couple of horsepower.</p>
+<p>Put three sinusoids 120 electrical degrees apart on three conductors and the instantaneous sum is constant. A three-phase motor sees smooth torque and starts on its own with no extra hardware. You also move more power per pound of copper: three conductors carrying three phases deliver considerably more than three conductors carrying three separate single-phase circuits, because the return currents cancel instead of needing their own paths.</p>
+<p>That cancellation is the whole trick, and later on it is also the whole problem.</p>
+<h2 id="wye-and-delta">Wye and delta</h2>
+<p>A three-phase source is connected one of two ways.</p>
+<p><strong>Delta</strong> connects the three windings end to end in a triangle. There are three conductors and no neutral. The voltage between any two conductors is the winding voltage. Utilities like delta on the primary side of a transformer, and most medium-voltage service into a building is delta.</p>
+<p><strong>Wye</strong> (star) connects one end of each winding to a common point, which becomes the neutral. Now there are four conductors and two useful voltages: line-to-line and line-to-neutral. The relationship between them is the square root of three.</p>
+<pre><code>line-to-line = line-to-neutral × √3
+
+480 / 1.732 = 277 V line-to-neutral
+208 / 1.732 = 120 V line-to-neutral</code></pre>
+<p>That is where the odd-looking numbers come from. 480Y/277 and 208Y/120 are not arbitrary; they are the same system scaled, and 277 and 120 fall out of the geometry.</p>
+<div class="tw"><table><thead><tr><th>System</th><th>Line-to-line</th><th>Line-to-neutral</th><th>Typical use</th></tr></thead><tbody><tr><td>480Y/277</td><td>480 V</td><td>277 V</td><td>Building distribution, motors, chillers, UPS input, 277 V lighting</td></tr><tr><td>208Y/120</td><td>208 V</td><td>120 V</td><td>Receptacles, rack PDUs, small equipment</td></tr><tr><td>480 delta</td><td>480 V</td><td>none</td><td>Utility and transformer primaries, motor feeders</td></tr><tr><td>240 delta with center tap</td><td>240 V</td><td>120 V on one leg</td><td>Legacy light industrial. The "high leg" is 208 V to neutral and bites people</td></tr></tbody></table></div>
+<p>A data center chain typically runs medium voltage into a step-down transformer, 480Y/277 through switchgear and out to mechanical plant and UPS input, then 480 V from the UPS to power distribution units that contain their own 480-to-208Y/120 transformer, and 208 V or 120 V to the rack. Modern servers take 208 V happily, so a lot of sites never break out 120 V in the data hall at all.</p>
+<p>The delta-wye step-down transformer is doing more than changing voltage. It creates a <strong>separately derived system</strong>: a brand new neutral, bonded to ground at one point, with its own grounding electrode conductor. That is why a fault downstream of a PDU transformer does not care about the grounding upstream of it, and it is why you cannot casually move a neutral-ground bond around.</p>
+<h2 id="the-neutral-that-carries-more-than-the-phases">The neutral that carries more than the phases</h2>
+<p>On a balanced wye system with linear loads, the three phase currents are equal and 120 degrees apart and their vector sum in the neutral is zero. Load the phases unequally and the neutral carries the difference. Nothing about that requires the neutral to be full-sized, and for decades code and practice treated it as a lightly loaded conductor.</p>
+<p>Then everything got a switching power supply.</p>
+<p>A rectifier front end does not draw a sinusoid. It draws a short, tall pulse of current near the peak of the voltage waveform, twice a cycle, while it tops up a capacitor. Fourier says a waveform like that contains a fundamental plus a stack of odd harmonics. The <strong>triplen harmonics</strong> — the third and its odd multiples, so 3rd, 9th, 15th — are the interesting ones, because in a three-phase system they are zero-sequence. Shift a third-harmonic component by 120 degrees of the fundamental and you have shifted it by 360 degrees of itself, which is no shift at all. All three phases' triplen content arrives at the neutral in phase and adds arithmetically instead of cancelling.</p>
+<p>The consequence is that the neutral of a perfectly balanced panel can carry substantial current, and in bad cases more than any phase conductor. The theoretical worst case is about 1.73 times phase current; loads like older computer power supplies were commonly measured somewhere in the neighborhood of 1.6 times.</p>
+<p>The code caught up. NEC 310.15(E)(3) says that on a four-wire, three-phase wye circuit where the major portion of the load — more than half — is nonlinear, the neutral counts as a current-carrying conductor for ampacity adjustment. In practice, data center panelboards and PDUs get a 200 percent rated neutral bus and oversized neutral conductors as a matter of course.</p>
+<p>There is good news that people rarely mention. Server power supplies with active power factor correction pull near-sinusoidal current and have very little third harmonic; 80 PLUS certification requires power factor of 0.9 or better at full load, and real supplies do considerably better. The triplen nightmare of the 1990s, when every PC had an unfiltered capacitive input, is much reduced in a modern data hall. It has not gone away. LED drivers, small wall-wart supplies, older gear and lightly loaded PFC stages all still contribute, and the failure mode is quiet: a hot neutral that nobody measures.</p>
+<h2 id="k-rated-transformers">K-rated transformers</h2>
+<p>Harmonic current heats transformers out of proportion to its magnitude. Winding eddy current losses rise roughly with the square of harmonic order, so a modest amount of 11th harmonic does a lot more thermal damage than the same current at 60 Hz. A transformer sized on RMS amps alone, feeding nonlinear load, runs hot and dies early.</p>
+<p>A <strong>K-factor</strong> rating, defined under UL 1561, states how much harmonic-driven eddy current loss the transformer is built to dissipate without exceeding its temperature rise. UL recognizes K-1, K-4, K-9, K-13, K-20, K-30, K-40 and K-50. K-4 covers a general office mix, K-13 is the usual industrial choice, and heavily rectified load such as a data hall is typically specified at K-13 or K-20. K-rated units also carry the 200 percent neutral bus that the triplen problem demands.</p>
+<p>Two things to be clear about. A K-rated transformer does not filter anything — it survives harmonics, it does not remove them. And buying K-20 when the load is K-4 is money spent on a bigger, heavier, more expensive unit for nothing.</p>
+<p>If you want the harmonics gone rather than tolerated, the tools are different: harmonic mitigating transformers with phase-shifted secondaries that cancel specific orders, 12-pulse or active front ends on large rectifiers, and active harmonic filters. IEEE 519 is the reference for what is acceptable at the point of common coupling — broadly, 5 percent total voltage distortion at low voltage, with current limits set by the ratio of available short-circuit current to load current.</p>
+<h2 id="power-factor-is-two-different-numbers">Power factor is two different numbers</h2>
+<p>Ask an electrician about power factor and you get motors: current lagging voltage, magnetizing reactance, capacitor banks to pull it back toward unity. That is <strong>displacement power factor</strong>, the cosine of the angle between two sinusoids.</p>
+<p>Rectifiers distort rather than shift. Their current can be nearly in phase with the voltage and still be a lousy load, because the waveform is the wrong shape. That is <strong>distortion power factor</strong>. True power factor is the product of the two:</p>
+<pre><code>true PF = displacement PF × distortion PF</code></pre>
+<p>This matters operationally. Capacitor banks correct displacement and do nothing for distortion. Worse, a capacitor bank and the source inductance form a resonant circuit, and if that resonance lands near a harmonic order that the load is producing, the bank amplifies the very currents you were trying to manage. Detuned reactors exist for exactly this reason. If a site has significant rectified load, nobody should install plain power factor correction capacitors without a harmonic study first.</p>
+<h2 id="what-to-actually-do">What to actually do</h2>
+<p>Measure the neutral. Not calculate it, measure it, with a true-RMS clamp — an averaging meter reading a distorted waveform will lie to you, usually low. Do it under real load, not on a Sunday.</p>
+<p>Thermal-image transformers and panels annually and compare year over year. A neutral bus running hotter than the phases is the whole story in one image.</p>
+<p>Before adding load to an existing panel, check what kind of load it is, not just how many amps. Twenty amps of motor and twenty amps of rectifier are not the same twenty amps.</p>
+<p>And when someone proposes power factor correction capacitors to shave a utility penalty, ask what the penalty is actually for. If it is distortion, capacitors will make the bill worse and the equipment hotter.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

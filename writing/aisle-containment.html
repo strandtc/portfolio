@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aisle containment and the air you are already wasting — Chris Strandt</title>
+  <meta name="description" content="Bypass and recirculation are the real problem, containment is one answer, and delta-T is how you tell whether any of it worked.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">Aisle containment and the air you are already wasting</h1>
+      <p class="wr-dek">Bypass and recirculation are the real problem, containment is one answer, and delta-T is how you tell whether any of it worked.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>A cooling unit does not cool a room. It moves a volume of air at a temperature, and whether that air does any useful work depends entirely on whether it passes through a server on its way back. Most of the money wasted on data center cooling is spent moving air that never touches a heat load, and containment is the most direct way to stop doing that.</p>
+<h2 id="the-enemy-is-bypass-and-recirculation">The enemy is bypass and recirculation</h2>
+<p>Hot aisle and cold aisle arrangement — cabinets facing each other across a shared cold aisle, backs to a shared hot aisle — is credited to Robert F. Sullivan, then at IBM, in the early 1990s. It was a large improvement on rows all facing the same way, where each row inhaled the previous row's exhaust. It also does not, by itself, keep the two air streams apart. It just makes them adjacent.</p>
+<p>Two failures follow.</p>
+<p><strong>Bypass airflow</strong> is conditioned supply air that returns to the cooling unit without passing through any IT equipment. It goes around the end of a row, over the top of the cabinets, through an unsealed cable cutout in the raised floor, through a perforated tile in a hot aisle, or through an empty rack unit where nobody fitted a blank. It costs you fan energy, it costs you cooling capacity, and it lowers your return temperature, which makes the cooling unit less effective at exactly the moment you need it.</p>
+<p><strong>Recirculation</strong> is hot exhaust that finds its way back to an equipment intake — over the top of a short cabinet, around the end of a row, or straight through the gaps in a partially populated rack. Recirculation is what actually produces hot spots. The room can be well within its temperature setpoint on average while a specific server is inhaling its neighbor's exhaust at 40 °C.</p>
+<p>Everything below is aimed at those two things. Containment is a means, not the goal.</p>
+<h2 id="containment-approaches">Containment approaches</h2>
+<div class="tw"><table><thead><tr><th>Approach</th><th>What it does</th><th>Trade-offs</th></tr></thead><tbody><tr><td>Cold aisle containment</td><td>Roof and end doors over the cold aisle; the rest of the room becomes the hot return</td><td>Cheaper to retrofit, works with raised-floor supply; the room runs hot, which people dislike and which reduces ride-through time if cooling stops</td></tr><tr><td>Hot aisle containment</td><td>Encloses the hot aisle and returns it to a ceiling plenum or directly to the units</td><td>The room stays at supply temperature — comfortable, and a large thermal buffer; needs a return path, usually a ceiling plenum</td></tr><tr><td>Vertical exhaust duct (chimney cabinets)</td><td>Ducts each cabinet's exhaust into the ceiling plenum</td><td>Per-cabinet, no aisle work needed; depends on cabinet-level sealing and can restrict airflow if undersized</td></tr><tr><td>Curtains and strip doors</td><td>Partial separation, cheap</td><td>Better than nothing; degrades as people leave them tied back</td></tr></tbody></table></div>
+<p>The choice between hot aisle and cold aisle containment is less technical than it looks. Hot aisle containment is the better engineering answer in most new builds: the occupied room sits at supply temperature, so the general room condition is pleasant, work in the room is comfortable, and there is a large volume of cool air acting as a buffer if the cooling stops. Cold aisle containment is usually the better retrofit answer, because it is easier to install over an existing raised-floor room without touching the ceiling.</p>
+<p>What matters more than the choice is the completeness. A contained aisle with a gap is a contained aisle with a leak path, and air will find it before you do.</p>
+<h2 id="the-unglamorous-parts">The unglamorous parts</h2>
+<p>Containment fails on the details, and the details cost almost nothing relative to the panels.</p>
+<p><strong>Blanking panels</strong> in every empty rack unit. An open U in the middle of a populated cabinet is a direct short circuit from hot aisle to cold aisle, right at intake height. These are the cheapest airflow intervention available and the most commonly skipped, usually because nobody owns the job after the racks are handed over.</p>
+<p><strong>Floor grommets</strong> on every cable cutout, and sealing under and between cabinets. In a raised floor, every unsealed opening that is not a perforated tile in a cold aisle is bypass. Cutouts behind cabinets are the worst offenders because the air comes up into the hot aisle and goes straight home.</p>
+<p><strong>Side and rear panels, and gaps between cabinets.</strong> Cabinets are rarely perfectly adjacent, and a 50 mm gap between two frames is a leak path at every height. Fit filler panels.</p>
+<p><strong>Perforated tile placement.</strong> Tiles belong in cold aisles, in proportion to the load of the cabinets they serve. A perforated tile in a hot aisle, or under a cabinet, is a design error that somebody installed on purpose to fix a hot spot and never removed.</p>
+<p><strong>Rack-mounted equipment that breathes sideways.</strong> Network switches in particular. Side-to-side airflow in a front-to-back world creates a local recirculation loop inside the cabinet. Use ducted airflow kits, or place them where their intake sees cold air.</p>
+<p>None of that is interesting work. All of it has a better return per dollar than the containment system it supports.</p>
+<h2 id="delta-t-is-the-metric-that-tells-you-the-truth">Delta-T is the metric that tells you the truth</h2>
+<p>Server manufacturers design equipment to raise the air temperature by a known amount as it passes through. That rise is set by the hardware and the fan speed, not by you. Which gives you a very useful diagnostic: if the temperature rise the cooling units see is much smaller than the rise the IT equipment produces, the difference is air that went around the servers.</p>
+<p>That relationship is formalized as the <strong>Return Temperature Index</strong>, introduced by Magnus Herrlin:</p>
+<pre><code>RTI = (T_return - T_supply) / (delta-T across the IT equipment) x 100%
+
+RTI = 100%   ideal: everything the units deliver passes through the load
+RTI &lt; 100%   net bypass air
+RTI &gt; 100%   net recirculation</code></pre>
+<p>Its companion is the <strong>Rack Cooling Index</strong>, also Herrlin's, which measures how well intake temperatures across the room comply with the ASHRAE recommended and allowable limits. RCI is expressed as a percentage with 100 % as the ideal — no intakes outside the recommended range at the high end, none at the low end.</p>
+<p>The two together answer different questions. RCI asks whether the equipment is being cooled properly. RTI asks whether you are spending too much to do it. You can have a perfect RCI and an awful RTI, which is the normal condition of a room that solved its hot spots by adding cooling units.</p>
+<p>In practice, a low return temperature on your CRAC or CRAH units, or a return temperature close to the supply temperature, is the single clearest indicator that you have a bypass problem. It is also the measurement you already have, on equipment you already own, and almost nobody looks at it.</p>
+<h2 id="raising-supply-temperature">Raising supply temperature</h2>
+<p>The reason to fix airflow is not tidiness. It is that once the two air streams are genuinely separated, you can raise the supply temperature — and supply temperature is what determines how many hours a year you can run on economizers, how warm you can run the chilled water, and how efficiently the plant operates.</p>
+<p>ASHRAE's TC 9.9 thermal guidelines give a <strong>recommended envelope</strong> of 18 to 27 °C (64.4 to 80.6 °F) at the equipment intake, with humidity between a −9 °C and 15 °C dew point and no more than 60 % relative humidity. The <strong>allowable</strong> classes are wider, and they are equipment classes rather than facility targets:</p>
+<div class="tw"><table><thead><tr><th>Class</th><th>Allowable dry bulb</th><th>Typical equipment</th></tr></thead><tbody><tr><td>A1</td><td>15 to 32 °C</td><td>Enterprise servers, storage</td></tr><tr><td>A2</td><td>10 to 35 °C</td><td>Volume servers</td></tr><tr><td>A3</td><td>5 to 40 °C</td><td>Extended-temperature equipment</td></tr><tr><td>A4</td><td>5 to 45 °C</td><td>Widest tolerance</td></tr><tr><td>H1</td><td>15 to 25 °C allowable, 18 to 22 °C recommended</td><td>High-density air-cooled equipment</td></tr></tbody></table></div>
+<p>H1 is the one that surprises people. It was added in the fifth edition of the guidelines in 2021, and it goes the other way: high-density air-cooled equipment, the sort now filling AI and HPC racks, packs so much power behind a fixed amount of airflow that it needs colder and more tightly controlled inlet air, not warmer. If you are planning for that kind of load, the whole raise-the-setpoint argument needs re-examining for those rows.</p>
+<p>For conventional load, the argument holds and the constraint is worth stating clearly. Every degree of supply temperature you gain by containment is a degree you did not have to buy with mechanical cooling. But it is not free indefinitely: server fans ramp with inlet temperature, and past some point the IT fan power you add exceeds the plant power you save. There is an optimum, it is specific to your equipment mix, and you find it by walking the setpoint up slowly while watching total facility power and intake temperatures — not by picking a number from a conference talk.</p>
+<h2 id="the-fire-suppression-argument">The fire suppression argument</h2>
+<p>Containment changes the room in ways the fire protection design assumed would not happen, and this is not a detail you sort out after commissioning.</p>
+<p>The problems are concrete. Containment roofs and doors obstruct sprinkler spray patterns and block smoke from reaching ceiling-mounted detection. A contained hot aisle runs hot enough that detection and suppression components installed inside it need to be rated for that temperature. A gaseous system designed for a room volume behaves differently when part of that volume is partitioned off with high airflow through it.</p>
+<p>NFPA 75, the standard for fire protection of information technology equipment — current edition 2024 — addresses this directly: where aisle containment is installed, the existing detection and suppression systems have to be evaluated, modified as necessary, and tested. One specific change is worth knowing, because it invalidates a common older design. Drop-away containment panels held by fusible links, which release on heat, are no longer acceptable on their own. Removal of the obstruction has to be initiated by smoke detection, which means the containment has to be electrically coupled to the detection system and has to fail in the open direction.</p>
+<p>The practical consequence: if you are retrofitting containment into an existing room, the fire protection engineer and the authority having jurisdiction are involved from the first sketch, not at the end. Retrofitting sprinkler heads into a contained aisle after the panels are up costs far more than designing for it.</p>
+<h2 id="walking-the-room">Walking the room</h2>
+<p>If you want to know where you stand before spending anything, walk it with a thermal camera, a tile flow hood if you have one, and a notebook:</p>
+<ul><li>Read the return temperature at every cooling unit. Compare it to supply. If the difference is</li></ul>
+<p>  much smaller than the rise across your servers, you have bypass, and you can quantify roughly   how much.</p>
+<ul><li>Count empty rack units without blanks. That number is your first work order.</li><li>Find every floor cutout without a grommet, including the ones under cabinets.</li><li>Find every perforated tile that is not in a cold aisle serving a load.</li><li>Measure intake temperature at the top front of the cabinets at the end of each row. That is</li></ul>
+<p>  where recirculation shows up first.</p>
+<ul><li>Check what fraction of your cooling units are running simultaneously and how many you would</li></ul>
+<p>  need if the air went where it was supposed to.</p>
+<p>Most rooms find enough in that walk to defer a cooling unit purchase. Containment is the next step after, not instead of.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

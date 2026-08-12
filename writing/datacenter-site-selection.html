@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What actually decides a data center site — Chris Strandt</title>
+  <meta name="description" content="How power capacity, fiber routes, water, land and local politics narrow a long list of parcels down to the one or two that will work.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">What actually decides a data center site</h1>
+      <p class="wr-dek">How power capacity, fiber routes, water, land and local politics narrow a long list of parcels down to the one or two that will work.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Most site searches start with a broker and a map of available parcels. That is backwards. The parcel is the last thing that matters. A site is a power problem, a fiber problem and a permitting problem wearing a real estate costume, and if you sort on price per acre you will end up under contract on land you cannot energize.</p>
+<p>I have done this three times in Lansing, ground up, on the owner side. What follows is the order I would run it in and the questions that actually change the answer.</p>
+<h2 id="power-is-the-site">Power is the site</h2>
+<p>Start with the utility, not the listing. Two questions decide most of it: how much capacity is available at this point on the system today, and what does it cost and take to get more.</p>
+<p>Those are different questions, and utilities answer them differently. A big line crossing the back of a parcel tells you nothing. Capacity lives in the substation transformer, the feeder breaker and the conductor, and any one of those can be the binding constraint. A 46 kV line running past the property is useless if the substation feeding it has no spare transformer capacity and the next upgrade is in the utility's five-year plan.</p>
+<p>Ask specifically:</p>
+<ul><li>What is the available capacity at the nearest point of interconnection, in MW, today?</li><li>Which substation serves it, how far away is it, and what is the transformer loading?</li><li>Can I get two feeds from two different substations, or two feeders off the same bus?</li><li>What is the historical outage record on those feeders?</li><li>What is the lead time and cost for the next increment of capacity?</li></ul>
+<p>Distance to the substation drives the cost of the line extension and, at distribution voltage, the voltage drop and exposure you inherit. Every mile of overhead feeder is another mile of tree contact and vehicle strikes.</p>
+<p>If your load is large enough, the answer may be that the utility builds new. On the largest of the three, an $80M facility, the utility constructed a substation to serve it. That changes the economics and the schedule of the entire project, and it is worth knowing early whether you are a line extension or a substation. Interconnection is a long enough subject that it deserves its own piece; treat the utility's study process as the critical path from day one, because it usually is.</p>
+<h2 id="fiber-and-how-many-carriers-can-actually-reach-the-parcel">Fiber, and how many carriers can actually reach the parcel</h2>
+<p>Economic development sheets like to count carriers. The number is almost always wrong, because it counts carriers present in the metro, not carriers with fiber that can reach your building on a route they own.</p>
+<p>What you want is physical route diversity: two entrances on opposite sides of the building, into separate handholes, following paths that do not converge in a single conduit or share a single bridge crossing. Two carriers riding the same underlying dark fiber on the same route are one carrier with two invoices.</p>
+<p>So ask for route maps, not carrier lists. Then check:</p>
+<ul><li>How far is the nearest splice point or POP for each carrier, and is the path aerial or buried?</li><li>Is there existing spare conduit in the road right of way, or does someone have to trench?</li><li>Does the route cross a railroad, a river, a state highway or a municipal boundary? Railroad</li></ul>
+<p>  crossings in particular can add months to a build, entirely on permitting.</p>
+<ul><li>Who owns the last mile, and are they willing to sell an IRU rather than a lit service?</li></ul>
+<p>A parcel with one incumbent and no realistic second path is a parcel where you will be buying overpriced transport for a decade. If you plan to build your own ring to the local ILEC, walk the route before you sign anything.</p>
+<h2 id="the-land-itself">The land itself</h2>
+<p>Buy more than you need. Build for phase one, buy for phase four. The things that eat land are not the data halls — they are the generator yard, the transformer and switchgear pads, the chiller or condenser yard, fuel storage with its containment, the loading dock and turning radius for a truck with a 2,500 kVA transformer on it, laydown space during construction, and stormwater retention. Then add the setbacks the zoning ordinance imposes on all of it.</p>
+<p>Practical checks before you commit:</p>
+<div class="tw"><table><thead><tr><th>Item</th><th>What to look for</th><th>Why it bites</th></tr></thead><tbody><tr><td>Flood plain</td><td>FEMA mapping; stay out of the 100-year, prefer outside the 500-year</td><td>Insurance, financing and the fact that generators and switchgear live at grade</td></tr><tr><td>Soils</td><td>Borings before purchase, not after</td><td>Raised floor and heavy equipment loads; bad soils mean piles</td></tr><tr><td>Seismic</td><td>IBC seismic design category for the site</td><td>Drives anchorage and bracing of racks, tanks, piping and switchgear</td></tr><tr><td>Topography</td><td>Where does water go in a hard rain</td><td>Retention pond area comes out of your buildable acres</td></tr><tr><td>Adjacency</td><td>Rail, pipelines, fuel storage, airports, industrial neighbors</td><td>Risk analysis you will have to answer for in every customer audit</td></tr></tbody></table></div>
+<p>Seismic barely registers in Michigan. It still shows up in the drawings, because the code assigns a design category to every site and that category drives how everything gets anchored.</p>
+<h2 id="water-if-you-go-evaporative">Water, if you go evaporative</h2>
+<p>Evaporative and adiabatic cooling trade water for electricity. That trade is often a good one, but only if the water is actually there.</p>
+<p>Find out the size and pressure of the nearest main, whether it is a looped main or a dead end, and what the municipality's position is on a large industrial draw. Then find out where the blowdown goes. Cooling tower blowdown is concentrated by whatever cycles of concentration you run, and the sanitary discharge permit will have limits on conductivity and on whatever chemistry you use for scale and biological control. Some municipalities meter the discharge separately and some assume sewer volume equals water volume, which you do not want when most of your water leaves as vapor.</p>
+<p>Also ask what happens in a drought and whether the system has ever been under a use restriction. If you cannot get comfortable with any of that, you are designing around air-cooled chillers or DX, and you should know that before the mechanical concept is set rather than after.</p>
+<h2 id="noise-generators-and-the-neighbors">Noise, generators, and the neighbors</h2>
+<p>Diesel standby plants are loud, and you have to run them. NFPA 110 calls for exercising the engine at least monthly for a minimum of 30 minutes, and you will also want annual load bank testing. That is a recurring, scheduled noise event on a site that may sit near residential property.</p>
+<p>Two constraints to check before you buy:</p>
+<p><strong>Noise ordinance.</strong> Most municipal ordinances set a dBA limit measured at the property line, with a lower limit at night. Sound-attenuated enclosures and exhaust silencers will get you there, but they cost money, they add exhaust backpressure the engine manufacturer has to bless, and they take up space. Better to know the number before you size the yard.</p>
+<p><strong>Air permitting.</strong> Under EPA's standards for stationary compression ignition engines in 40 CFR Part 60, subpart IIII, an emergency engine may be operated for maintenance and testing for a maximum of 100 hours per calendar year, with no time limit on genuine emergency operation. That is enough for monthly exercise and load bank testing on a normal plant, but it is a real ceiling, and how your state agency treats aggregate site emissions determines what kind of permit you need and how long it takes.</p>
+<h2 id="incentives-and-the-township">Incentives, and the township</h2>
+<p>Michigan has had a sales and use tax exemption for data center equipment since Public Acts 251 and 252 of 2015, with eligibility conditions attached to how the facility is used and who the customers are. Whatever your state's version is, read the statute, not the brochure, and get your tax counsel to confirm you qualify before you underwrite it. Abatements on real and personal property are usually local and discretionary, which means they come with conditions and a clawback.</p>
+<p>Which brings up the part that kills projects. It is not engineering. It is the planning commission.</p>
+<p>Site plan review, a special use permit, a rezoning, a public hearing where somebody stands up and says the word "generator" — that process has its own clock and its own politics, and it is indifferent to your construction schedule. The failure mode is showing up with a signed purchase agreement and a design already committed, because now you have no leverage and no ability to change the thing they object to.</p>
+<p>Go see the township early. Bring the site plan, bring the noise study, and be straight about the generators and the truck traffic. Option the land with an entitlements contingency rather than buying it outright. And find out who on the board has an opinion about industrial development before the first hearing, not during it.</p>
+<h2 id="the-order-that-works">The order that works</h2>
+<p>Power availability, then fiber routes, then entitlements, then land price. If a parcel fails on power, nothing downstream can save it. If it fails on fiber, you can sometimes buy your way out, and you should price that before you decide. If it fails at the township, you will find out slowly and expensively.</p>
+<p>The single most useful thing you can do in the first two weeks is get a real conversation with the utility's key accounts group and a real route map from two carriers. Everything else is negotiable.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

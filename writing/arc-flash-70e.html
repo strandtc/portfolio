@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading an arc flash label and knowing what is behind it — Chris Strandt</title>
+  <meta name="description" content="What an incident energy calculation actually computes, how the NFPA 70E methods differ, why studies go stale, and how to cut the energy instead of the exposure.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">Reading an arc flash label and knowing what is behind it</h1>
+      <p class="wr-dek">What an incident energy calculation actually computes, how the NFPA 70E methods differ, why studies go stale, and how to cut the energy instead of the exposure.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>An arc flash is a fault that goes through the air instead of through copper. Ionized air conducts, the arc sustains itself, and the copper at each end vaporizes and expands enormously as it does. What comes out of the enclosure is thermal radiation, a pressure wave, molten metal, and vaporized copper condensing on whatever it hits.</p>
+<p>The label on the front of the gear quantifies one part of that — the thermal part — at one distance, for one set of assumptions. Understanding those assumptions is the difference between a label that protects someone and a label that gives them false confidence.</p>
+<h2 id="what-the-calculation-computes">What the calculation computes</h2>
+<p><strong>Incident energy</strong> is the thermal energy delivered to a surface at a stated distance from the arc, expressed in calories per square centimeter. That is it. Not pressure, not shrapnel, not the sound, not the toxicity of vaporized insulation. The thermal component, at a working distance, in cal/cm².</p>
+<p>IEEE 1584 is the model. The 2018 edition is current and it is a significant rework of the 2002 one. Inputs are:</p>
+<ul><li>Bolted fault current available at that point in the system</li><li>System voltage</li><li>Electrode gap and, new in 2018, electrode configuration</li><li>Enclosure dimensions</li><li>Working distance</li><li>Grounding arrangement</li><li><strong>How long the upstream protective device takes to clear the arcing current</strong></li></ul>
+<p>That last one is the whole ballgame, and I will come back to it.</p>
+<p>The 2018 electrode configurations matter more than they sound. The model now distinguishes vertical electrodes in a box (VCB), vertical electrodes terminating in an insulating barrier in a box (VCBB), and horizontal electrodes in a box (HCB), plus open-air equivalents. Where the arc plasma gets directed changes how much energy reaches a person in front of the opening: at typical working distances and all else equal, HCB is worse than VCBB, which is worse than VCB. The 2018 edition also made the valid electrode gap range voltage-dependent — 0.25 to 3 inches for 208 to 600 V, 0.75 to 10 inches for 601 V to 15 kV — and added a correction for enclosure size.</p>
+<p>An old study run on the 2002 model and a new one run on 2018 will not agree, and the new one is often higher in places you were comfortable with.</p>
+<h2 id="time-dominates-and-it-is-counterintuitive">Time dominates, and it is counterintuitive</h2>
+<p>Incident energy scales with how long the arc burns. A device that clears in three cycles and a device that clears in thirty cycles, on the same fault, differ by a factor of ten in delivered energy.</p>
+<p>The consequence that surprises people: <strong>reducing available fault current can increase incident energy.</strong> A smaller arcing current may fall below the upstream breaker's instantaneous pickup, so instead of clearing in a couple of cycles the breaker rides its short-time or long-time delay curve and takes a second or more. Less current, much more time, more energy at the worker.</p>
+<p>This is why IEEE 1584 requires evaluating both the calculated arcing current and a reduced arcing current, and taking the worse result. It is also why "we put in a bigger transformer with more impedance to reduce fault current" is not automatically an arc flash improvement, and why the label on a small panel at the end of a long feeder is sometimes worse than the label on the switchgear.</p>
+<h2 id="cal-cm-and-the-boundaries">cal/cm² and the boundaries</h2>
+<p><strong>1.2 cal/cm²</strong> is the number the industry is organized around. NFPA 70E defines the arc flash boundary as the distance at which incident energy equals 1.2 cal/cm² (5.0 J/cm²), which is the onset of a second-degree burn on bare skin.</p>
+<p>It is a burn threshold, not a safe distance. Standing just outside the boundary in a t-shirt means you are barely not getting a second-degree burn from the thermal component, while still being inside the pressure wave and the range of ejected material.</p>
+<p>Separately, and often confused with it, are the <strong>shock</strong> boundaries: limited approach and restricted approach. Those are functions of system voltage and have nothing to do with incident energy. A 480 V panel and a 13.8 kV cubicle can have similar incident energy and completely different shock boundaries. Two hazards, two sets of distances.</p>
+<h2 id="the-two-methods-which-you-must-not-mix">The two methods, which you must not mix</h2>
+<p>NFPA 70E gives two ways to select PPE, and using both at once is a documented mistake.</p>
+<p><strong>Incident energy analysis.</strong> Calculate the incident energy at the working distance, then select PPE with an arc rating at or above it. Table 130.5(G) tells you the clothing and equipment that goes with the calculated value. This is what an engineering study produces and it is what any facility of any size should have.</p>
+<p><strong>PPE category method.</strong> Use the task tables — 130.7(C)(15)(a) and (b) — which cover specific equipment types operating within stated parameters of fault current and clearing time. If your equipment fits those parameters, the table gives a category and Table 130.7(C)(15)(c) says what the category requires. If it does not fit, the tables do not apply and you have to calculate.</p>
+<p>There is no category above 4. Above 40 cal/cm² you have left the table behind, and the honest answer is that you are not doing that work energized.</p>
+<div class="tw"><table><thead><tr><th>PPE category</th><th>Minimum arc rating</th></tr></thead><tbody><tr><td>1</td><td>4 cal/cm²</td></tr><tr><td>2</td><td>8 cal/cm²</td></tr><tr><td>3</td><td>25 cal/cm²</td></tr><tr><td>4</td><td>40 cal/cm²</td></tr></tbody></table></div>
+<p>Do not put both a calculated incident energy and a PPE category on the same label. 130.5(H) explicitly allows one or the other, not both, precisely because the two mean different things and a reader will apply whichever is more convenient.</p>
+<h2 id="labels">Labels</h2>
+<p>Two different documents drive two different labels and they get conflated constantly.</p>
+<p><strong>NFPA 70E 130.5(H)</strong> applies to equipment likely to be examined, adjusted, serviced or maintained while energized, in other than dwelling units. The label needs the nominal system voltage, the arc flash boundary, and at least one of: the available incident energy with its corresponding working distance, or the arc flash PPE category (one or the other, not both); the minimum arc rating of clothing; or a site-specific level of PPE. The owner is responsible for documentation, installation and maintenance of the label.</p>
+<p><strong>NEC 110.16(B)</strong> applies to service equipment rated 1200 A or more in other than dwelling units, and requires a permanent field- or factory-applied label carrying the nominal system voltage, the available fault current at the service overcurrent devices, the clearing time of those devices based on that fault current, and the date the label was applied. There is an exception for equipment labeled in accordance with acceptable industry practice, such as NFPA 70E.</p>
+<p>They overlap but they are not the same information, and the NEC one has a date on it for a reason.</p>
+<h2 id="why-studies-go-stale">Why studies go stale</h2>
+<p>70E requires the arc flash risk assessment to be reviewed when a major modification or renovation occurs and at intervals not exceeding five years. Five years is a ceiling, not a schedule, and here is what changes faster than that:</p>
+<p><strong>The utility.</strong> They replace a transformer with a lower-impedance unit or reconductor a feeder, and available fault current at your service goes up. Nobody tells you. Ask for the available fault current in writing periodically; it is the input that most often invalidates a study.</p>
+<p><strong>Generation.</strong> Adding a generator, or adding a second one to a paralleling bus, changes fault current on the emergency source. Sites frequently model utility source and never model generator source, and the study is then silent about exactly the condition under which people are most likely to be working in the gear.</p>
+<p><strong>Settings.</strong> Somebody adjusts a relay or a trip unit during a coordination fix, or turns the instantaneous off to stop nuisance trips, and the clearing time in the study is no longer the clearing time in the field. Every settings change is an arc flash change.</p>
+<p><strong>Breakers that no longer do what their curve says.</strong> The study assumes published time-current characteristics. A twenty-year-old breaker that has never been exercised or primary-injection tested may not clear in the time the curve promises. That does not make the label conservative, it makes it wrong. An arc flash program without a breaker testing program is half a program.</p>
+<p><strong>Drift.</strong> Equipment swapped for a different frame, temporary feeds that became permanent, panel schedules that no longer match reality. Studies model documented systems, and documentation decays.</p>
+<h2 id="reducing-the-energy-rather-than-the-exposure">Reducing the energy rather than the exposure</h2>
+<p>Because incident energy tracks clearing time, the highest-leverage fix is almost always to make the upstream device faster while someone is standing in front of the gear.</p>
+<p>NEC 240.87 requires arc energy reduction where a circuit breaker's continuous current rating or trip setting is 1200 A or more, and lists the acceptable means: zone-selective interlocking, differential relaying, energy-reducing maintenance switching with a local status indicator, an energy-reducing active arc flash mitigation system, an instantaneous trip setting lower than the available arcing current, an instantaneous override lower than the available arcing current, or an approved equivalent. It also requires documentation of where these devices are and how to engage them, and performance testing of the system by a qualified person at installation. 240.67 does the equivalent for fuses.</p>
+<p>The <strong>energy-reducing maintenance switch</strong> is the one worth understanding. It temporarily reconfigures the breaker's protection to a fast, low instantaneous setting, deliberately sacrificing selective coordination in exchange for speed, for as long as a person is exposed. Throw it, do the work, throw it back. It routinely takes a 30 cal/cm² label down to something in category 2 territory.</p>
+<p>Two things make it useless. If it sits inside the arc flash boundary of the equipment it protects, engaging it requires the exposure it exists to prevent — put it remote. And if the local status indicator does not work, or nobody was trained to use it, it is an expensive switch nobody throws.</p>
+<p>Zone-selective interlocking is the more elegant version: downstream devices signal upstream ones during a fault, so the closest device clears fast without the upstream one waiting out a coordination delay. Speed and selectivity at once, and worth specifying on new switchgear. Remote racking attacks the problem from the other end — if nobody is in front of the gear, the energy at the gear does not matter.</p>
+<h2 id="the-thing-people-get-wrong">The thing people get wrong</h2>
+<p>They treat the study as a PPE purchasing exercise. Consultant delivers a report, facilities buys suits to match the highest number, labels go on doors, box ticked.</p>
+<p>The most useful output of an arc flash study is not the PPE list. It is the map of where incident energy is high and <em>why</em> — which is almost always that a large device upstream is slow at that fault current. That is a protection coordination finding. Fix the coordination, add energy reduction where 240.87 applies, and most of the high-cal locations come down permanently, for everyone who ever works there. PPE only protects the person wearing it correctly on that day.</p>
+<p>The hierarchy still holds. PPE is the last control. The first is not being there: de-energize, verify absence of voltage, apply locks. Everything after that point in 70E is what to do when that was genuinely not possible, which is a much smaller set of situations than most facilities behave as though it is.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

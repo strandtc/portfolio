@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DDoS mitigation starts upstream of your firewall — Chris Strandt</title>
+  <meta name="description" content="The three attack classes, why amplification works, what blackholing and flowspec actually do, and how to choose between appliances and scrubbing.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">DDoS mitigation starts upstream of your firewall</h1>
+      <p class="wr-dek">The three attack classes, why amplification works, what blackholing and flowspec actually do, and how to choose between appliances and scrubbing.</p>
+      <div class="wr-meta"><span>Network</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>The single most useful thing to understand about denial of service is where the traffic stops. If the attack saturates the circuit feeding your building, nothing you own can help, because the packets you need to drop were already delivered to a pipe that can't hold them. Everything else in this article follows from that.</p>
+<h2 id="three-kinds-of-attack">Three kinds of attack</h2>
+<p>They get lumped together and they fail you in completely different ways.</p>
+<p><strong>Volumetric</strong> attacks fill the pipe. Measured in bits per second. The attacker's only goal is to send more than your circuit can carry, at which point your upstream's router starts dropping — including all your legitimate traffic — and nothing downstream gets a vote. Cloudflare reported mitigating a 5.6 Tbps UDP flood on 29 October 2024, sourced from a Mirai variant running on around 13,000 compromised devices; it lasted about 80 seconds. You are not going to filter that anywhere near your building.</p>
+<p><strong>Protocol</strong> or state-exhaustion attacks target the connection table rather than the bandwidth. Measured in packets per second. A SYN flood is the classic: half-open connections that consume an entry in a state table and are never completed. The bandwidth can be trivial. What dies is the firewall, the load balancer, or the server's connection table — anything that keeps per-flow state. NETSCOUT's data has TCP-based floods as the single largest attack category, around 46% of attacks observed. RFC 4987 documents the mechanics and the standard mitigations, SYN cookies among them, and it has aged well.</p>
+<p><strong>Application-layer</strong> attacks look like real users. Measured in requests per second. Full TCP handshake, valid TLS, well-formed HTTP, hitting whatever endpoint is most expensive to serve. The HTTP/2 Rapid Reset attacks of October 2023 (CVE-2023-44487) abused stream cancellation to make each request nearly free for the client and expensive for the server: Google absorbed 398 million requests per second, Cloudflare 201 million, AWS 155 million. Your bandwidth graph barely moves. Your database melts.</p>
+<p>One attack often contains all three, and a common pattern is a volumetric burst as cover for the application-layer attack that's the actual objective.</p>
+<h2 id="amplification-and-reflection">Amplification and reflection</h2>
+<p>Volumetric attacks are big because the attacker doesn't generate the traffic. They borrow it.</p>
+<p><strong>Reflection</strong> means spoofing the source address of a request so the response goes to the victim. <strong>Amplification</strong> means picking a protocol where the response is much larger than the request. Combine them and a modest botnet produces an enormous flood, with the added benefit for the attacker that the traffic arrives from thousands of innocent, legitimately configured servers.</p>
+<p>The old CERT advisory on UDP-based amplification (TA14-017A) still has the most useful table in the field. A few of the factors:</p>
+<div class="tw"><table><thead><tr><th>Protocol</th><th>Bandwidth amplification factor</th></tr></thead><tbody><tr><td>Memcached</td><td>10,000–51,000</td></tr><tr><td>NTP (monlist)</td><td>556.9</td></tr><tr><td>DNS</td><td>28–54</td></tr></tbody></table></div>
+<p>Memcached is the one that stops people. A few hundred bytes in, several megabytes out, because someone exposed a cache with no authentication to the internet on UDP.</p>
+<p>The whole class exists because source address spoofing works. <strong>BCP 38</strong> (RFC 2827, published in 2000) says networks should filter packets leaving their edge that carry source addresses not legitimately theirs. <strong>BCP 84</strong> (RFC 3704) extends the guidance to multihomed networks where the naive check breaks. Twenty-five years on, adoption is still incomplete, which is why reflection remains the cheapest attack there is.</p>
+<p>You can't fix that from where you sit. You can make sure you're not a contributor: uRPF or ACLs on customer-facing interfaces, and no open resolvers, NTP servers, memcached instances, or CLDAP endpoints on your address space. Scan yourself for them, because if you don't, someone will find them for you.</p>
+<h2 id="the-firewall-is-downstream-of-the-problem">The firewall is downstream of the problem</h2>
+<p>A stateful firewall is a device that keeps a table entry per flow. That is a fine thing to be during normal operation and a liability during a packet flood, because the attack's mechanism and the firewall's design are the same thing. During a volumetric or state-exhaustion event, the firewall is frequently the first thing to fall over — before the servers it's protecting.</p>
+<p>The bigger issue is the position. Your firewall is at the end of your circuit. Anything that fills the circuit has already won by the time it reaches the firewall's ingress interface. Everything effective happens somewhere upstream of that: at your border, at your transit provider's edge, or in somebody's global network.</p>
+<p>This is why the transit provider you pick matters more for DDoS survivability than any product you buy. What you want to know before you sign:</p>
+<ul><li>Do they accept a blackhole community from customers, and is it documented?</li><li>Will they honor flowspec rules from you?</li><li>Do they offer scrubbing, and at what price and what activation time?</li><li>How much capacity do they have at the exchange points nearest you, and how does their scrubbing capacity compare to attack sizes now?</li><li>Who answers at 3 a.m., and what's their authentication process for an emergency request?</li></ul>
+<p>Ask those in the sales cycle. Do not discover the answers during an event.</p>
+<h2 id="blackholing">Blackholing</h2>
+<p><strong>RTBH</strong> — remotely triggered black hole filtering — is the crudest tool and the one that works when nothing else does. You advertise the address under attack to your upstream with a community that tells them to route it to null. The traffic is dropped at their edge, or at their peering edge, instead of arriving on your circuit.</p>
+<p>The standard community is defined by <strong>RFC 7999</strong>: <code>BLACKHOLE</code>, <code>65535:666</code>. RFC 5635 describes the destination-based and source-based variants and their use with uRPF. Two details from RFC 7999 worth knowing: routers are not supposed to act on the community unless explicitly configured to honor it, and it's meant not to propagate beyond the neighboring AS.</p>
+<pre><code>! announce a /32 under attack, tagged for upstream blackhole
+route-map BLACKHOLE-OUT permit 10
+ match ip address prefix-list UNDER-ATTACK
+ set community 65535:666 no-export additive</code></pre>
+<p>Be clear-eyed about what this does. Blackholing completes the denial of service for that address. The host is now unreachable from everywhere, by you as much as by the attacker. What it buys is that the rest of your network stays up — you have traded one host for the other several hundred, which during a volumetric attack is a good trade and often the only one available.</p>
+<p>Granularity is the thing to plan. Blackholing a /32 is cheap. Blackholing a /24 because your monitoring can't tell you which host is targeted takes out 256 of them. Know in advance which addresses can be sacrificed and which absolutely cannot, and put the important services on addresses you can blackhole around.</p>
+<h2 id="flowspec">Flowspec</h2>
+<p><strong>BGP flowspec</strong> (RFC 8955, with RFC 8956 for IPv6) is the surgical version. Instead of "drop everything to this address," you distribute a flow specification — a match on source and destination prefix, protocol, ports, packet length, fragment bits — with an action: discard, rate-limit, mark, or redirect.</p>
+<p>That's the difference between losing a host and losing one UDP source port to it. Against reflection attacks, which have very recognizable signatures — UDP source port 11211, 123, or 53, characteristic packet lengths — flowspec drops the attack and leaves the service running.</p>
+<p>The catch is that you need somewhere to install the rules. Inside your own network flowspec is straightforward, but by then the traffic is already on your circuit. The value comes from upstreams that accept customer flowspec, and not all of them do; those that do will limit the number of rules and the actions they'll accept. Confirm support before you build a process around it.</p>
+<h2 id="appliances-and-scrubbing">Appliances and scrubbing</h2>
+<p>An <strong>on-premise appliance</strong> — the category I ran was Arbor — sits at your border, watches traffic, and filters. Its advantages are latency, visibility and control: no diversion, no third party, and detection driven by your own baseline of what normal looks like on your network. Its limit is the same limit everything on-premise has. It cannot filter what your circuit couldn't deliver. An appliance handles state-exhaustion and application-layer attacks well and handles a saturating volumetric attack not at all.</p>
+<p><strong>Cloud scrubbing</strong> works by diversion. When an attack is detected, your traffic is routed to the provider's scrubbing centers, cleaned, and the good traffic is returned to you over a GRE tunnel or a dedicated circuit. Diversion is normally done with BGP — you announce the targeted prefix to the scrubber, who announces it more attractively than you do — which is another reason the /24 minimum matters, because you cannot divert something the internet won't route.</p>
+<div class="tw"><table><thead><tr><th></th><th>On-premise appliance</th><th>Cloud scrubbing</th></tr></thead><tbody><tr><td>Volumetric</td><td>No — circuit saturates first</td><td>Yes, that's the point</td></tr><tr><td>State exhaustion</td><td>Yes</td><td>Yes</td></tr><tr><td>Application layer</td><td>Yes, with local context</td><td>Yes, less context</td></tr><tr><td>Latency in steady state</td><td>None</td><td>None if on-demand, some if always-on</td></tr><tr><td>Time to mitigate</td><td>Immediate</td><td>Minutes for on-demand diversion</td></tr><tr><td>Cost</td><td>Capex plus support</td><td>Recurring, often usage-tiered</td></tr></tbody></table></div>
+<p>They are complements, not alternatives. The standard architecture is an appliance on-premise doing detection and handling everything that fits inside your circuit, with automatic diversion to a scrubbing service when the volume crosses a threshold you set.</p>
+<p>On-demand diversion costs you minutes: detect, decide, announce, converge, and traffic has to find the new path. Always-on removes that gap and adds a permanent path through somebody else's network. Which is right depends on whether you're attacked weekly or yearly.</p>
+<h2 id="before-it-happens">Before it happens</h2>
+<p>The event is not the time to figure out any of this. Have these in place:</p>
+<ol><li>Flow telemetry with a real baseline. Netflow or sFlow off your borders, retained, graphed, with alerting on deviation. You cannot mitigate what you cannot characterize, and during an attack you have minutes to identify destination, protocol, and source distribution.</li><li>A written runbook with the decision tree: at what threshold you blackhole, who can authorize it, at what threshold you divert.</li><li>Blackhole communities pre-configured and tested with each upstream. Test them during a maintenance window on a spare address. Discovering the community was wrong mid-attack is common.</li><li>Your upstreams' emergency contacts and authentication procedure, on paper, offline. Your ticketing system may be behind the thing that's down.</li><li>Out-of-band management that does not traverse the attacked path.</li><li>Your own house clean — no open reflectors, uRPF where it belongs, rate limits on your control plane.</li></ol>
+<p>The item people skip is the third one. Everything else degrades gracefully. An untested blackhole community fails exactly when you need it.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

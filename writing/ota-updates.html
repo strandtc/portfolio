@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping OTA updates you can't take back — Chris Strandt</title>
+  <meta name="description" content="A/B partitions, delta updates, rollback that actually works, signing, staged rollouts, and the device that has been offline for a year.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Embedded</p>
+      <h1 class="wr-title">Shipping OTA updates you can't take back</h1>
+      <p class="wr-dek">A/B partitions, delta updates, rollback that actually works, signing, staged rollouts, and the device that has been offline for a year.</p>
+      <div class="wr-meta"><span>Embedded</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>The thing that makes embedded updates different from server updates is that you cannot go look at it. A server that fails to come up after a kernel change is annoying; you have a BMC, a serial console and a person forty feet away. A device behind a NAT on a cellular modem, on a roof, or in a vehicle, is a truck roll. At any real fleet size, a bad update that bricks one percent of devices costs more than the feature you were shipping was worth.</p>
+<p>So the design constraint is not "deliver a new image." It is "never leave a device in a state it cannot get out of by itself."</p>
+<h2 id="atomicity-is-the-whole-game">Atomicity is the whole game</h2>
+<p>The failure to design against is loss of power halfway through a write. Not a corrupted download — you can checksum that — but the moment where the old filesystem is partly overwritten and the new one is not yet complete.</p>
+<p>An update is atomic if, at every instant, a power cut leaves the device with a complete, bootable system. There is no partial state to recover. That rules out unpacking a tarball over the running root filesystem, and it is why every serious embedded updater writes somewhere that isn't being used.</p>
+<h2 id="a-b-partitions">A/B partitions</h2>
+<p>The dominant answer, and the one used by Mender, RAUC and Android. Two root filesystem partitions. The device runs from A. The updater writes the new image to B, in its entirety, verifies it, then sets a bootloader flag saying "boot B next." Reboot. If B comes up and proves itself, B becomes permanent and A becomes the spare for next time.</p>
+<p>Everything about that is recoverable. A power cut during the write to B leaves A untouched and still the active partition. A power cut after the flag is set but before the reboot completes hits the rollback path, which we'll come to.</p>
+<p>The costs are honest and worth stating plainly:</p>
+<p><strong>Double the rootfs flash.</strong> On a device with 8 GB of eMMC this is a rounding error. On a device with 256 MB of NAND it may decide the whole architecture.</p>
+<p><strong>Data has to live elsewhere.</strong> Persistent state goes in a third partition that is never touched by the update, and everything on the rootfs must be treated as disposable. This is a discipline problem more than a technical one: someone will eventually write state into <code>/etc</code> or <code>/var</code> on the rootfs and be surprised when it vanishes.</p>
+<p><strong>The rootfs is not the whole system.</strong> Bootloader, device tree, and any firmware for peripheral microcontrollers are not covered by an A/B rootfs swap. Bootloader updates in particular are the genuinely dangerous ones because there is usually no second copy — plan them separately, do them rarely, and consider whether you need them at all.</p>
+<h2 id="delta-updates">Delta updates</h2>
+<p>A full rootfs image is tens or hundreds of megabytes. If the change is a 40 kB binary, sending the whole image over a metered cellular link to fifty thousand devices is expensive in a way that shows up on a finance review.</p>
+<p>Delta updates send only the binary difference between the image the device is running and the one you want it running. Mender generates a delta artifact from two full artifacts with <code>mender-binary-delta-generator</code>, and the device reconstructs the target on the inactive partition from its current image plus the delta. Mender publishes typical savings in the 70–90% range. Note this is a commercial feature — it lives in the <code>meta-mender-commercial</code> layer and needs a Professional or Enterprise plan — which is a budget line rather than an engineering one, but decide it early because it affects your build.</p>
+<p>The structural problem is combinatorial. A delta is specific to a source-target pair, so devices spread across six field versions means six deltas. That is why server-side generation exists: the server produces the right delta per device instead of you pre-generating a matrix. Doing it yourself, cap how far back you support delta-ing from and fall back to a full image beyond that.</p>
+<p>Two rules make deltas work. Your builds must be reproducible, or an unchanged component produces different bytes and the delta is enormous for no reason. And verify the <em>reconstructed</em> image against a checksum of the target, not just the delta — a delta correctly applied to a subtly wrong source produces garbage that passes every check you did on the way in.</p>
+<h2 id="proving-the-new-image-works">Proving the new image works</h2>
+<p>Setting a flag that says "boot B" is not enough. Something has to answer the question "did B actually work," and something has to act when the answer is no.</p>
+<p>The mechanism in U-Boot is a boot counter. Mender's integration uses three variables:</p>
+<pre><code>upgrade_available=1     # we are mid-update; count boots
+bootcount=0             # incremented by U-Boot each boot
+bootlimit=1             # when exceeded, run altbootcmd instead</code></pre>
+<p>U-Boot increments <code>bootcount</code> on each boot, but only persists it when <code>upgrade_available</code> is set — so ordinary reboots of a committed system don't accumulate a count. If the count exceeds <code>bootlimit</code>, U-Boot runs <code>altbootcmd</code> instead of <code>bootcmd</code>, and <code>altbootcmd</code> swaps the root partition back to the old one. A device that hangs before it can clear the flag reboots, exceeds the limit, and falls back on its own. This requires <code>CONFIG_BOOTCOUNT_LIMIT</code> in U-Boot, and it is the single most commonly broken part of a board integration — worth testing explicitly by deliberately shipping an image that panics.</p>
+<p>The <strong>commit</strong> is the other half. After boot, the update client clears <code>upgrade_available</code> and marks the new partition permanent. Everything between "kernel starts" and "commit" is the window in which rollback is still possible, and how much you put in that window is the interesting design decision.</p>
+<p>The weak version commits as soon as the update service starts. That catches a kernel panic and nothing else. The useful version runs a health check first: is the network up, can we reach the update server, did the application start, does the sensor bus respond, does the display come up. Only then commit. Mender supports this through state scripts that run at defined transitions, and the equivalent exists in every serious updater.</p>
+<p>Underneath all of it, enable the hardware watchdog. Not the software one — the one in the SoC that resets the chip if it isn't petted. A device wedged in a state where the kernel is alive but nothing works is the case that neither bootcount nor a health check will catch, because nothing ever reboots. <code>systemd</code>'s <code>RuntimeWatchdogSec</code> wired to <code>/dev/watchdog</code> costs one line and saves the truck roll.</p>
+<h2 id="signing-and-the-chain-it-belongs-to">Signing, and the chain it belongs to</h2>
+<p>The update client must refuse anything it can't verify. Mender signs artifacts with a private key held on a signing system and verifies on the device with the corresponding public key, configured via <code>ArtifactVerifyKey</code>; if verification fails the client refuses to proceed. Every comparable system does the same thing. Turn it on — it is off by default in more deployments than anyone admits, because it works fine without it right up until it doesn't.</p>
+<p>Signing the artifact only matters if the thing checking the signature is itself trustworthy, which is what secure boot is for: ROM verifies the bootloader, the bootloader verifies the kernel and device tree, and the running system holds the key that verifies the next artifact. A break anywhere in that chain makes the rest decorative. If your threat model includes someone with physical access to a device — and for anything deployed in the field, it does — the chain has to be closed, and closing it after production has started is much harder than doing it at bringup.</p>
+<p>Two operational points that get overlooked. Keep the signing key off developer laptops and off the build machine; an HSM or a locked-down signing service, with an audit trail of what was signed. And support more than one verification key on the device, because key rotation is impossible otherwise — Mender's <code>ArtifactVerifyKeys</code> takes a list and tries each in turn, which is exactly the mechanism you need to roll a key without stranding the fleet.</p>
+<h2 id="staged-rollouts">Staged rollouts</h2>
+<p>You will ship a bad update. Testing catches what you thought of; the field is where you meet the hardware revision with a different flash part.</p>
+<p>So never deploy to everything. A phased rollout deploys to a percentage, waits, then expands: 5% and hold for a day, then 15%, then the rest. Mender implements this directly and lets you abort mid-rollout. The waits are the point — most real failures are not immediate. A memory leak, a log partition filling, a certificate that expires, a thermal problem that only appears on the third day. A rollout schedule with no dwell time is a fast way to break everything simultaneously.</p>
+<p>Note one detail with dynamic device groups: the phase sizes are computed from the group membership at the moment the deployment is created, and don't recalculate as devices join. If your groups churn, your percentages drift.</p>
+<p>Also decide your retry policy deliberately. Mender does not automatically retry a failed deployment, and that's the right default — if the new image broke networking and rolled back, retrying it in a loop is how you turn one bad update into a fleet-wide outage. Retry the <em>download</em> on interruption, yes. Retry the deployment, no; make that a decision a person makes.</p>
+<h2 id="the-device-that-comes-back-after-a-year">The device that comes back after a year</h2>
+<p>It happens. A unit sat in a warehouse, or a site was mothballed, or a customer left something unplugged. It powers on running an image from eighteen months ago and asks the server what to do.</p>
+<p>Several things quietly assume this never happens.</p>
+<p><strong>Certificates expire.</strong> The device's TLS client certificate, or the CA it uses to validate your server, may have rolled over while it was dark. If it can't establish a connection it can't be updated, and you have a manual recovery on your hands. Long-lived CAs, generous certificate lifetimes for device identity, and multiple trusted roots are the cheap insurance.</p>
+<p><strong>Clocks are wrong.</strong> A device with no RTC battery boots at the epoch, and TLS validation fails because the certificate isn't valid yet. Persist a monotonic "last known good time" to storage and use it as the floor at boot, before you attempt any TLS.</p>
+<p><strong>Your delta chain doesn't reach back that far.</strong> If you only generate deltas from the last three versions, this device needs a full image. Make sure that path still exists and is still tested.</p>
+<p><strong>The old client may not speak to the new server.</strong> Your API moved on. Keep the old endpoint working, or accept that anything older than version N is unrecoverable remotely — which is a defensible choice, but make it consciously and know what N is.</p>
+<p>The test to run before you ship anything: take a device, flash the oldest image you still consider supported, set the clock to a random date, cut power in the middle of the write, then cut it again during the first boot after. If it ends up running something and talking to you, the update system works. If you haven't done that test, you don't know whether it does — you know that it hasn't failed yet.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

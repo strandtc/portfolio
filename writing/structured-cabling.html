@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Structured cabling that survives ten years — Chris Strandt</title>
+  <meta name="description" content="The standards, pathways, bend radii, labeling and test discipline that decide whether your cable plant ages well or becomes a hazard.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">Structured cabling that survives ten years</h1>
+      <p class="wr-dek">The standards, pathways, bend radii, labeling and test discipline that decide whether your cable plant ages well or becomes a hazard.</p>
+      <div class="wr-meta"><span>Network</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>A cable plant is the longest-lived thing in a data center. Servers turn over in three to five years, switches in five to seven, UPS modules and chillers in fifteen. Cabling gets installed once and then inherited, repeatedly, by people who were not there. Whether that inheritance is an asset or a liability is decided in the first week of the install, by decisions that look like fussiness at the time.</p>
+<h2 id="the-standards-that-actually-apply">The standards that actually apply</h2>
+<p>In North America the relevant set is small and worth knowing by number, because it lets you write a scope of work that a contractor cannot argue with.</p>
+<div class="tw"><table><thead><tr><th>Standard</th><th>Covers</th></tr></thead><tbody><tr><td>ANSI/TIA-568.0</td><td>Generic cabling for customer premises — the overall structure</td></tr><tr><td>ANSI/TIA-568.1</td><td>Commercial building telecommunications infrastructure</td></tr><tr><td>ANSI/TIA-568.2</td><td>Balanced twisted-pair cabling and components</td></tr><tr><td>ANSI/TIA-568.3</td><td>Optical fiber cabling and components</td></tr><tr><td>ANSI/TIA-569</td><td>Pathways and spaces (current revision E, 2019)</td></tr><tr><td>ANSI/TIA-606</td><td>Administration — labeling and documentation (current revision D, 2021)</td></tr><tr><td>ANSI/TIA-607</td><td>Generic telecommunications bonding and grounding</td></tr><tr><td>ANSI/TIA-942</td><td>Data center telecommunications infrastructure (current revision C, 2024)</td></tr></tbody></table></div>
+<p>The 568 series tells you what the cabling has to do. 569 tells you where it may live. 606 tells you how to name it. 607 tells you how to bond it. 942 adapts all of that to a data center and adds the topology names.</p>
+<p>You do not need to buy all of them to run a good project, but you do need to reference them correctly in your specification. "Install per TIA-606-D, Class 2 administration" is a sentence a bidder prices. "Label everything clearly" is a sentence a bidder ignores.</p>
+<h2 id="subsystems-and-the-numbers-that-come-with-them">Subsystems, and the numbers that come with them</h2>
+<p>The commercial-building model is a hierarchy: an entrance facility where the outside world lands, an equipment room, backbone cabling to telecommunications rooms, horizontal cabling out to work areas.</p>
+<p>The number everyone remembers from that model is 100 meters for a horizontal copper channel — 90 meters of permanent link in the wall or tray, plus up to 10 meters of patch cord total, with no single cord over 5 meters. That is not a suggestion, and it is not a copper-conducts-that-far number. It is the length at which the electrical performance the Ethernet PHYs assume still holds. Exceed it and things mostly work, until the day they mostly don't.</p>
+<p>TIA-942 renames the same idea for a data center. The <strong>entrance room</strong> is where carriers land. The <strong>main distribution area</strong> holds the main cross-connect and is the center of the topology. A <strong>horizontal distribution area</strong> holds the horizontal cross-connect and the access switches for the cabinets it serves. The <strong>equipment distribution area</strong> is where the cabinets and servers actually are. An optional <strong>zone distribution area</strong> sits between HDA and EDA as an interconnection point you can re-arrange without touching the panels upstream, and larger multi-room or multi-floor sites can add an <strong>intermediate distribution area</strong> between the MDA and the HDAs.</p>
+<p>The reason to use these names, even informally, is that they force a decision about where cross-connects live before anybody pulls anything. A cable plant that ages well has a small number of places where moves happen and a large number of places where nothing ever changes. A cable plant that ages badly has patching everywhere.</p>
+<h2 id="pathways-overhead-or-underfloor">Pathways: overhead or underfloor</h2>
+<p>Both work. They fail differently.</p>
+<div class="tw"><table><thead><tr><th></th><th>Overhead tray</th><th>Underfloor</th></tr></thead><tbody><tr><td>Visibility</td><td>You can see everything, all the time</td><td>You find out what's down there when you lift a tile</td></tr><tr><td>Adds and changes</td><td>Easy, no floor disruption</td><td>Requires lifting tiles in live aisles</td></tr><tr><td>Airflow</td><td>No interaction</td><td>Competes with your supply air plenum</td></tr><tr><td>Water</td><td>Above the equipment, so leaks matter</td><td>Leaks collect where you cannot see them</td></tr><tr><td>Seismic and load</td><td>Needs proper support and bracing</td><td>Needs stringers and pedestals rated for it</td></tr><tr><td>Cost of getting it wrong</td><td>Ugly and hard to trace</td><td>Blocks cooling and nobody connects the two problems</td></tr></tbody></table></div>
+<p>For anything new I would run cabling overhead and keep the underfloor plenum for air and power whips only. The single strongest argument is the airflow one: cable bundles under a raised floor obstruct supply air in ways that are invisible, cumulative, and almost never diagnosed. The second argument is that overhead pathways get audited by anyone who walks the room, and things that are visible stay tidy.</p>
+<p>If you do go underfloor, run separate tray for power and for data, keep the data tray out of the main supply paths, and clear abandoned cable when you decommission — which is a code obligation in many jurisdictions and a good idea in all of them.</p>
+<h2 id="bend-radius-and-fill">Bend radius and fill</h2>
+<p>Two mechanical limits do most of the damage when they are ignored.</p>
+<p><strong>Bend radius.</strong> For fiber optic cable the usual guidance is a minimum bend radius of 20 times the cable diameter while under pulling tension, and 10 times the cable diameter for the long-term installed condition. Manufacturers vary, high-fiber-count cables in particular, so use the cable's own spec sheet when you have it. Balanced twisted-pair has its own limits — a draft of the 568 work put four times the outside diameter on UTP, with ten times for multi-pair cables — and the practical point is the same: a tight bend is not a cosmetic problem. In fiber it is macrobending loss and eventually a fracture; in copper it deforms the pair geometry and wrecks return loss and NEXT.</p>
+<p>The place bends get violated is never the tray run. It is the last 300 mm at the patch panel, where somebody pulls a bundle tight into a horizontal manager. Use radius-controlled fingers, and leave slack.</p>
+<p><strong>Fill.</strong> Conduit fill for three or more conductors tops out at 40 percent of the cross-sectional area under NEC Chapter 9, and structured cabling practice follows the same 40 percent figure for data conduit. Cable tray under NEC Article 392 allows up to 50 percent fill for control, signal and instrumentation cable in ladder and ventilated trough tray. Both numbers exist to make pulling possible without exceeding tension, and both are routinely ignored on the theory that the run is short and straight.</p>
+<p>Design to half the allowed fill on day one. Every pathway you build will get more cable than you planned for, and the alternative to spare capacity is a second pathway, which costs vastly more than a wider tray did.</p>
+<h2 id="labeling-and-documentation">Labeling and documentation</h2>
+<p>TIA-606 exists because in five years nobody will remember. The standard defines identifier schemes and administration classes; the important thing is not which scheme you choose but that you choose one, write it down, and never deviate.</p>
+<p>A workable scheme identifies a cable by where it terminates, not by what is currently plugged into it. Room, cabinet or rack, panel, port. Both ends carry the same identifier, both ends carry the far-end reference, and the label survives — printed, wrapped, laminated, not a Sharpie on tape that will be illegible in eighteen months.</p>
+<p>Then document what the scheme cannot carry: a port map, a patch schedule, cable test results, and a drawing of the pathways as built. Keep it somewhere with version history. A spreadsheet under change control beats a DCIM nobody updates, and both beat the tribal knowledge of whoever is on shift.</p>
+<p>The test for a good labeling system: someone who has never been in the building can be told a port identifier over the phone and find it on the first attempt.</p>
+<h2 id="dressing-cable-the-boring-way">Dressing cable the boring way</h2>
+<p>Neatness is not aesthetics. It is future access.</p>
+<p>Bundle with hook-and-loop, never with zip ties. A zip tie pulled tight deforms the pairs inside a copper cable and crushes the buffer tubes in a fiber cable, and the damage is permanent and invisible on inspection. Hook-and-loop also means the bundle can be opened and re-closed by the next person, which is the only way a bundle stays tidy over a decade.</p>
+<p>Keep bundles small enough to trace. Run cables along tray, not diagonally across it. Terminate with service loops in a place where a loop can live without violating a bend radius. Route patch cords through the managers, not over the top of the panel. Use the right cord length instead of coiling three meters of slack behind a cabinet.</p>
+<p>None of this is clever. All of it is the difference between a ten-minute move and an hour of tracing with a toner while a customer waits.</p>
+<h2 id="testing-and-certification">Testing and certification</h2>
+<p>Test everything, before anybody plugs equipment in, and keep the results.</p>
+<p>Copper gets certified with a field tester to the applicable category and to the correct model — <strong>permanent link</strong> for the installed run without patch cords, <strong>channel</strong> for the whole path including cords. Get the specification right in the scope of work, because a link that passes permanent-link limits can fail channel limits and the two arguments are avoidable.</p>
+<p>Fiber gets Tier 1 certification at minimum: insertion loss with a light source and power meter, at the wavelengths the link will run, in both directions, referenced correctly. Tier 2 adds an OTDR trace, which does not replace the loss test but does show you where each event on the span is. On outside plant, on anything with splices, and on anything you will ever have to fault-find in a hurry, get the OTDR traces. They are your only baseline. Two years later, a fresh trace laid over the commissioning trace tells you in a minute what would otherwise take a night.</p>
+<p>Then archive it. Results filed with the as-builts, indexed by the same identifiers as the labels.</p>
+<p>The handover checklist worth insisting on before you release final payment:</p>
+<ul><li>Every cable labeled at both ends, matching the documented scheme.</li><li>Port map and patch schedule delivered in an editable format.</li><li>As-built pathway drawings, including what is in each tray and each conduit.</li><li>100 percent test results, correct model, correct wavelengths, both directions on fiber.</li><li>OTDR traces for all fiber spans, filed against the cable identifiers.</li><li>Spare capacity documented: free ports, free strands, free tray.</li></ul>
+<p>If a contractor pushes back on any of those, they are telling you what the rest of the work looks like.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

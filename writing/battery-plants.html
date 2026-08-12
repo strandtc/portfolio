@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choosing and living with a UPS battery plant — Chris Strandt</title>
+  <meta name="description" content="Flooded, VRLA and lithium compared on runtime, footprint and failure mode, what NFPA 855 asks of a lithium install, and where flywheels fit.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">Choosing and living with a UPS battery plant</h1>
+      <p class="wr-dek">Flooded, VRLA and lithium compared on runtime, footprint and failure mode, what NFPA 855 asks of a lithium install, and where flywheels fit.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>A UPS battery plant is not sized in kilowatt-hours. It is sized in minutes at the design load, and the number of minutes is a judgment about how much time you want between the utility going away and the site going dark.</p>
+<p>The generator is supposed to take the load in ten seconds. NFPA 110 Level 1 Type 10 says so, and a healthy diesel does it. So why does anybody buy five minutes, or ten, or fifteen? Because the generator sometimes does not start, and the time you are really buying is the time to attempt a second start, get someone to the gen yard, or accept that it is not coming and shut the load down in an order you chose rather than one physics chose.</p>
+<h2 id="flooded-lead-acid">Flooded lead-acid</h2>
+<p>Vented lead-acid, VLA, flooded — same thing. Liquid electrolyte, plates you can see, vents that release hydrogen during charging.</p>
+<p>Design lives of twenty years are normal and often achieved. The cells give you warning: you can look at them, measure specific gravity, see plate growth and sediment. When a jar is going, it usually tells you first.</p>
+<p>The price is infrastructure. A dedicated battery room with hydrogen ventilation and detection, spill containment, an eyewash and shower station, acid-resistant flooring, seismic racking, and a lot of floor space and structural load. You water them on a schedule. IEEE 450 is the recommended practice for maintenance, testing and replacement.</p>
+<p>For a telco central office with a big DC plant, flooded is still often the right answer. For a commercial data center squeezing a UPS room into a shell building, it usually is not.</p>
+<h2 id="vrla">VRLA</h2>
+<p>Valve-regulated lead-acid, in AGM or gel form. The electrolyte is immobilized and oxygen recombines internally, so there is no watering and much less gassing under normal charge. They go in cabinets or on open racks, frequently in the same room as the UPS. This is what I built our Lansing plants on, and it is still the default for a lot of the industry.</p>
+<p>The trade is life and honesty. A "10-year design life" VRLA typically gives five to seven years in real service, and it does not warn you the way a flooded cell does — a sealed jar looks identical whether it has 100 percent capacity or 40. Failures show up as a jar with rising internal resistance in a series string, and one bad jar limits the entire string.</p>
+<p>Temperature is the dominant variable and it is not close. VRLA life follows an Arrhenius relationship: roughly every 10°C above 25°C halves it. A battery room held at 35°C is running a ten-year battery as a five-year battery. Manufacturers derive design life from accelerated float tests at 40 or 50°C and extrapolate back to 25°C using exactly that relationship, so the number on the datasheet already assumes you keep the room cool.</p>
+<p>If you want one lever on battery cost, it is room temperature. Not brand, not price. Temperature.</p>
+<p>VRLA also has its own thermal runaway mode, which surprises people who think that is a lithium problem. A cell with degraded internal resistance heats under float charge, which lowers its resistance further, which draws more charging current. Cabinets have melted this way. Temperature compensation on the charger and per-cabinet temperature monitoring are what prevent it.</p>
+<h2 id="lithium-ion">Lithium-ion</h2>
+<p>Two chemistries matter for stationary plants.</p>
+<p><strong>NMC</strong> — nickel manganese cobalt — is more energy dense, which is why it dominates in vehicles.</p>
+<p><strong>LFP</strong> — lithium iron phosphate — is less dense and considerably more thermally stable. Reported thermal runaway onset for LFP is around 270°C, against roughly 150 to 210°C for NMC depending on formulation, with higher-nickel variants at the low end. Once running away, LFP also peaks lower and vents far less flammable gas.</p>
+<p>For a data center, where a few extra square feet is cheaper than an argument with the fire marshal, LFP is the sensible default and it is what most of the market has moved to.</p>
+<div class="tw"><table><thead><tr><th></th><th>Flooded</th><th>VRLA</th><th>Lithium (LFP)</th></tr></thead><tbody><tr><td>Typical service life</td><td>15–20 years</td><td>5–7 years</td><td>8–15 years, vendor-dependent</td></tr><tr><td>Footprint and weight</td><td>Largest</td><td>Large</td><td>Smallest</td></tr><tr><td>Ambient tolerance</td><td>Needs cool room</td><td>Very sensitive to heat</td><td>Tolerates warmer room</td></tr><tr><td>Cycling</td><td>Poor</td><td>Poor</td><td>Good</td></tr><tr><td>Warning of failure</td><td>Visible, measurable</td><td>Little</td><td>BMS telemetry</td></tr><tr><td>Special construction</td><td>Battery room, H₂ vent, containment</td><td>Usually none</td><td>Often driven by NFPA 855</td></tr></tbody></table></div>
+<p>Against lead-acid, lithium is materially smaller and lighter for the same runtime, tolerates a warmer room, and handles cycling well enough that using the plant for peak shaving or grid services stops being self-destructive. Vendor footprint and weight claims vary too much to quote a single number — get them for the specific product, at your runtime, at your load.</p>
+<p>The genuinely new thing is the <strong>battery management system</strong>. A lithium plant cannot operate without one, and the BMS is a new failure mode, not just a monitoring feature. It can open the string contactor on its own judgment. It has firmware. It has a communications path to the UPS that has to work. Commissioning has to include making the BMS trip and watching what the UPS does about it.</p>
+<h2 id="nfpa-855-and-the-fire-conversation">NFPA 855 and the fire conversation</h2>
+<p>NFPA 855, the Standard for the Installation of Stationary Energy Storage Systems, is the document that will shape a lithium project more than any electrical consideration.</p>
+<p>It engages for lithium-ion above 20 kWh aggregate. The prescriptive compliance path limits individual ESS units to 50 kWh, requires 3 feet of separation between units and from walls, and caps a fire area at 600 kWh — a limit that does not apply to a dedicated-use building. The prescriptive sprinkler design for these installations is 0.3 gpm per square foot over 2,500 square feet. Beyond that, expect requirements for gas detection, explosion control or deflagration venting, and thermal management.</p>
+<p>Do the arithmetic and it becomes clear quickly: 600 kWh does not buy much runtime for a real data hall. Which pushes you either to a dedicated-use building, or to the alternative path — large-scale fire testing to UL 9540A on the specific product, with an engineering analysis the authority having jurisdiction is willing to accept in place of the prescriptive spacing and quantity limits. Units themselves are listed to UL 9540.</p>
+<p>Note which edition your AHJ has adopted; 855 has moved through 2020, 2023 and 2026 editions and the details shift.</p>
+<p>The practical planning point is that the AHJ conversation needs to start about a year before the batteries do, and the answer materially affects the building. A lot of "lithium is cheaper over the life of the plant" business cases quietly omit the room it has to live in.</p>
+<h2 id="monitoring-and-what-monitoring-actually-tells-you">Monitoring, and what monitoring actually tells you</h2>
+<p>IEEE 1188 is the recommended practice for VRLA maintenance and testing; IEEE 450 covers vented cells. Both build on the same rhythm: a general inspection monthly, deeper checks quarterly and annually, capacity testing on a defined interval, and replacement when measured capacity falls below 80 percent of rating. Below 80 percent, deterioration accelerates, so a string that still meets today's runtime requirement is on borrowed time.</p>
+<p>Per-jar monitoring — internal resistance or conductance, voltage, and temperature — is worth every dollar on a lead-acid plant, because the failure mode is a series circuit killed by its worst member. Trending ohmic values catches the outlier months before the string fails.</p>
+<p>But be honest about what ohmic testing is. It trends the health of a jar. It does not measure capacity. Only a capacity test — a controlled discharge at a defined rate to a defined end voltage — tells you how many minutes you actually have. Sites that do quarterly impedance scans and have not done a load test in six years know a great deal about their batteries except the one thing that matters.</p>
+<p>I built facilities telemetry from scratch for our sites because the vendor systems of the era did not give me the data I wanted in a form I could alarm on. That is less true now, but the principle still holds: if the battery data does not land in the same place as everything else you monitor, and does not alarm to the same people, it may as well not exist.</p>
+<h2 id="flywheels">Flywheels</h2>
+<p>A flywheel UPS stores energy as rotation. A motor keeps a rotor spinning; on utility loss the rotor's kinetic energy is converted back to electrical power as it slows. Published runtimes at full load land in the 15 to 30 second range for typical units, with some designs reaching further.</p>
+<p>That is not a battery replacement, and reading it as one is the usual mistake. It is a generator ride-through device. If the generator starts, a flywheel is enough. If it does not, you have fifteen seconds to think about it.</p>
+<p>Where flywheels earn their place is in front of a battery plant rather than instead of one. The flywheel absorbs every short sag, dip and momentary event — which is the overwhelming majority of what a UPS ever sees — and the batteries only discharge for the events that actually last. Since cycling is one of the things that kills lead-acid, that materially extends the battery plant's life. You also lose the temperature sensitivity, the replacement cycle, and the fire code conversation, and gain mechanical maintenance instead: bearings, vacuum integrity, and vibration monitoring.</p>
+<p>We evaluated flywheel and built VRLA. The economics turned on the runtime we wanted and the confidence we had in the generators, and I would run the same evaluation again today with lithium as the third column.</p>
+<h2 id="what-to-check">What to check</h2>
+<p>Load-test the plant, at real load, to a real end voltage, at least as often as the standard says and preferably more. Everything else is inference.</p>
+<p>Put a thermometer in the battery room and treat a rising trend as a budget event, because it is.</p>
+<p>Know the string's weakest jar by name.</p>
+<p>And when someone proposes lithium, ask what the fire protection scope is and who has agreed to it. That answer, not the cell price, decides the project.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

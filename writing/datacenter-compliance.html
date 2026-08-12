@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance for hosting and colocation providers — Chris Strandt</title>
+  <meta name="description" content="What SOC 2 covers, how PCI DSS responsibility splits in a shared facility, when a BAA applies, and how to survive an audit while still running the floor.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Compliance</p>
+      <h1 class="wr-title">Compliance for hosting and colocation providers</h1>
+      <p class="wr-dek">What SOC 2 covers, how PCI DSS responsibility splits in a shared facility, when a BAA applies, and how to survive an audit while still running the floor.</p>
+      <div class="wr-meta"><span>Compliance</span><span>9 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Every enterprise sales cycle in hosting eventually arrives at the same email: <em>please send your SOC 2 and your PCI attestation of compliance</em>. If you do not have them, the deal stops. If you have them but cannot explain where your responsibility ends and the customer's begins, the deal stalls in their vendor risk review, which is slower and more annoying.</p>
+<p>I ran the SAS 70 and SSAE 16 programs, the HIPAA program and the PCI DSS program at a hosting company through audit. Most of what follows is about scope boundaries, because in a shared facility that is what all of this actually turns on.</p>
+<h2 id="from-sas-70-to-soc-2">From SAS 70 to SOC 2</h2>
+<p>The lineage confuses people, mostly because customers keep asking for standards that no longer exist.</p>
+<p><strong>SAS 70</strong> was an auditing standard for reporting on controls at a service organization. It was designed for controls relevant to a customer's <em>financial statements</em>, but because it was the only thing available, the industry pressed it into service as a general-purpose security report. Vendors leaned on it hard — "SAS 70 certified" was a marketing line, and it was never a certification of anything.</p>
+<p><strong>SSAE 16</strong> replaced it, issued April 2010 and effective for periods ending on or after June 15,</p>
+<ol><li>It moved the work into the attestation standards and introduced the <strong>SOC</strong> report family: the</li></ol>
+<p>financial-reporting focus stayed with SOC 1, and SOC 2 became the separate report for security, availability and related concerns.</p>
+<p><strong>SSAE 18</strong> superseded SSAE 16, required for reports dated on or after May 1, 2017. It tightened requirements around risk assessment and, notably for anyone running a facility, around <strong>subservice organizations</strong> — your own vendors. If you rely on a third party for a control, you either carve it out and say so, or you include it and monitor it.</p>
+<p>Since then, <strong>SSAE 21</strong> redrafted AT-C section 205 as "Assertion-Based Examination Engagements," effective for reports dated on or after June 15, 2022. SOC 1 and SOC 2 remain assertion-based examinations. For an operator this changed essentially nothing, but it is why your auditor's report language keeps shifting.</p>
+<p>The practical translation of all of this:</p>
+<div class="tw"><table><thead><tr><th>Report</th><th>Covers</th><th>Audience</th></tr></thead><tbody><tr><td>SOC 1</td><td>Controls relevant to customers' financial reporting</td><td>Customer auditors</td></tr><tr><td>SOC 2</td><td>Security and the other trust services criteria</td><td>Customer security and risk teams</td></tr><tr><td>SOC 3</td><td>Same as SOC 2, summarized, no detail</td><td>Public, put it on the website</td></tr></tbody></table></div>
+<p>If a customer asks for your SAS 70, they mean SOC 2. If they ask for your SSAE 16, they probably also mean SOC 2. Send them SOC 2 and a short note.</p>
+<h2 id="what-soc-2-actually-covers">What SOC 2 actually covers</h2>
+<p>SOC 2 is an examination against the <strong>trust services criteria</strong>, published by the AICPA as TSP section 100 — the 2017 criteria, with revised points of focus issued in 2022. There are five categories:</p>
+<ul><li><strong>Security</strong> — the common criteria. Required in every SOC 2.</li><li><strong>Availability</strong></li><li><strong>Processing integrity</strong></li><li><strong>Confidentiality</strong></li><li><strong>Privacy</strong></li></ul>
+<p>You choose which of the other four to include. The default for a facility operator is security plus availability. Availability is what customers actually care about from a data center, and it is where your redundancy, capacity planning, environmental monitoring and incident response live. Processing integrity rarely applies to infrastructure. Confidentiality is worth adding if you handle customer data directly. Privacy is a much heavier lift and you should not add it because someone in sales asked nicely.</p>
+<p>Note what SOC 2 is not. It is not a checklist with pass/fail items like PCI DSS. The criteria describe objectives; <em>you</em> define the controls that meet them, describe them in the system description, and the auditor tests what you wrote. That is a real advantage and a real trap, because a vague system description produces a report nobody trusts and an over-ambitious one produces exceptions.</p>
+<p>Write your control descriptions to what you actually do, every time. An accurate description of a modest control passes. A beautiful description of a control you perform when you remember does not.</p>
+<h2 id="type-i-and-type-ii">Type I and Type II</h2>
+<p><strong>Type I</strong> reports on whether controls are suitably designed as of a point in time. <strong>Type II</strong> reports on design <em>and operating effectiveness over a period</em>, with the auditor sampling evidence across that period.</p>
+<p>Type I is a snapshot. It is genuinely useful once — as a first report, to show you have built the program — and it buys you nothing after that. Sophisticated customers know the difference and will ask for Type II.</p>
+<p>The AICPA does not mandate a minimum period for a Type II. In practice the shortest auditors will accept is around three months, six is common for a first report, and twelve is what mature providers run, aligned to a fixed annual window so it renews cleanly. Twelve months of coverage with no gap is what an enterprise vendor risk team wants to see.</p>
+<p>Between the end of your report period and the issuance of the next one, expect requests for a <strong>bridge letter</strong> — a management statement that nothing material changed in the interim. It is not audited. It is a courtesy, and having a template ready saves your sales engineers a week each quarter.</p>
+<h2 id="pci-dss-in-a-shared-facility">PCI DSS in a shared facility</h2>
+<p>PCI DSS is the opposite of SOC 2: prescriptive, itemized, and it does not care about your intent.</p>
+<p>The current version is v4.0.1, published in June 2024; v3.2.1 was retired on 31 March 2024. The significant date on the calendar right now is 31 March 2025, when the 51 future-dated v4.x requirements stop being best practice and become mandatory. If you are assessed after that date they are in scope, so if you have been treating them as future work, that window closes in a few weeks.</p>
+<p>Two scoping points specific to colocation.</p>
+<p><strong>Appendix A1 probably does not apply to you.</strong> Appendix A1 sets additional requirements for multi-tenant hosting providers — shared servers, shared applications, shared platforms. Per the Council's own guidance, a provider offering only shared data center services, where space, power and bandwidth are rented and the customer owns the equipment, is not treated as a service provider for Appendix A1 purposes. If you also run managed hosting or shared platforms, that part of the business very much is. Most hosting companies are both, and the scoping conversation is about drawing that line cleanly.</p>
+<p><strong>Your scope is mostly Requirement 9, plus policy.</strong> A pure colocation provider's assessment centers on physical security — facility entry controls, visitor management, media handling — together with the related monitoring and the policy and procedure controls in Requirement 12. You are not protecting cardholder data. You are protecting physical access to equipment that holds it.</p>
+<p>Which brings up the <strong>responsibility matrix</strong>, and this is the document that will save you more customer meetings than anything else you produce. Requirement 12.8.5 obliges the customer to document which PCI DSS requirements are managed by them and which by the service provider. Requirement 12.9.2 obliges you, the provider, to support customer requests for information about your compliance status and about that same split.</p>
+<p>So write the matrix once, requirement by requirement, marking each as yours, theirs, or shared, with a sentence on what "shared" means in practice. Publish it under NDA and hand it out the moment a prospect mentions PCI. Doing it reactively, one customer at a time, is how a small compliance function gets buried.</p>
+<h2 id="hipaa-and-business-associate-agreements">HIPAA and business associate agreements</h2>
+<p>If a customer stores protected health information on equipment in your facility, or you handle it for them, you need a <strong>business associate agreement</strong>. The BAA content requirements sit at 45 CFR 164.504(e) in the Privacy Rule and 45 CFR 164.314(a) in the Security Rule.</p>
+<p>Three things to be clear about.</p>
+<p><strong>The conduit exception is narrower than people hope.</strong> OCR has been explicit that it covers entities providing mere transmission services with transient access to PHI — the electronic equivalent of a courier. It does not cover storage. An entity that maintains PHI for the purpose of storing it is a business associate, not a conduit, because it has persistent access.</p>
+<p><strong>Encryption does not get you out of it.</strong> OCR's cloud computing guidance says a provider that creates, receives, maintains or transmits ePHI is a business associate <em>even if it cannot view the data because it is encrypted and it does not hold the key.</em> Encryption is a good control. It is not a scope exclusion.</p>
+<p><strong>You are directly liable.</strong> Before HITECH, a business associate's obligations were contractual — you answered to the covered entity. HITECH in 2009, implemented through the 2013 Omnibus Rule, made business associates directly liable for compliance with the Security Rule and for certain Privacy Rule provisions. OCR can bring an enforcement action against you, not just against your customer. Your subcontractors are business associates too, and you need BAAs flowing downstream to them.</p>
+<p>There is no HIPAA certification. Anyone selling you one is selling you a readiness assessment with a logo. What you can do is map your Security Rule administrative, physical and technical safeguards to controls you are already testing for SOC 2, and let the SOC 2 report carry most of the evidentiary weight.</p>
+<h2 id="running-an-audit-without-stopping-operations">Running an audit without stopping operations</h2>
+<p>The failure mode is not failing the audit. It is spending six weeks of your senior operations staff's time producing evidence, twice a year, forever.</p>
+<p>What actually works:</p>
+<p><strong>Make the evidence a byproduct.</strong> If change management lives in a ticketing system, access reviews come out of your identity system, and environmental alarms are logged by the monitoring platform, evidence collection is a query. If it lives in someone's memory and a spreadsheet, it is six weeks of archaeology. Building facilities telemetry that logs and retains on its own is compliance work even when nobody calls it that.</p>
+<p><strong>One control, many frameworks.</strong> Physical access review satisfies SOC 2 common criteria, PCI DSS Requirement 9 and the HIPAA physical safeguards. Perform it once, document it once, map it three ways. Three parallel programs is how a two-person compliance function drowns.</p>
+<p><strong>Sample sizes are the real cost.</strong> A daily control generates a much larger sample than a quarterly one. Where you have a choice about frequency, and the risk allows it, choose the frequency you can perform perfectly every single time.</p>
+<p><strong>Give the auditor one point of contact.</strong> Not the operations team. One person who owns the request list, chases internally and shields the floor, so nobody on shift is answering questions about a UPS log while they are switching load.</p>
+<p><strong>Never let a customer audit become an unbounded site visit.</strong> Have a standard package — the SOC 2 report, the responsibility matrix, the BAA template, a defined tour route — and offer that first. Most people accept it.</p>
+<h2 id="the-thing-people-get-wrong">The thing people get wrong</h2>
+<p>They treat compliance as a document production exercise and then discover during the audit that the document describes a company they do not work for.</p>
+<p>The way out is boring and it works: write down what you actually do, do it every time, and make the system of record generate the proof. If a control cannot survive a busy Friday night on the floor, it is the wrong control, and you should change it before an auditor does it for you.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

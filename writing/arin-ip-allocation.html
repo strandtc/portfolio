@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting your own IP space and AS number from ARIN — Chris Strandt</title>
+  <meta name="description" content="What provider-independent space costs, how to justify it, why IPv4 is now a market, and how to size IPv6 so you never do this twice.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">Getting your own IP space and AS number from ARIN</h1>
+      <p class="wr-dek">What provider-independent space costs, how to justify it, why IPv4 is now a market, and how to size IPv6 so you never do this twice.</p>
+      <div class="wr-meta"><span>Network</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>At some point you stop wanting to renumber. That is the real trigger for going to ARIN. Everything else — multihoming, running BGP, having your name in whois — is downstream of not wanting your addressing to be a hostage of whoever your upstream is this year.</p>
+<h2 id="provider-aggregatable-versus-provider-independent">Provider-aggregatable versus provider-independent</h2>
+<p><strong>PA space</strong> — provider-aggregatable — is space assigned to you out of your upstream's allocation. It's free, it's fast, and it is theirs. It sits inside their aggregate, so nobody else will route it for you, and when you leave you give it back and renumber every host, every firewall rule, every allowlist a customer put you on, and every DNS record you forgot about.</p>
+<p><strong>PI space</strong> — provider-independent — is allocated directly to your organization by the RIR. You announce it yourself, from your own AS, to as many upstreams as you like. Change providers and nothing about your addressing changes.</p>
+<p>There is a hard floor on this that has nothing to do with ARIN: essentially every operator filters IPv4 prefixes longer than /24 and IPv6 longer than /48. A /25 that ARIN issued you is still unroutable across the public internet. ARIN's minimum end-user IPv4 assignment is a /24 for exactly this reason.</p>
+<p>The tradeoff is that PI space is the thing making the global routing table grow. You're adding an entry that every full-table router on earth carries forever. That is a reasonable thing to do if you need it and a rude thing to do if you don't.</p>
+<h2 id="the-as-number-is-the-easy-part">The AS number is the easy part</h2>
+<p>Compared to addresses, an ASN is nearly free of friction. ARIN's policy (NRPM section 5) says any organization may be issued a single ASN upon request. Additional ASNs need justification — proof of a genuinely distinct routing policy, or discrete networks.</p>
+<p>What you should actually establish first is whether you need one at all. If you're single-homed and expect to stay that way, you don't; your upstream originates your prefix and life is simpler. If your design needs an AS number internally but never externally, use the private ranges — 64512–65534 and 4200000000–4294967294 — and stop.</p>
+<p>Assume you'll be issued a 4-byte ASN. Everything current handles them fine, but it does mean RFC 1997 32-bit communities can't hold your AS number and a value together, so plan on RFC 8092 large communities from day one.</p>
+<h2 id="ipv4-is-a-market-now">IPv4 is a market now</h2>
+<p>ARIN issued the last addresses from its free pool on 24 September 2015. Since then there are three ways to get IPv4, and only one of them works at any scale.</p>
+<p><strong>The waiting list</strong> (NRPM 4.1.8) is fed by reclaimed and revoked space, distributed quarterly. The maximum aggregate you can qualify for is a /22. You are not eligible if you already hold more than a /20 equivalent. You may hold one request at a time, must wait 90 days after a distribution before requesting again, and space received from the list cannot be transferred to another organization for 60 months. It is a real option for a small network that can wait, and it is not a capacity plan.</p>
+<p><strong>Transfers</strong> are how the market actually clears. Section 8.2 covers mergers and acquisitions, 8.3 covers specified transfers within the ARIN region, and 8.4 covers inter-RIR transfers. These are still needs-based: to qualify for a block you document use of at least 50% of it within 24 months.</p>
+<p><strong>Buying a company that has addresses</strong> is the other route, and it happens more than people admit.</p>
+<p>On price: market trackers put 2024 weighted averages around $33 per address with a median near $32, down roughly 12% from 2023 after several years of increases. That puts a /24 in the region of $8,000 and makes an IPv4 block a capital asset that appears on your balance sheet. Prices move; get a current quote from more than one broker before you plan around a number, and know that ARIN-region blocks have generally traded at a premium to other regions.</p>
+<h2 id="what-justification-actually-looks-like">What justification actually looks like</h2>
+<p>ARIN is not trying to catch you out. They are trying to establish that the space will be used, and the standard for IPv4 end-user assignments is 50% utilization within 24 months.</p>
+<p>What holds up:</p>
+<ul><li>Current host and address counts, by function, with the current source of that space.</li><li>A growth projection with something behind it — signed contracts, historical growth rate, a customer commitment.</li><li>A subnetting plan showing how the requested block gets carved up, and why the aggregate has to be contiguous.</li><li>An honest account of existing space, including anything you hold from a previous life. They will look.</li></ul>
+<p>What does not hold up: round numbers with no derivation, "for future expansion," and any plan that assumes one address per employee. If you're inflating the request because you assume they'll cut it, don't — the analyst is going to ask for the arithmetic and you'll have to produce it anyway.</p>
+<h2 id="what-it-costs">What it costs</h2>
+<p>ARIN bills an annual <strong>Registration Services Plan</strong> fee based on your total holdings, IPv4 and IPv6 and ASNs together. Since the 2024 schedule, ASNs count toward your tier rather than carrying a separate fee. The figures below are the schedule effective 1 January 2024:</p>
+<div class="tw"><table><thead><tr><th>Tier</th><th>Annual fee</th><th>IPv4</th><th>IPv6</th><th>ASNs</th></tr></thead><tbody><tr><td>3X-Small</td><td>$250</td><td>/24 or smaller</td><td>/40 or smaller</td><td>1–3</td></tr><tr><td>2X-Small</td><td>$500</td><td>&gt;/24 to /22</td><td>&gt;/40 to /36</td><td>4–15</td></tr><tr><td>X-Small</td><td>$1,000</td><td>&gt;/22 to /20</td><td>&gt;/36 to /32</td><td>16–63</td></tr><tr><td>Small</td><td>$2,000</td><td>&gt;/20 to /18</td><td>&gt;/32 to /28</td><td>64–255</td></tr><tr><td>Medium</td><td>$4,000</td><td>&gt;/18 to /16</td><td>&gt;/28 to /24</td><td>256+</td></tr><tr><td>Large</td><td>$8,000</td><td>&gt;/16 to /14</td><td>&gt;/24 to /20</td><td>—</td></tr><tr><td>X-Large</td><td>$16,000</td><td>&gt;/14 to /12</td><td>&gt;/20 to /16</td><td>—</td></tr></tbody></table></div>
+<p>It continues up to 5X-Large. Transactional fees on the 2024 schedule include $50 to create an Org, and $500 for a transfer request.</p>
+<p>You go into whichever tier your largest holding puts you in, which is the trap in the table. A /24 of IPv4 and a /40 of IPv6 keeps you at $250. Taking a /36 of IPv6 — which is a perfectly ordinary size — moves you to $500 regardless of your IPv4. Know where the tier edges are before you pick your IPv6 size, and then decide whether the difference is worth caring about, because it usually isn't.</p>
+<p>Check the current schedule rather than trusting these numbers. ARIN raises fees annually, capped by board policy at no more than 5% a year, and the tiers have moved since: the 2026 schedule runs $275 / $550 / $1,100 / $2,205 for the first four tiers. Legacy resources under a pre-2024 LRSA are fee-capped — $200 in 2024, rising $25 a year.</p>
+<h2 id="sizing-ipv6-so-you-only-do-this-once">Sizing IPv6 so you only do this once</h2>
+<p>IPv6 is the part people get wrong by being frugal, which is the one mistake the address space was designed to make unnecessary.</p>
+<p>ARIN's policy (NRPM 6.5.2) gives an LIR or ISP a /32 minimum unless they specifically ask for a /36 or /40, with initial allocations up to a /16 available with justification. Direct assignments to end-user organizations start at a /48 (6.5.8).</p>
+<p>Two rules will keep you out of trouble:</p>
+<p><strong>Every end site gets a /48.</strong> Not a /56, not a /64. Utilization in IPv6 is measured on the bits to the left of the /48 boundary, so a /48 per site is the unit the policy is written around, and it gives each site 65,536 /64 subnets, which is enough forever.</p>
+<p><strong>Plan on nibble boundaries.</strong> /32, /36, /40, /44, /48 — four bits at a time. It makes every prefix align to a hex digit, which makes ACLs readable, makes reverse DNS delegation land on zone boundaries, and makes subsequent allocations expandable by one nibble. Planning on odd bit boundaries to save address space is optimizing the one resource you have in surplus.</p>
+<p>Then leave room. Assign sites out of a sparse allocation rather than sequentially, so a site that grows can expand into adjacent space rather than getting a second discontiguous block.</p>
+<h2 id="keeping-the-records-current">Keeping the records current</h2>
+<p>The allocation is the beginning of an obligation, not the end of a project.</p>
+<p><strong>ROAs.</strong> Create a Route Origin Authorization for every prefix, the week you get it. ARIN's hosted RPKI in ARIN Online makes this a short form. Keep maxLength tight — equal to the prefix length unless you have a specific reason — and issue a new ROA when you deaggregate rather than leaving a wide maxLength lying around for someone else to use.</p>
+<p><strong>POCs and Org record.</strong> ARIN validates points of contact annually and expects a response. Stale POCs are how an organization loses control of its resources when the one person on the record leaves. Use role accounts that survive turnover, not individuals.</p>
+<p><strong>IRR objects.</strong> Plenty of upstreams still build their prefix filters from IRR data, so your route and route6 objects need to match reality or your new prefix won't propagate and nobody will be able to tell you why.</p>
+<p><strong>Reverse DNS.</strong> Delegate it when you get the block, not the first time a mail server rejects you.</p>
+<p><strong>SWIP.</strong> If you reassign space to customers, keep the reassignment records current. It's a policy obligation and it's also what makes abuse handling possible.</p>
+<p>The failure mode with all four of these is silence. Nothing alerts, nothing breaks visibly, and then one day a chunk of the internet can't reach you and the reason is a two-year-old record nobody updated. Put the annual review on a calendar with a name attached to it.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

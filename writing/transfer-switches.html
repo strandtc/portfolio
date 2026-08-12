@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What actually happens when a transfer switch transfers — Chris Strandt</title>
+  <meta name="description" content="Open, closed and soft transition explained, why the utility gets a say, and why bypass isolation is the feature that decides whether you ever inspect the switch.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">What actually happens when a transfer switch transfers</h1>
+      <p class="wr-dek">Open, closed and soft transition explained, why the utility gets a say, and why bypass isolation is the feature that decides whether you ever inspect the switch.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>7 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>An automatic transfer switch is two sets of main contacts, mechanically interlocked so they can never both be closed by accident, plus a controller watching two sources and deciding which one wins. That is the whole device. Everything difficult about it is in the word "transfer" — the few hundred milliseconds where the load is being handed from one source to another, and what the load thinks about that.</p>
+<h2 id="the-sequence">The sequence</h2>
+<p>The controller is continuously monitoring the normal source for undervoltage, phase loss, and usually frequency. When it decides the source is bad, a chain of timers runs:</p>
+<ol><li><strong>Start delay.</strong> A short delay, typically half a second to a few seconds, so a momentary sag does not start the engine. Too short and you start the generator every time a squirrel finds a recloser. Too long and you eat into the ride-through budget.</li><li><strong>Engine start signal.</strong> Two dry contacts close to the generator controller.</li><li><strong>Generator accept.</strong> The controller waits for the set to reach voltage and frequency within its window, not just for it to be running.</li><li><strong>Transfer.</strong> Contacts operate.</li><li><strong>Retransfer delay.</strong> After the utility comes back and stays back — commonly 15 to 30 minutes — the load goes home.</li><li><strong>Cooldown and stop.</strong> The engine runs unloaded for a few minutes so the turbo and head temperatures come down evenly.</li></ol>
+<p>For life safety systems, NFPA 110 Level 1 Type 10 requires the load to be on the emergency source within 10 seconds of losing normal power. That number sets the whole design: engine start time, generator stabilization, and transfer all have to fit inside it.</p>
+<p>The other number to know is the <strong>withstand and closing rating</strong>, or WCR. UL 1008 is the listing standard for transfer switch equipment, and it requires a rating for the fault current the switch can withstand and close onto without becoming a hazard. Critically, that rating is only valid when the switch is protected by an overcurrent device listed on the switch's own label, or by a device that clears faster than the switch's rated short-time duration. Swapping the upstream breaker for a different one invalidates the rating. This is one of the more commonly missed things in an existing installation.</p>
+<h2 id="open-transition">Open transition</h2>
+<p>Break before make. Contacts leave the normal source, travel across, and land on the emergency source. The load is dead for the mechanical operating time — a fraction of a second, but not zero.</p>
+<p>For anything behind a UPS, this is fine and it is what most data centers use. The UPS covers the gap without noticing.</p>
+<p>For motors, it is not fine. A spinning motor is a generator. When you open its supply it keeps turning and keeps producing voltage from residual flux, decaying over hundreds of milliseconds and — because it is now slipping — drifting in phase relative to the source. Reclose while that back-EMF is out of phase with the incoming source and the two voltages add rather than match. The result is a large inrush current, a violent torque transient through the shaft and coupling, and often a tripped breaker. Big chillers and pumps have been destroyed this way.</p>
+<p>There are two standard fixes.</p>
+<h3 id="in-phase-monitors">In-phase monitors</h3>
+<p>An <strong>in-phase monitor</strong> holds the transfer until the two sources happen to line up. It only works when both sources are live and healthy — you cannot phase-match against a source that is gone — so it applies to planned transfers and to retransfers back to utility, which is where most motor damage actually happens. The controller watches the phase angle and frequency difference between sources and closes only inside a window. ASCO's published in-phase acceptance criteria are a phase angle difference within ±60 electrical degrees and a frequency difference within ±3 Hz, with a tighter sync window configurable in the controller.</p>
+<h3 id="delayed-transition">Delayed transition</h3>
+<p>A <strong>delayed transition</strong> switch, also called programmed neutral position, deliberately parks in the middle. Contacts leave the normal source, sit in a dead position for a timed interval — typically adjustable from a fraction of a second up to several seconds — and then close on the emergency source. The point is to let motor back-EMF collapse to something harmless before reconnecting. It is a blunt instrument compared to an in-phase monitor, but it works when one source is dead, which is exactly when the in-phase monitor cannot help.</p>
+<h2 id="closed-transition-and-why-the-utility-cares">Closed transition and why the utility cares</h2>
+<p>Make before break. The generator is synchronized to the utility — matching voltage, frequency and phase — and both sources are connected simultaneously for a moment before the outgoing source opens. The load sees no interruption at all.</p>
+<p>The overlap is generally required to be under 100 milliseconds. That limit is not about the equipment; it is about how the utility classifies you. Below the threshold, you are performing a momentary paralleling operation. Above it, you are a generating facility connected to their distribution system, and a different and much more expensive set of interconnection requirements applies.</p>
+<p>Either way, you need permission. A closed transition switch back-feeds the utility for the duration of the overlap, and utilities have two concerns about that: power quality on their system, and the safety of a line crew who has every right to assume a de-energized line stays de-energized. Expect an interconnection application, expect them to ask what happens if the outgoing breaker fails to open, and expect protective relaying — reverse power, over and under voltage, over and under frequency — depending on the utility and the size of the plant. Some utilities will not permit it at all on certain circuits.</p>
+<p>The failure mode worth designing for is a stuck breaker. If the second contactor does not open at the end of the overlap, you have an unsupervised parallel connection with no protection. Closed transition controllers carry a fail-safe timer that forcibly opens a source if the overlap exceeds its limit, and that timer is not optional.</p>
+<p>Also worth knowing: a closed transition switch cannot do a closed transition when the utility is actually gone. Loss of utility is still an open transition event. Closed transition buys you seamless <em>planned</em> transfers and seamless return to utility — which, given how often the return trip is what causes the outage, is worth a lot.</p>
+<h2 id="soft-load-transfer">Soft load transfer</h2>
+<p>Closed transition moves the load in a step. The generator goes from zero to full load in one cycle, which is a large transient for the engine and a large frequency dip if the set is not generously sized.</p>
+<p>A <strong>soft load transfer</strong> keeps the two sources paralleled for seconds to minutes and ramps the generator's governor and excitation so real and reactive power walk gradually from one source to the other. No step, no dip, no thermal shock to the engine. It also lets you run peak shaving or utility-requested load curtailment on the same hardware.</p>
+<p>The cost is that you are now genuinely operating in parallel with the grid, for a meaningful length of time, and there is no argument that you are not. Full interconnection protection, full utility agreement, and a considerably more complex control system. It is common in hospitals and large campuses and is over-specified for a lot of data centers.</p>
+<h2 id="bypass-isolation">Bypass isolation</h2>
+<p>A standard ATS cannot be worked on without dropping its load. That means contact inspection, contact resistance measurement, mechanism exercise, control verification and relay testing all require an outage — so in a lot of facilities they simply never happen. A switch installed in 2005 and never opened is not a redundancy feature. It is a single point of failure with a certificate.</p>
+<p>A <strong>bypass isolation</strong> switch is two switches in one lineup. The bypass switch takes the load — from either source — while the automatic switch is electrically isolated, and on draw-out designs physically withdrawn from the enclosure for bench testing or replacement. Compartmentalized barriers separate the bypass, the ATS and the control wiring so a person can work in one without being exposed to the others.</p>
+<p>It costs meaningfully more and takes more floor space. It is also the difference between an inspection interval you can actually keep and one that exists only on paper. In a data center, where the ATS sits upstream of the UPS and is therefore not protected by it, that trade is usually easy.</p>
+<h2 id="what-goes-wrong">What goes wrong</h2>
+<p>The engine start batteries. By a wide margin, the most common reason a transfer fails is that the generator did not start, and the most common reason it did not start is the batteries. They are the cheapest component in the chain and the least monitored.</p>
+<p>Timers copied from a template. Retransfer delays set to 30 seconds because nobody changed the default, so the load bounces back to a utility that is still unstable.</p>
+<p>A generator-accept window set loose enough that the switch transfers before the set has stabilized, and then everything downstream sees a frequency excursion.</p>
+<p>And testing with no load. A no-load exercise proves the engine runs. It proves nothing about the transfer switch, the load's tolerance of the transfer, the generator's ability to accept the step, or the retransfer. If the only test that ever happens is a Tuesday morning no-load run, the first real load transfer is the test.</p>
+<p>Test under load. Log the actual transfer time and the voltage and frequency excursion. Confirm the upstream overcurrent device still matches the one on the switch's WCR label. And open the switch and look at the contacts — which requires having bought the bypass in the first place.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

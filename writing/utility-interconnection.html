@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting a large load interconnected to the utility — Chris Strandt</title>
+  <meta name="description" content="What a utility needs from you, how the study process works, who pays for the substation, and why interconnection is the real project schedule.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/" class="active">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">Getting a large load interconnected to the utility</h1>
+      <p class="wr-dek">What a utility needs from you, how the study process works, who pays for the substation, and why interconnection is the real project schedule.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>The first serious document in a data center project is not a floor plan. It is a letter to the utility telling them how much power you want, where, and when. Everything downstream — the mechanical concept, the construction schedule, the financing — moves when that conversation moves.</p>
+<p>On the largest build I worked on, an $80M facility, the utility built a substation to serve it. That process started years before the first customer ever plugged anything in, and it set the schedule for everything else.</p>
+<h2 id="the-load-letter">The load letter</h2>
+<p>The utility cannot do anything with "we need about ten megawatts." What their planning group needs is a load profile they can put into a model.</p>
+<p>Give them, in writing:</p>
+<ul><li><strong>Connected load</strong> and, separately, <strong>coincident peak demand</strong>. These are very different numbers in</li></ul>
+<p>  a data center and the utility plans on the second one.</p>
+<ul><li>A <strong>ramp schedule</strong> by year. Data center load arrives slowly. A 10 MW facility might draw 1.5 MW in</li></ul>
+<p>  year one. Say so, because the utility will size and stage its investment against that curve and   will structure the cost recovery against it too.</p>
+<ul><li><strong>Load factor.</strong> Data center load is unusually flat. Tell them the expected ratio of average to</li></ul>
+<p>  peak demand, because a high load factor makes you a good customer and it is a real argument in a   rate negotiation.</p>
+<ul><li><strong>Power factor</strong> at the point of delivery, and what you are doing about it.</li><li><strong>Motor starting</strong> and step load characteristics. Chiller compressors and the transfer of load to</li></ul>
+<p>  and from standby generation both matter to their voltage flicker analysis.</p>
+<ul><li><strong>Harmonic profile.</strong> Big UPS plants and VFDs are nonlinear loads. Be ready to talk about</li></ul>
+<p>  IEEE 519-style limits at the point of common coupling.</p>
+<ul><li>What <strong>redundancy</strong> you want from them: one feed, two feeds off the same substation bus, or two</li></ul>
+<p>  feeds from two substations. This is the single biggest driver of what they have to build.</p>
+<ul><li>Your preferred <strong>service voltage</strong>, if you have one. On the plants I designed we took 13.8 kV</li></ul>
+<p>  service and stepped down to 480 V three-phase inside the building.</p>
+<p>Write it as a real engineering document. The quality of that letter determines whether you get an engineer who takes you seriously or a form response.</p>
+<h2 id="will-serve-letters-and-what-they-do-not-promise">Will-serve letters and what they do not promise</h2>
+<p>Your lender and your municipality will both ask for a <strong>will-serve letter</strong> — the utility's written confirmation that it will provide service to the site. Get one, because you need it for closing and for site plan approval.</p>
+<p>Understand what it is. In most jurisdictions a will-serve letter confirms that the site is within the service territory and that service is available under the applicable tariff. It usually does not reserve capacity, does not fix a date, and does not commit the utility to build anything at its own expense. Conditions can include a signed service agreement, payment of a contribution, and completion of studies that have not been done yet.</p>
+<p>If you need capacity actually held for you, that is a different instrument and it generally comes with a deposit and a milestone schedule. Ask for it explicitly.</p>
+<h2 id="the-study-process">The study process</h2>
+<p>How formal this is depends on how big you are and what you connect to.</p>
+<p>At distribution scale the study is often internal and informal: a planning engineer looks at feeder loading, substation transformer capacity, protection coordination and voltage regulation, and comes back with a scope and a cost estimate. You may never see a document called a study.</p>
+<p>At transmission scale it is a defined, tariffed process. In Michigan that means the transmission owner and MISO, under the open access transmission tariff, and it runs through recognizable stages: a feasibility or preliminary look, a system impact study that determines what network upgrades your load triggers, and a facilities study that engineers and prices the interconnection facilities themselves. Each stage has a study agreement, a deposit and a queue position.</p>
+<p>Two things to internalize. First, each stage takes months and the clock only runs while you are in the queue, so get in early even if your design is not final. Second, study results are not a bill you can negotiate down by arguing; they are an engineering finding. If you want a cheaper answer, change the input — a lower ramp, a different point of interconnection, a willingness to accept a curtailable or interruptible portion of load.</p>
+<h2 id="distribution-or-transmission">Distribution or transmission</h2>
+<p>Where you land on this question changes your cost, your reliability and who you talk to for the next thirty years.</p>
+<div class="tw"><table><thead><tr><th></th><th>Distribution service</th><th>Transmission or subtransmission service</th></tr></thead><tbody><tr><td>Typical voltage</td><td>4.16–34.5 kV</td><td>34.5–69 kV and above</td></tr><tr><td>Counterparty</td><td>Local distribution utility</td><td>Transmission owner, plus the RTO</td></tr><tr><td>Process</td><td>Utility internal planning</td><td>Tariffed study process with a queue</td></tr><tr><td>You own</td><td>Service entrance and beyond</td><td>Often the whole customer substation</td></tr><tr><td>Reliability</td><td>Feeder exposure, reclosing, tree contacts</td><td>Fewer events, longer restoration when they happen</td></tr><tr><td>Rate</td><td>Standard large commercial or industrial class</td><td>Primary or transmission-level class, lower per-kWh, higher demand charges</td></tr></tbody></table></div>
+<p>There is no hard line between subtransmission and transmission, and the voltage ranges overlap. What matters practically is the <strong>delivery point</strong>: where the utility's ownership stops and yours starts. Push that boundary one way and you own the transformer, the relaying and the maintenance. Push it the other way and the utility owns it, rate-bases it, and charges you a facilities charge every month forever. Both are defensible. Decide deliberately, and price the twenty-year cost, not the first check.</p>
+<p>Metering follows ownership. Primary metering — metering on the high side, where you own the step-down transformer and eat its losses — usually earns a discount. It also means transformer losses show up in your PUE.</p>
+<h2 id="who-pays-for-the-substation">Who pays for the substation</h2>
+<p>The utility will apply a <strong>line extension allowance</strong>: an amount it will invest at its own cost, usually derived from the revenue it expects from you over some number of years. Anything the project costs above that allowance you pay, and that payment is a <strong>contribution in aid of construction</strong>, or CIAC.</p>
+<p>Three things about CIAC that surprise people the first time:</p>
+<p><strong>It is grossed up for tax.</strong> Since the Tax Reform Act of 1986 amended section 118 of the Internal Revenue Code, a contribution in aid of construction is not treated as a nontaxable contribution to the utility's capital. It is income to them. So they add a tax gross-up so that the after-tax proceeds cover the actual cost of the facilities. The gross-up is not a markup and it is not negotiable; it is arithmetic on a tax rate. Budget for it, because it is a large number on a substation.</p>
+<p><strong>You are buying an asset you will not own.</strong> The utility owns, operates and maintains what you paid for. That is normal, and it is why the allowance exists at all, but it means you have no salvage rights and no control over who else eventually gets served off it.</p>
+<p><strong>Some of it may come back.</strong> Many tariffs provide for refunds of a portion of the contribution as actual load materializes, or as other customers connect to facilities you funded, typically over a defined window of five or ten years. Read the refund provision carefully. It is real money and it is tied to your ramp forecast, which is another reason not to inflate the ramp in your load letter.</p>
+<h2 id="rate-class-and-special-contracts">Rate class and special contracts</h2>
+<p>Once the steel is in the ground you are living in a tariff, and the tariff has more effect on your operating cost than most of the design decisions you agonized over.</p>
+<p>Watch for:</p>
+<ul><li><strong>Demand charges.</strong> For a flat load these dominate. Your billing determinant is usually the highest</li></ul>
+<p>  15- or 30-minute demand in the month.</p>
+<ul><li><strong>Ratchets.</strong> Many industrial tariffs set billing demand as a percentage of the highest demand</li></ul>
+<p>  established in the previous eleven or twelve months. One bad afternoon during a commissioning test   can set your floor for a year. Know the ratchet before you load bank.</p>
+<ul><li><strong>Power factor provisions.</strong> Penalties below a threshold, sometimes credits above it.</li><li><strong>Standby and backup service.</strong> If you self-generate for anything other than emergencies, there is</li></ul>
+<p>  a rate for that, and it is usually unpleasant.</p>
+<ul><li><strong>Interruptible or curtailable riders.</strong> Real discounts in exchange for real obligations. Most data</li></ul>
+<p>  centers cannot honor them, but it is worth asking what the credit is worth.</p>
+<p>Above a certain size you may end up in a <strong>special contract</strong> — a negotiated agreement between you and the utility, filed with and approved by the state commission, that departs from the standard tariff. These typically carry a long term, a minimum demand or take-or-pay obligation, and specific treatment of the interconnection cost. They exist because your load is large enough that the standard class does not fit. They are also public documents once filed, so you can read what other large customers in the territory got.</p>
+<h2 id="the-interconnection-timeline-is-the-project-schedule">The interconnection timeline is the project schedule</h2>
+<p>Steel and concrete you can accelerate with money. Utility work you generally cannot.</p>
+<p>The long poles are equipment and process, and neither responds to urgency. Power transformers, medium voltage breakers and protective relays are made to order. Easements have to be negotiated with whoever owns the land the line crosses. Some of the work can only happen in a construction season or during a scheduled outage window that comes up twice a year. The tie-in itself may require an outage the utility will only take at a specific time.</p>
+<p>So: engage before you close on the land, keep your load forecast honest, and build your master schedule backwards from the energization date the utility gives you rather than forwards from groundbreaking. When the two disagree, the utility date wins, every time.</p>
+<p>The rule of thumb I would give anyone starting this: whatever the utility tells you the lead time is, that is the earliest possible date, not the expected one, and your commissioning plan needs a temporary power strategy for the gap.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../writing/">Writing</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>
