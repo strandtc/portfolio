@@ -92,7 +92,6 @@
           </li>
           <li><a href="../projects/">Projects</a></li>
           <li><a href="../datacenters/">Data Centers</a></li>
-          <li><a href="../writing/" class="active">Writing</a></li>
           <li><a href="../contact.html">Contact</a></li>
         </ul>
       </nav>
@@ -108,7 +107,7 @@
     <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
     <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
     <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
-    <a href="../writing/">Writing</a><a href="../contact.html">Contact</a>
+<a href="../contact.html">Contact</a>
     <a href="../assets/resume.pdf">Download Resume</a>
   </div>
 <main id="main">
@@ -147,7 +146,7 @@
 <p>The overlap is generally required to be under 100 milliseconds. That limit is not about the equipment; it is about how the utility classifies you. Below the threshold, you are performing a momentary paralleling operation. Above it, you are a generating facility connected to their distribution system, and a different and much more expensive set of interconnection requirements applies.</p>
 <p>Either way, you need permission. A closed transition switch back-feeds the utility for the duration of the overlap, and utilities have two concerns about that: power quality on their system, and the safety of a line crew who has every right to assume a de-energized line stays de-energized. Expect an interconnection application, expect them to ask what happens if the outgoing breaker fails to open, and expect protective relaying - reverse power, over and under voltage, over and under frequency - depending on the utility and the size of the plant. Some utilities will not permit it at all on certain circuits.</p>
 <p>The failure mode worth designing for is a stuck breaker. If the second contactor does not open at the end of the overlap, you have an unsupervised parallel connection with no protection. Closed transition controllers carry a fail-safe timer that forcibly opens a source if the overlap exceeds its limit, and that timer is not optional.</p>
-<p>Also worth knowing: a closed transition switch cannot do a closed transition when the utility is actually gone. Loss of utility is still an open transition event. Closed transition buys you seamless <em>planned</em> transfers and seamless return to utility - which, given how often the return trip is what causes the outage, is worth a lot.</p>
+<p>Also worth knowing: a closed transition switch cannot do a closed transition when the utility is actually gone. Loss of utility is still an open transition event. What it buys you is <em>planned</em> transfers the load never sees, and the same on the way back - which, given how often the return trip is what causes the outage, is worth a lot.</p>
 <h2 id="soft-load-transfer">Soft load transfer</h2>
 <p>Closed transition moves the load in a step. The generator goes from zero to full load in one cycle, which is a large transient for the engine and a large frequency dip if the set is not generously sized.</p>
 <p>A <strong>soft load transfer</strong> keeps the two sources paralleled for seconds to minutes and ramps the generator's governor and excitation so real and reactive power walk gradually from one source to the other. No step, no dip, no thermal shock to the engine. It also lets you run peak shaving or utility-requested load curtailment on the same hardware.</p>
@@ -179,7 +178,6 @@
           <li><a href="../experience/index.html">Experience</a></li>
           <li><a href="../projects/">Projects</a></li>
           <li><a href="../datacenters/">Data Centers</a></li>
-          <li><a href="../writing/">Writing</a></li>
           <li><a href="../contact.html">Contact</a></li>
         </ul>
       </nav>
