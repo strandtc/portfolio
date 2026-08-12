@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What a circuit breaker is actually doing - Chris Strandt</title>
+  <meta name="description" content="Overload versus short circuit versus ground fault, what every knob on a trip unit changes, and the 80 percent rule people get wrong.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">What a circuit breaker is actually doing</h1>
+      <p class="wr-dek">Overload versus short circuit versus ground fault, what every knob on a trip unit changes, and the 80 percent rule people get wrong.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/circuit-breakers.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>A circuit breaker looks like one device with one job. It is closer to three, because the three faults it answers are not the same problem.</p>
+<p><strong>Overload</strong> is current above the conductor's rating on a healthy circuit. Nothing is broken; the damage is thermal, over minutes. The response has to be slow and inverse - tolerant of a motor start, not so tolerant that 200 percent of rating sits there for an hour.</p>
+<p><strong>Short circuit</strong> is a bolted fault limited only by system impedance: tens of thousands of amps in the first half cycle, damage by magnetic force and arc energy, cycles rather than minutes.</p>
+<p><strong>Ground fault</strong> is current leaving through grounding conductors, conduit or building steel. The dangerous case is arcing - a few hundred amps, below instantaneous pickup and far below long-time pickup on a big feeder. Phase overcurrent logic never sees it, so ground fault sensing watches the residual sum of the phases instead.</p>
+<p>One response cannot cover all three, which is the architecture of a trip unit.</p>
+<h2 id="what-actually-opens-the-contacts">What actually opens the contacts</h2>
+<p><strong>Thermal-magnetic</strong> breakers put two mechanisms in one case. Overload is handled by a <strong>bimetallic strip</strong> - two metals with different expansion rates bonded together, heated by load current, deflecting until it releases the trip latch. It is a thermal analogue of conductor heating, so it gives an inverse curve for free. Short circuit is handled by a <strong>magnetic armature</strong>, steel pulled by the field around the current path, tripping the latch with no thermal lag. Cheap and robust, but the bimetal responds to ambient as well as load, and nothing is adjustable except, on larger frames, instantaneous pickup.</p>
+<p><strong>Purely magnetic</strong> breakers, sold as hydraulic-magnetic, replace the bimetal with a solenoid pulling a spring-loaded core through silicone damping fluid: the inverse delay comes from the fluid rather than from heat, so the trip point does not drift with ambient. Hence DC plants and hot enclosures.</p>
+<p><strong>Electronic trip units</strong> use current transformers or Rogowski coils, a microprocessor and an actuator, and every protection function becomes a number you can set. That is the point: coordination is an argument about which device opens first, and you cannot win it with two fixed curves.</p>
+<h2 id="three-families-of-breaker">Three families of breaker</h2>
+<div class="tw"><table><thead><tr><th></th><th>Molded case</th><th>Insulated case</th><th>LV power breaker</th></tr></thead><tbody><tr><td>Standard</td><td>UL 489</td><td>UL 489; none of its own</td><td>UL 1066, ANSI C37.13/.16/.50</td></tr><tr><td>Frames, 480 V interrupting</td><td>100–3000 A, 10–100 kA</td><td>400–5000 A, 35–150 kA</td><td>800–5000 A, 30–100 kA</td></tr><tr><td>Short-delay time</td><td>~18 cycles</td><td>30 cycles</td><td>30 cycles</td></tr><tr><td>Instantaneous</td><td>always, fixed override</td><td>always, higher override</td><td>can be supplied with none</td></tr><tr><td>Serviceable</td><td>no</td><td>no</td><td>yes</td></tr><tr><td>Mounting</td><td>fixed or plug-in</td><td>fixed or drawout</td><td>normally drawout</td></tr><tr><td>Continuous</td><td>80% unless listed 100%</td><td>80% unless listed 100%</td><td>100% as standard</td></tr></tbody></table></div>
+<p>Ranges are from Roybal's IEEE survey; catalogs run higher now. No standard defines <strong>ICCB</strong> at all, so those ratings vary by manufacturer. The row that matters is instantaneous. Coordinating in the fault region needs an upstream device that will deliberately wait, waiting needs short-time withstand, and UL 1066 and ANSI C37.50 prove it: rated short-time current for 30 cycles, a 15-second pause, then 30 cycles again. Molded case breakers are not tested for that, which is why the drawout power breaker exists.</p>
+<h2 id="the-trip-curve-knob-by-knob">The trip curve, knob by knob</h2>
+<p>Trip units are named for the functions they carry, which is where <strong>LSIG</strong> comes from: long-time, short-time, instantaneous, ground fault. The curve is log-log, current across and clearing time up. <strong>In</strong> is the sensor rating; <strong>Ir</strong>, long-time pickup, is a fraction of In. Short-time and ground settings are multiples of Ir, so moving pickup drags the whole curve sideways.</p>
+<p><strong>Long-time pickup</strong> is where the curve's left edge sits, and it should track conductor ampacity. Turn it down and the overload region slides left. It is not a precise threshold: a typical unit trips between 1.05 and 1.20 times Ir, which is what the plotted band shows.</p>
+<p><strong>Long-time delay</strong> sets how long an overload is tolerated, given as a time at a reference multiple of pickup, commonly 6 × Ir because that is roughly a motor's starting current. Turn it up and the whole inverse region lifts vertically; pickup does not move.</p>
+<p><strong>Short-time pickup</strong> is where the curve steps in from the long inverse slope to a much shorter delay, set as a multiple of Ir over a range like 1.5 to 10. Move it right and the step moves right. <strong>Short-time delay</strong> is how long the breaker holds that current; move it up and the shelf rises. This is the setting that buys selectivity, and the same setting raises incident energy.</p>
+<p><strong>I²t in or out</strong> changes the shape of that shelf. Out, it is definite time - flat, whatever the current. In, it gains an inverse ramp below a fixed current, commonly 8 × Ir, stretching the delay at lower currents. Use it in against a downstream fuse or thermal-magnetic breaker, whose curves slope; out for maximum predictable delay against another trip unit.</p>
+<p><strong>Instantaneous</strong> is a vertical line with no intentional delay. Many units let you switch it off, which is how an upstream breaker is made to wait, but switching it off does not remove the non-defeatable <strong>instantaneous override</strong> that molded case and insulated case breakers carry to protect contacts from currents they cannot hold, typically near 10 to 13 times frame rating. It is detected on peak rather than RMS, so an override that looks comfortable against available fault current can still fire on the first half cycle of an asymmetric wave.</p>
+<p><strong>Ground fault</strong> gets its own pickup and delay, from the residual sum of the phases plus neutral or a separate zero-sequence CT. It is equipment protection, not a GFCI.</p>
+<h2 id="racking-a-breaker-out">Racking a breaker out</h2>
+<p>Drawout construction is what makes a maintainable plant possible. The breaker rides on rails in its own compartment and moves between four defined positions with the assembly still live:</p>
+<ul><li><strong>Connected</strong> - primary and secondary disconnects engaged, carrying load.</li><li><strong>Test</strong> - primaries out, control circuits live. Close it, trip it, prove the trip unit and the interlocks with no load current near it.</li><li><strong>Disconnected</strong> - everything disengaged, breaker still in the cell.</li><li><strong>Withdrawn</strong> - off the rails, on a lift truck.</li></ul>
+<p>Only the load fed by that breaker is affected. On a 2N plant this is concurrent maintainability: rack out the A side, work it, rack it back, prove it in test, close it.</p>
+<p>Racking drives moving primary contacts against energized bus, and NFPA 70E's task table treats insertion or removal of breakers from cubicles, doors open or closed, as a task where an arc flash is likely. <strong>Remote racking</strong> puts the operator outside the arc flash boundary with a motorized tool on a cable. Racking is not low risk because the door is shut.</p>
+<h2 id="eighty-percent-one-hundred-percent-and-the-arithmetic">Eighty percent, one hundred percent, and the arithmetic</h2>
+<p>NEC Article 100 defines a <strong>continuous load</strong> as one where the maximum current is expected to continue for three hours or more. IT load is continuous by definition.</p>
+<p>The rule reads the same for branch circuits, feeders and service conductors - 210.20(A), 215.3, 230.42(A)(1): the rating of the overcurrent device shall not be less than the noncontinuous load plus 125 percent of the continuous load. Note the direction. The Code sizes the device from the load, and the "80 percent rule" is that arithmetic inverted, because 1 / 1.25 = 0.8. It is a rule of thumb, not code language.</p>
+<p>Eighty percent is also not a rating. UL 489 requires every molded case breaker to carry 100 percent of rating continuously, tested in open air in a chamber held at 40 °C. Put it in a can and the heat has nowhere to go.</p>
+<p>A <strong>100 percent rated</strong> breaker has passed further UL 489 testing inside an enclosure of specified minimum size, run to temperature stabilization without tripping, with limits on terminal temperature rise. The listing comes with conditions, printed on the breaker: a minimum cubicle volume, ventilation openings where they are needed, and - where terminal temperature ran between 50 °C and 60 °C in test - 90 °C insulated wire sized at the 75 °C ampacity. The exception is also written on the <strong>assembly</strong>, so a 100 percent rated breaker in a panelboard not listed for 100 percent operation does not earn it.</p>
+<pre><code>Noncontinuous 150 A, continuous 600 A
+  Standard:   150 + (1.25 x 600) = 900 A -&gt; 1000 A frame, 3 x 350 kcmil/phase
+  100% rated: 150 + 600          = 750 A -&gt;  800 A frame, 3 x 250 kcmil/phase
+
+208 V 1-phase 20 A branch, continuous
+  20 / 1.25 = 16 A -&gt; 16 x 208 = 3,328 VA usable  (not 4,160)</code></pre>
+<p>The rack arithmetic is where people fumble: planning capacity on the full handle rating, when a 20 A circuit is a 16 A circuit for IT load, or applying 80 percent twice because the PDU vendor already published 16 A for that 20 A strip.</p>
+<h2 id="the-ratings-you-cannot-fudge">The ratings you cannot fudge</h2>
+<p>Everything above is whether the breaker trips correctly. Interrupting rating is whether it survives doing so. NEC 110.9 requires equipment intended to interrupt fault current to have an interrupting rating at nominal circuit voltage not less than the current available at its line terminals. It is voltage-specific: the same frame carries different ratings at 240, 480 and 600 V, and the catalog headline is usually the 240 V one. 110.10 adds that devices, impedances and equipment short-circuit current ratings all have to be coordinated so a fault clears without extensive damage.</p>
+<p><strong>Series ratings</strong> let a lower-rated downstream breaker sit where available fault current exceeds its own interrupting rating, because a UL-tested combination with a fully rated upstream device shares the interruption. Only tested combinations count, and NEC 110.22 requires the combination field-marked on the equipment. 240.86(C) rules them out where motors sit between the two devices and their full-load currents exceed 1 percent of the lower device's interrupting rating - for 14 kA branch breakers, 140 A. They are also the opposite of coordination: under high fault conditions both devices may open.</p>
+<p><strong>Current-limiting</strong> devices reduce fault current to substantially less than what would flow if the device were replaced by a solid conductor of comparable impedance. UL 489 requires a current-limiting breaker to hold let-through I²t below that of a half-cycle wave of the available symmetrical current, and to be marked "Current Limiting" with its peak and I²t values. Fuses do it by clearing inside the first half cycle. Both let you protect equipment whose SCCR you cannot raise.</p>
+<p>Read the whole label rather than the handle: interrupting rating at your voltage, continuous rating conditions, enclosure dimensions, wire temperature. Record the as-set trip values inside the cubicle door with a date, because trip units get swapped and settings default. Then confirm the instantaneous override in peak amps against the real X/R - that number decides whether the short-time delay in your study exists in the field or only on paper.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

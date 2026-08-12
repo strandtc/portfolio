@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What each level of data center commissioning actually proves - Chris Strandt</title>
+  <meta name="description" content="What happens at each of the five commissioning levels, who writes the test scripts, and why operations must witness the integrated systems test.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">What each level of data center commissioning actually proves</h1>
+      <p class="wr-dek">What happens at each of the five commissioning levels, who writes the test scripts, and why operations must witness the integrated systems test.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/commissioning-levels.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Commissioning is the last chance to find out that the building does not work while somebody else is still contractually obliged to fix it. After handover, the same defect is a change order and a planned outage. The five-level structure is how the industry organizes that, and it is worth understanding what each level actually demonstrates, because the levels are not equally valuable and they do not fail in the same way.</p>
+<p>Start with an honest caveat. <strong>Levels 1 through 5 are an industry convention, not a standard.</strong> ASHRAE Guideline 0, <em>The Commissioning Process</em>, and ANSI/ASHRAE/IES Standard 202 define the commissioning process properly - Owner's Project Requirements, Basis of Design, commissioning plan, verification, functional performance testing, systems manual. Neither uses the L1–L5 numbering. ANSI/BICSI 002 covers data center design and implementation. The numbering is a convenient shorthand that different Cx firms apply differently; some run 0 through 6, adding a design-phase Level 0 and a transition-to-operations Level 6. Agree the definitions in the commissioning plan before anyone writes a scope of work, or you will buy Level 3 twice and Level 4 not at all.</p>
+<h2 id="level-1-factory-witness">Level 1 - factory witness</h2>
+<p>Submittal review, and witnessing tests at the manufacturer's plant before equipment ships.</p>
+<p>UPS modules run on the factory load bank through their transfer sequences. Generators run in the test cell, ideally through a load profile rather than a warm-up. Switchgear gets dielectric and functional checks and the control logic is exercised. Chillers run in the factory loop at the specified conditions, which is the only realistic chance to verify performance at design conditions rather than whatever the weather does on the day of site testing.</p>
+<p>The economics are the whole argument. A defect found at the factory costs a rework slot in the vendor's shop. The same defect found after installation costs a crane, a shutdown, a restocking argument and twelve weeks.</p>
+<p>Two things make factory witness worth the airfare. First, bring the actual sequence of operations and check the programmed logic against it, line by line - this is the cheapest time in the project to find that the vendor programmed a generic sequence. Second, send the person who will maintain the equipment, not only the design engineer. They will ask where the filters are and whether the breaker can be racked out without a lift, and those answers change the operating cost of the site for fifteen years.</p>
+<h2 id="level-2-site-acceptance">Level 2 - site acceptance</h2>
+<p>Receiving inspection. Unglamorous, frequently skipped, and where schedules go to die.</p>
+<p>Verify the equipment that arrived is the equipment that was ordered: model, options, voltage, ratings, accessories. Check the nameplate against the approved submittal, not against the purchase order. Look for shipping damage, and read the impact and tilt indicators before somebody removes them. Confirm storage conditions - enclosure space heaters energized, desiccant present, humidity controlled - because a transformer or a switchboard that sat in an uncontrolled shell for a wet winter has a problem that will not appear until Level 3 megger readings.</p>
+<p>Note that "site acceptance test" is used two ways. Some programs mean receiving inspection. Others mean re-running the factory tests on site after installation. Say which one you are buying.</p>
+<h2 id="level-3-component-verification">Level 3 - component verification</h2>
+<p>Static checks, pre-functional checklists and start-up. Every device is proven to work by itself, before anything is tied together.</p>
+<p>Insulation resistance and contact resistance testing, torque verification, phasing and rotation checks, cable testing, protective relay settings loaded and verified against the coordination study, current transformer ratio and polarity, breaker trip unit settings entered and recorded. This is NETA acceptance testing territory - ANSI/NETA ATS is the reference for what tests to run and what results to accept. Vendor start-up reports get collected here. Point-to-point verification on the BMS and EPMS happens here: every sensor, every alarm contact, every output confirmed to be reading the thing its tag says it reads.</p>
+<p>The single most valuable artifact from Level 3 is the record of as-set values - breaker settings, relay settings, valve positions, setpoints. If it does not get captured here it will not be captured, and five years later nobody will know whether the short-time delay on the main was always 0.3 seconds or whether someone changed it.</p>
+<h2 id="level-4-functional-performance">Level 4 - functional performance</h2>
+<p>Individual systems do what the sequence of operations says they do.</p>
+<p>The UPS transfers to bypass and back without dropping load. The ATS transfers to generator and retransfers on its programmed timers. The chiller stages up and down correctly and holds setpoint. A control valve fails to the correct position on loss of power and loss of air. Alarms annunciate, at the right priority, in the right place, with the right text. Fans reverse or ramp as designed. Redundant pump rotation actually rotates.</p>
+<p>Level 4 is where you test one system at a time against a written sequence. When a test fails, the discipline is to determine whether the equipment is wrong or the sequence is wrong. If the sequence is wrong, fix the sequence document and re-issue it - otherwise you end up with a building whose behavior is correct and undocumented, which is the same as undocumented.</p>
+<h2 id="level-5-integrated-systems-test">Level 5 - integrated systems test</h2>
+<p>The whole facility, at simulated load, put through scripted failures.</p>
+<p>Load banks go in at the PDUs, busway tap-offs or the floor, simulating both the electrical draw and the heat. The building is then failed on purpose, in a planned sequence, and everything is measured. A partial list of what belongs in the script:</p>
+<ul><li>Utility loss with the building at load - the black building test - through generator start, transfer, cooling restart and stabilization</li><li>Loss of a single generator during the start sequence, and loss of one after the plant has picked up load</li><li>Failure of a generator to start, testing the paralleling scheme's response</li><li>Loss of one UPS module, then loss of a UPS system, then loss of a distribution path</li><li>Loss of a chiller, a pump, a cooling tower cell, and the controls network</li><li>Utility restoration and retransfer, including a failed retransfer</li><li>Fire alarm and EPO interfaces, which are the ones nobody wants to test and everybody should</li></ul>
+<p>It is not one utility pull. It is a sequence of scenarios run over multiple days, usually including nights, requiring fuel, load banks, temporary metering and everyone on site.</p>
+<p>The thermal side matters as much as the electrical side. Measure the rate of temperature rise in the hall during the cooling gap, and how long the hall takes to recover. That number is the operational answer to "how long do we have," and it is the input to every emergency procedure you will write.</p>
+<h2 id="who-writes-the-scripts">Who writes the scripts</h2>
+<p>The <strong>commissioning authority</strong> writes them. That should be an independent party working for the owner, not a subcontractor to the general contractor and not the equipment vendor.</p>
+<p>The CxA drafts from the Owner's Project Requirements and the sequences of operations, so that every line in every script traces back to a stated requirement. The design engineer reviews the sequences for accuracy. The vendors contribute equipment limits - what the machine can be asked to do and what will damage it - and that input is essential, but a vendor should never be the sole author of the test that proves their own equipment. The contractor contributes constructability and safety. The owner approves, and the owner's approval is not a formality: a script the owner has not read is a script that tests what the CxA assumed the owner wanted.</p>
+<p>Every finding goes into a deficiency log with a disposition and a retest. "Witnessed and passed" with no record of the retest after a correction is not a pass, and that is the single most common weakness in commissioning documentation.</p>
+<h2 id="why-operations-stands-there-for-level-5">Why operations stands there for Level 5</h2>
+<p>Because it is the only time anybody will ever let you break the building on purpose.</p>
+<p>Once there is production load in the room, no one will authorize failing a distribution path to see what happens. The window closes at handover and it does not reopen. What operations gets by being present:</p>
+<p><strong>Failure signatures.</strong> Which alarms come in, in what order, and which are noise. What the room sounds like when the generators pick up. How long the transfer actually takes versus what the drawing says. How far the temperature climbs and how fast. These are pattern-recognition assets, and there is no way to acquire them from a document.</p>
+<p><strong>The material for the emergency procedures.</strong> EOPs written from design narratives describe a building that does not exist. EOPs written from what was observed during IST describe this one. Write them during commissioning, while the vendor engineers are still standing there to answer the question in the middle of step 14.</p>
+<p><strong>Operability defects the design team cannot see.</strong> A breaker you cannot reach without a lift. A maintenance bypass sequence that requires standing directly in front of an energized cubicle. An alarm that says "UPS FAULT" without saying which UPS. Valves with no labels. A generator room door that only opens inward against the airflow. Every one of these is free to fix under contract and expensive to fix afterwards.</p>
+<p><strong>Baseline numbers.</strong> Assign one person to do nothing but record actual values: transfer times, voltage dip magnitude and duration, battery string voltage at end of discharge, generator frequency excursion on block load, temperature rise rate per hall, cooling recovery time. Those become the reference you compare against in year five, when you re-test and want to know what has drifted.</p>
+<p>Which brings up the thing that actually goes wrong. Commissioning is at the end of the schedule, and construction schedules slip. Level 5 is at the end of commissioning. So when the project is late, Level 5 is what gets compressed, and the compromise offered is always the same sentence: we will complete IST after go-live, during a maintenance window.</p>
+<p>It does not happen. Once there is load in the room nobody will sign the authorization to fail the building, and the site spends its whole life with an untested failure response.</p>
+<p>Protect the Level 5 window contractually, with dates, and with liquidated damages if you can negotiate them. Refuse partial IST as a substitute for full IST. And when you do run it, record the values - because the next argument, five years out, will be about whether the plant still does what it did on the day you accepted it, and the only way to win that argument is to have written the numbers down.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

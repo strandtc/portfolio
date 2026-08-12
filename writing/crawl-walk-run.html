@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earning each stage of a new product - Chris Strandt</title>
+  <meta name="description" content="Crawl, walk, run as an actual sequence - what a crawl looks like, why teams skip it, and how to tell a walking product from one being carried.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Practice</p>
+      <h1 class="wr-title">Earning each stage of a new product</h1>
+      <p class="wr-dek">Crawl, walk, run as an actual sequence - what a crawl looks like, why teams skip it, and how to tell a walking product from one being carried.</p>
+      <div class="wr-meta"><span>Practice</span><span>6 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/crawl-walk-run.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Crawl, walk, run is how I think about developing anything new. It is not a schedule, and it is not a motivational phrase. It is a claim about evidence. Each stage is something you earn by learning the thing the previous stage existed to teach you, and if you did not learn it, you have not earned the next stage no matter how much you have built.</p>
+<p>The failure mode is almost never moving too slowly. It is declaring a stage you have not earned, and then having to defend the declaration for the next two years.</p>
+<h2 id="the-stage-is-set-by-what-you-know-not-by-what-you-built">The stage is set by what you know, not by what you built</h2>
+<p>A product's stage is not measured in features, headcount, or how long the team has been on it. It is measured by what has been settled.</p>
+<p><strong>Crawl</strong> settles whether anyone wants the thing and whether you can deliver it at all, by any means. <strong>Walk</strong> settles whether you can deliver it repeatedly without heroics. <strong>Run</strong> settles whether you can deliver it at volume, at a margin, with on-call and support and documentation and everything else attached to it.</p>
+<p>Each stage has an exit condition and the exit condition is knowledge, not a date. You can hit every milestone on the plan and still be crawling, because the milestones were about construction and the stage is about doubt.</p>
+<h2 id="what-a-crawl-actually-looks-like">What a crawl actually looks like</h2>
+<p>The smallest thing that proves the risky assumption. Both words are doing work.</p>
+<p><strong>Risky.</strong> Every new product rests on a stack of assumptions and most of them are safe. We can rack a server. We can bill a card. We can get an IP block. One or two assumptions actually decide the outcome, and in a hosting business they are usually not the technical ones. Can we build it is rarely the question. Whether the customers we already have will pay for it, whether it can be operated by people who did not build it, and whether the margin survives real usage rather than the usage in the model - those are the questions that kill things.</p>
+<p><strong>Smallest.</strong> The crawl is allowed to be manual, ugly, and completely unable to scale. If the risky assumption is demand, sell it to ten accounts and provision them by hand. If the risky assumption is supportability, hand it to the support team in week one with no documentation and watch what they ask. If it is the economics, run it for a quarter at true cost, counting the hours, not the hours you hoped for.</p>
+<p>A good crawl usually looks like something you would be embarrassed to demo. Provisioning done by hand. A spreadsheet where the database should be. An engineer doing at two in the morning what a script should be doing. That is not a failure of the crawl, it is the shape of it. You spend people rather than engineering, because people are the cheapest thing to throw away when the answer comes back no.</p>
+<p>The crawl is over when you can state what you learned in one sentence and you would bet on it.</p>
+<h2 id="why-teams-skip-ahead">Why teams skip ahead</h2>
+<p>A few reasons, and they are all reasonable from the inside.</p>
+<p>Crawling does not look like progress. There is nothing to show. In a company that measures shipping, a team doing the smallest possible thing by hand reads as a team that has not shipped, and that pressure is real enough that people will build something just to have built it.</p>
+<p>Engineers prefer the general case. Serving ten customers by hand is boring. Building the automation that serves any number of them is interesting, and it comes with a defensible argument attached: we will have to build it eventually anyway. Sometimes that is true. It is still the run-stage answer to a crawl-stage question.</p>
+<p>Somebody said a date out loud. A roadmap slide or one sales conversation converts an experiment into a commitment, and after that nobody is allowed to conclude that the assumption failed.</p>
+<p>A competitor announced something. This is the most effective way to skip two stages at once, because urgency feels like information and it is not.</p>
+<p>And the last product worked. Success at run stage teaches a team run-stage habits - full automation, full documentation, a launch - and they carry those habits into the next thing, where they are expensive and premature.</p>
+<p>The real cost of skipping is not the wasted build. It is that you have now attached a run-stage cost structure to an unanswered question, and from that point on everybody's incentive is to stop asking it.</p>
+<h2 id="walking-or-being-carried">Walking, or being carried</h2>
+<p>This is the distinction that matters most, because a carried product looks exactly like a walking product on a status report.</p>
+<p>A walking product survives ordinary operation without any specific person. A carried product has someone underneath it. The signs are consistent:</p>
+<ul><li>Every sale requires a particular person in the room.</li><li>Every install requires the engineer who built it.</li><li>Every incident routes to the same pager regardless of who is actually on rotation.</li><li>The runbook is in one head, and that person keeps saying they will write it down.</li><li>Support escalates essentially every ticket on it, because tier one has no path to resolution.</li></ul>
+<p>The cheapest test is a vacation. Take the carrier out for two weeks and do not let them answer messages. That is not a thought experiment, it is an audit, and it costs nothing you were not already paying for.</p>
+<p>The second test is volume. A carried product does not fail at three times the customers because of a technical limit. It fails because the carrier runs out of hours. So look at the trend in human effort per customer. If serving the hundredth account takes the same amount of manual work as the tenth, the product is being carried, and usually it is being carried by the support organization rather than by an individual - which is worse, because the cost is spread thin enough that nobody reports it.</p>
+<p>The third test is cost. A product whose support load you cannot see is being subsidized by something. In a hosting business, the subsidy always turns up in the ticket queue eventually.</p>
+<p>None of this is an argument for killing a carried product. Plenty of good things are carried for a while. It is an argument for not calling it walking, and for not making plans that assume it can run.</p>
+<h2 id="running-is-a-different-job">Running is a different job</h2>
+<p>Running is not a larger version of walking. The constraint moves. It stops being "does this work" and becomes "can the organization carry this at scale, indefinitely, while also carrying everything else."</p>
+<p>That means capacity planning, on-call coverage that does not depend on goodwill, documentation someone other than the author has followed end to end, a training path for the support tier, and compliance scope - a new product that touches cardholder data or health information drags the audit program along with it whether anyone planned for that or not. It also means a lifecycle: how this gets versioned, deprecated, and eventually turned off.</p>
+<p>Roughly half the work of running a product is work nobody would describe as product work. Skip it and the product runs fine for a year, and then the organization quietly stops being able to keep up with it.</p>
+<h2 id="before-you-promote-a-stage">Before you promote a stage</h2>
+<p>Five questions. Answer them out loud, with evidence rather than confidence.</p>
+<ol><li>What was the risky assumption, and what specifically settled it? If you cannot name the</li></ol>
+<p>   assumption you wrote down at the start, you did not run a crawl, you ran a build.</p>
+<ol><li>Who is carrying this? Name them. What happens in the two weeks they are gone?</li><li>What breaks at three times the volume? Answer with a mechanism, not a reassurance.</li><li>What does the hundredth unit of work cost compared to the tenth? Falling, flat, or rising?</li><li>Who handles this at three in the morning, and have they actually done it yet?</li></ol>
+<p>The habit worth building is the first one. At the start of anything new, write down the single assumption that would make it not worth doing, and put it somewhere the team will see it again. Most products that skip the crawl skip it because nobody ever wrote that sentence down, so there was never anything to check.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

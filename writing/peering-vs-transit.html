@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>When peering starts to make more sense than transit - Chris Strandt</title>
+  <meta name="description" content="What you actually pay for with transit, how settlement-free peering works, and the arithmetic that tells you when to connect to an exchange.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">When peering starts to make more sense than transit</h1>
+      <p class="wr-dek">What you actually pay for with transit, how settlement-free peering works, and the arithmetic that tells you when to connect to an exchange.</p>
+      <div class="wr-meta"><span>Network</span><span>7 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/peering-vs-transit.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Transit and peering are not two flavors of the same product. One is a service you buy: reachability to the entire internet, sold by the megabit. The other is a bilateral arrangement in which two networks agree to hand each other traffic directly and neither one pays. Confusing them is how people end up with a port at an exchange that saves them nothing.</p>
+<h2 id="what-you-are-actually-buying-with-transit">What you are actually buying with transit</h2>
+<p>A transit provider sells you two things. The first is a full BGP table, or a default route, so you know how to reach everything. The second, and the one you're really paying for, is that they advertise your prefixes to everyone they connect to. Transit is a promise of bidirectional reachability to the whole internet, and it comes with somebody's phone number when it breaks.</p>
+<p>The billing convention is <strong>95th percentile</strong>. Your provider samples the port every five minutes in each direction, throws away the top 5% of samples for the month, and bills the highest remaining sample - normally on the greater of inbound or outbound. That means roughly 36 hours a month of unbilled burst, which is the point: you're not paying for your peak, you're paying for your sustained load.</p>
+<p>On top of that sits a <strong>commit</strong>: a minimum you agree to buy each month, at a per-megabit rate that gets better the more you commit. Overage above the commit is billed at the same rate or worse. Terms are typically 12 to 36 months.</p>
+<p>Prices have eroded continuously for two decades and still are. TeleGeography's 2025 pricing work has the lowest 100 GigE prices in the most competitive markets at $0.05 per Mbps per month, with 400 GigE at $0.08–$0.09. Those are the floor prices in the biggest hubs, not what a network in a secondary market pays - the regional spread is enormous, and in a market like Lansing the number that matters is what it costs to get to the nearest real hub, not what transit costs once you're there.</p>
+<p>Which is the first thing to understand about transit economics outside a major metro: you are usually buying two products. Transport to a hub, and transit at that hub. People compare the transit price and forget the wave.</p>
+<h2 id="what-peering-actually-is">What peering actually is</h2>
+<p><strong>Settlement-free peering</strong> is an agreement between two networks to exchange traffic directly, with no money moving in either direction, over a link both sides paid to build.</p>
+<p>The critical limitation, and the one people miss: peering gets you to that network and that network's customers. Nothing else. A peer does not carry your traffic onward to the rest of the internet, and if they did it would be transit and they would bill you for it. Peering with fifty networks does not replace transit. It removes a slice of traffic from your transit bill, and you still need transit for everything else - including as the backup path when a peering session drops.</p>
+<p>The reason to do it anyway is that traffic is heavily concentrated. A small number of networks - the large content providers, the CDNs, the big eyeball ISPs in your region - account for most of what crosses your border. Move those and you have moved a large fraction of your bill.</p>
+<h2 id="public-peering-at-an-exchange">Public peering at an exchange</h2>
+<p>An <strong>IXP</strong> is a shared layer-2 fabric. You buy a port, you get an address on the peering LAN, and you can then establish BGP sessions with anyone else on that fabric who'll agree. One port, many peers, which is the entire value proposition.</p>
+<p>Most exchanges also run <strong>route servers</strong>: you peer once with the route server and receive routes from every participant who peers with it, which collapses dozens of session setups into one. It's the fastest way to get useful traffic off transit on day one. It's also the least controlled - you have less visibility into what you're accepting, so filter properly and validate origins.</p>
+<p>The costs are not just the port:</p>
+<ul><li>The IXP port fee, priced by speed.</li><li>Colocation in the exchange facility, or a remote-peering service if you can't be there.</li><li>A cross connect from your cage to the fabric, monthly, forever.</li><li>Transport from your network to that facility, which in a secondary market is the largest line item by a wide margin.</li><li>Optics, a router port, and the engineering time.</li></ul>
+<p>Look networks up in <strong>PeeringDB</strong> before you commit. It tells you who is on which fabric, at what capacity, with what peering policy and what contact address. If the networks you actually exchange traffic with aren't on the fabric you're considering, the port is decoration.</p>
+<h2 id="private-interconnect">Private interconnect</h2>
+<p>A <strong>PNI</strong> - private network interconnect - is a direct cross connect between you and one other network, usually in the same facility, running a single BGP session. No shared fabric, no route server.</p>
+<p>You move to a PNI when the traffic to one peer justifies dedicated capacity: you get the whole port instead of a share of a fabric, no exchange port fee on that traffic, cleaner troubleshooting, and lower jitter. Most large content networks will start you on the exchange and move you to a PNI once you're consistently pushing a few gigabits, and many publish that threshold.</p>
+<p>The rule of thumb operators use: exchange fabric for the long tail of many small peers, PNI for the handful of relationships that dominate your traffic.</p>
+<h2 id="the-economics">The economics</h2>
+<p>The calculation is not "peering is free." It's whether the fixed monthly cost of peering beats the variable monthly cost of the traffic it displaces.</p>
+<pre><code>Monthly peering cost
+  IX port                    P
+  cross connect              X
+  colo (space, power)        C
+  transport to the IX        T          &lt;-- usually dominates outside a major hub
+  amortized optics/router    A
+                            ---
+  total fixed              F = P+X+C+T+A
+
+Traffic you can actually move off transit
+  M Mbps at 95th percentile
+
+Effective cost per Mbps of peering = F / M
+
+Peer when   F / M  &lt;  your marginal transit rate per Mbps</code></pre>
+<p>Three things make this arithmetic go wrong in practice.</p>
+<p><strong>M is smaller than you think.</strong> Your Netflow says 40% of your traffic goes to networks present on that fabric. You will not get 40%. Some won't peer with you, some will peer but keep preferring another path, and some route only a portion of their prefixes over the exchange. Model half of what the flow data suggests and be pleased when you beat it.</p>
+<p><strong>Your transit bill doesn't drop proportionally.</strong> If you're on a commit, moving traffic below the commit saves nothing at all until the contract renews. Peering pays off against overage and against your <em>next</em> contract, not against your current invoice. Sequence it accordingly.</p>
+<p><strong>You still need full transit capacity.</strong> Peering is not redundancy. When a peer's session drops, that traffic lands on transit instantly, so your transit ports have to be sized to carry it. You're buying peering to reduce the bill, not the port.</p>
+<p>There are non-financial reasons too, and in a regional market they're often the better argument. A direct path to a major content network is one AS hop and a few milliseconds instead of a trip to Chicago and back. Latency and control over your own paths can be worth more than the transit savings, and they're the reason a network in a smaller city builds out to an exchange before the pure cost case closes.</p>
+<h2 id="ratios-policies-and-being-told-no">Ratios, policies, and being told no</h2>
+<p>Every network of any size publishes a <strong>peering policy</strong>, and PeeringDB classifies them as open, selective, or restrictive. Open means they'll peer with essentially anyone on a shared fabric. Selective means they have requirements. Restrictive means don't ask.</p>
+<p>Typical requirements from a large network:</p>
+<ul><li>A published policy, a 24×7 NOC with a real contact, and a PeeringDB record kept current.</li><li>Presence at some minimum number of geographically distributed locations. Research on US settlement-free peering requirements finds large ISPs commonly asking for six to eight interconnection points.</li><li>A minimum traffic volume, often stated in Gbps.</li><li>A traffic <strong>ratio</strong> requirement, commonly around 2:1.</li></ul>
+<p>The ratio requirement is the one that generates the most argument. The logic is a cost-shifting argument about hot-potato routing: whichever network hands traffic off earliest makes the other one carry it farther, so a network sending you far more than it receives is pushing transport cost onto you. Content networks argue, with some justice, that the ratio is an artifact of what their customers asked for. The relevant fact for a small network is simply that the requirement exists, it is not going away, and a hosting or content-heavy network will be outbound-heavy and will fail it against the big eyeball ISPs.</p>
+<p>What to do about it: don't start there. The exchange route servers and the open-policy content and CDN networks will take you immediately, and those are where the traffic is anyway. The large restrictive networks are a multi-year relationship, and the qualifying criteria are a description of a network you don't have yet.</p>
+<h2 id="where-to-start">Where to start</h2>
+<p>Pull a month of Netflow, aggregate destination bytes by origin AS, and sort it. The top twenty ASes are your entire peering strategy - everything below that is noise you'll be paying transit for regardless. Look each one up in PeeringDB, find the exchange where the most of them are present and reachable, and price the transport to it. If that transport number is bigger than your whole transit bill, you have your answer for this year, and the thing to work on is a cheaper path to the hub rather than the peering itself.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

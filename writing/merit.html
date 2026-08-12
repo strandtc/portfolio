@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What it actually takes to promote on merit - Chris Strandt</title>
+  <meta name="description" content="Why advancement on demonstrated capability beats tenure or proximity, what a merit system requires to function, and how it gets quietly captured.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Practice</p>
+      <h1 class="wr-title">What it actually takes to promote on merit</h1>
+      <p class="wr-dek">Why advancement on demonstrated capability beats tenure or proximity, what a merit system requires to function, and how it gets quietly captured.</p>
+      <div class="wr-meta"><span>Practice</span><span>7 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/merit.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Every organization promotes on something. If nobody decides what that something is, it defaults to one of three things: how long a person has been there, how much the person deciding likes them, or how often the person deciding sees them. All three happen on their own. Merit does not.</p>
+<p><strong>Merit</strong> means advancement based on demonstrated capability - what someone has actually done, judged by people in a position to judge it, and can reasonably be expected to do at a larger scale. It is the only basis on that list that is about the work.</p>
+<p>It is also the only one that costs anything to run. Tenure administers itself. Likeability requires no meetings. Merit requires written criteria, evidence, and at least one manager willing to say no to someone's face and explain why. Most organizations claim merit and operate one of the others, and the gap between the claim and the operation is where the damage happens.</p>
+<h2 id="what-the-alternatives-actually-reward">What the alternatives actually reward</h2>
+<p><strong>Tenure</strong> rewards not leaving. It is easy to defend and nobody argues with it, which is most of its appeal. The problem is that in a company going from seven people to four hundred and fifty, time served measures something that stops being useful early. Someone who was there at twenty people knows where everything is and why it was built that way, and that knowledge is genuinely valuable. Institutional memory is an asset. It is not a qualification to run a department of thirty.</p>
+<p><strong>Likeability</strong> is the one people are least honest about, partly because in a service organization being pleasant to deal with is real, load-bearing skill. Support work gets delivered by people who can absorb somebody else's bad day without passing it along. But "easy to work with" is a floor, not a level. When it becomes the criterion you promote the person nobody objects to, which selects against everyone who has ever pushed back on a bad decision.</p>
+<p><strong>Proximity</strong> is the most common and the most corrosive. Whoever the decision-maker sees most often gets promoted, and in a growing company the org chart reshuffles every few months, so proximity is largely an accident of where somebody's desk ended up. It is structurally biased against exactly the people you most need to keep: the off-shift crew, the remote site, the person who is good enough to be left alone and is therefore never in the room.</p>
+<div class="tw"><table><thead><tr><th>Basis</th><th>What it actually rewards</th><th>Typical failure</th></tr></thead><tbody><tr><td>Tenure</td><td>Remaining employed</td><td>The best people leave before their number comes up</td></tr><tr><td>Likeability</td><td>Being agreeable</td><td>Selects against anyone who challenges a decision</td></tr><tr><td>Proximity</td><td>Being seen</td><td>Off-shift and remote staff become invisible</td></tr><tr><td>Merit</td><td>Demonstrated capability</td><td>Captured by whoever is best at demonstrating</td></tr></tbody></table></div>
+<p>That last row is the honest one, and most of this piece is about it.</p>
+<h2 id="what-merit-requires-to-function">What merit requires to function</h2>
+<p>Three things, and all three are work.</p>
+<p><strong>Visible criteria, written before the opening exists.</strong> If you cannot write down what the next level requires, you do not have a level, you have a feeling about a person. Write it in terms of what someone can be trusted to do without supervision - own an on-call rotation, run a maintenance window on live load, carry a compliance control from evidence collection through audit - not in years or headcount. And write it before there is a candidate, because criteria drafted afterward get drafted around whoever is already favored.</p>
+<p><strong>Real feedback, continuously.</strong> The annual review as the only feedback channel is a failure mode. Someone finds out in March that they have been doing something wrong since June, which is nine months of a correctable problem going uncorrected and a manager who chose comfort over usefulness. We used the word <strong>kaizen</strong> internally: continual small improvement rather than occasional big correction. It applies to people as much as to process - small, frequent, specific, boring. If a promotion decision surprises anybody, the feedback loop was already broken long before the decision.</p>
+<p><strong>Managers willing to have the hard conversation.</strong> This is the one that kills most systems. Telling a competent, well-liked person that they are not ready, and why, and what would change it, is unpleasant, and there is always a way out - a soft yes, a title with no scope attached, a vague "next cycle." Every avoidance compounds, because the person keeps operating on a false reading of where they stand. A manager who cannot say no is not running a merit system, whatever the criteria document says.</p>
+<h2 id="how-merit-gets-captured">How merit gets captured</h2>
+<p>Merit systems rarely get abandoned. They get measured badly, and then they get captured by whoever is best at being seen.</p>
+<p>The mechanism is simple: visible work is easier to reward than invisible work. An outage caught early and cleared in twenty minutes at three in the morning leaves almost no trace. The same outage handled badly generates four hours of bridge calls, a long postmortem, and a great deal of gratitude toward whoever finally fixed it. Compliance is worse. An SSAE 16 or PCI program that works produces nothing except a clean report, and the year of quiet control work behind it is invisible by construction. Capacity planning is the extreme case - the reward for doing it well is that nothing happens for three years and nobody can point to the thing that did not occur.</p>
+<p>A system that measures only legible outcomes will systematically underpay the people preventing problems and overpay the people responding to them. Correcting for that is not a refinement. It is the actual job of the person doing the evaluation.</p>
+<p>The second capture mechanism is self-promotion. Willingness to tell you that you are ready is a personality trait, and it correlates weakly with being ready. The people who put themselves forward are not a random sample of the people who deserve consideration. A process that only evaluates volunteers has quietly built an instrument that measures confidence.</p>
+<h2 id="what-arbitrary-promotion-does-to-a-team">What arbitrary promotion does to a team</h2>
+<p>Once people conclude that advancement is arbitrary, several things happen, and none of them reverse on the timescale that produced them.</p>
+<p>Work shifts toward whatever is visible. People are not stupid. If being seen is the currency, they optimize for being seen, and the quiet preventive work stops getting done because nobody is paid for it. The best people leave first, because they have the most options, so you lose from the top of the distribution rather than the bottom. Everyone who stays now holds an accurate and cynical model of what the company rewards, and you cannot argue them out of it with a values slide, because they did not get it from a slide. They got it from watching one decision.</p>
+<p>The asymmetry is worth sitting with. A single promotion that everybody can see was political costs more trust than several good ones earn back. People read decisions, not policies.</p>
+<h2 id="running-one">Running one</h2>
+<ul><li>Write level definitions before you need them, in terms of unsupervised responsibility.</li><li>Require two evaluators who have both seen the candidate's work directly, not one manager and one</li></ul>
+<p>  set of secondhand impressions.</p>
+<ul><li>Ask peers and the people downstream, not only the reporting line. In an operations organization the</li></ul>
+<p>  people who get handed the work at shift change hold the most accurate opinion in the building.</p>
+<ul><li>Promote into behavior already being demonstrated, not into potential. Crawl, walk, run: someone</li></ul>
+<p>  already doing most of the next job is a promotion; someone who might be able to is a bet, and bets   are fine as long as they are named as bets and supported accordingly.</p>
+<ul><li>Give every "not yet" a specific list and a date to revisit. Without the date it is a no that</li></ul>
+<p>  nobody had the nerve to say.</p>
+<ul><li>Audit backward once a year. Pull the last two years of promotions and look for the pattern. If</li></ul>
+<p>  nearly everyone promoted sat within thirty feet of a director or shared a shift with one, you are   running a proximity system with a merit vocabulary.</p>
+<p>The test of whether it is working is not whether the promotions look right from the top. It is whether the people who did not get promoted can tell you why, in roughly the same words their manager would use. If they can, the system is real, whatever they think of the outcome. If they cannot, you do not have one yet - you have a set of decisions and a document describing something else.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

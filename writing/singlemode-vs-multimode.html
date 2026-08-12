@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choosing between single-mode and multimode fiber - Chris Strandt</title>
+  <meta name="description" content="The core diameter sets the physics, the transceiver sets the price, and the price is usually what decides it.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">Choosing between single-mode and multimode fiber</h1>
+      <p class="wr-dek">The core diameter sets the physics, the transceiver sets the price, and the price is usually what decides it.</p>
+      <div class="wr-meta"><span>Network</span><span>6 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/singlemode-vs-multimode.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Hold two duplex patch cords up next to each other, one yellow and one aqua. Same LC connectors. Same 125 µm cladding. Same jacket diameter. The only real difference is the size of the light-carrying core buried in the middle of the glass, and that one number decides which optics you can buy, how far you can run, and what the link costs you.</p>
+<h2 id="the-core-is-the-whole-argument">The core is the whole argument</h2>
+<p><strong>Single-mode fiber</strong> has a core of roughly 8 to 10 µm - 9 µm is the number everyone quotes. At the wavelengths it gets used at, 1310 nm and 1550 nm, that core is small enough that only one guided mode propagates. One mode, one path, one arrival time.</p>
+<p><strong>Multimode fiber</strong> has a core of 50 µm, or 62.5 µm on older plant. Light entering at different angles takes measurably different paths down the fiber, and those paths do not arrive together. The group velocities of the modes differ, which is <strong>modal dispersion</strong>; the spread between the earliest and latest arrival over a given length is <strong>differential mode delay</strong>. A clean pulse launched at one end arrives smeared at the other. Smear it far enough and adjacent bits overlap, the receiver can no longer tell them apart, and the link starts throwing errors.</p>
+<p>Everything multimode has done in the last thirty years is an attempt to manage that. Graded-index profiles grade the refractive index from the center outward so higher-angle modes spend more of their path in lower-index glass and travel faster, roughly equalizing the transit times. It works well, but it is a correction, not a cure. What is left over is why multimode capability is expressed as a bandwidth-distance product in MHz·km rather than a flat distance.</p>
+<p>Single-mode has no modes to equalize. It has chromatic dispersion and attenuation instead, and both of those are problems you can throw money at - narrower-linewidth lasers, dispersion compensation, amplification, coherent detection. That is why every long-haul, metro and outside-plant system is single-mode. Every dark fiber IRU I have signed was single-mode. Nobody sells metro multimode, and nobody would buy it.</p>
+<h2 id="the-grades">The grades</h2>
+<p>ISO/IEC 11801 gives multimode the OM designations and single-mode the OS designations. They describe the glass, not the cable, and not the connectors.</p>
+<div class="tw"><table><thead><tr><th>Grade</th><th>Core</th><th>Key spec</th><th>Where it belongs</th></tr></thead><tbody><tr><td>OM1</td><td>62.5 µm</td><td>200 MHz·km at 850 nm, 500 at 1300</td><td>Legacy only. Orange jacket. Rip it out when you can.</td></tr><tr><td>OM2</td><td>50 µm</td><td>500 MHz·km at 850 and 1300 nm</td><td>Legacy. Predates laser optimization.</td></tr><tr><td>OM3</td><td>50 µm</td><td>2000 MHz·km at 850 nm</td><td>Laser-optimized, aqua. Still everywhere.</td></tr><tr><td>OM4</td><td>50 µm</td><td>4700 MHz·km at 850 nm</td><td>The sensible multimode default.</td></tr><tr><td>OM5</td><td>50 µm</td><td>4700 MHz·km at 850 nm, 2470 at 953</td><td>Wideband, built for short-wave WDM. Niche.</td></tr><tr><td>OS1</td><td>~9 µm</td><td>≤ 1.0 dB/km at 1310 and 1550 nm</td><td>Tight-buffered, indoor construction.</td></tr><tr><td>OS2</td><td>~9 µm</td><td>≤ 0.4 dB/km at 1310 and 1550 nm</td><td>Loose tube or blown, outside plant. Low water peak.</td></tr></tbody></table></div>
+<p>Two things people get wrong here. First, OM1 and OM2 are not "slower multimode" you can mix into an OM4 run - the 62.5 µm to 50 µm core step in particular loses you light in one direction and launches badly in the other. Don't mix core sizes in a link. Second, the OS1/OS2 split is about cable construction and the resulting attenuation, not about a different kind of glass. Both are G.652-family fiber; OS2 aligns with the low-water-peak G.652.C/D grades, which is what lets you use the full 1270–1610 nm span for CWDM instead of falling into the 1383 nm absorption peak.</p>
+<h2 id="the-distance-limit-shrinks-as-you-speed-up">The distance limit shrinks as you speed up</h2>
+<p>This is the part that catches people who last thought about fiber during a gigabit refresh. As line rates go up, the reach the standard will guarantee over multimode goes down, and it goes down hard.</p>
+<div class="tw"><table><thead><tr><th>Ethernet variant</th><th>OM3</th><th>OM4 / OM5</th></tr></thead><tbody><tr><td>1000BASE-SX</td><td>1000 m</td><td>1100 m</td></tr><tr><td>10GBASE-SR</td><td>300 m</td><td>400 m</td></tr><tr><td>25GBASE-SR</td><td>70 m</td><td>100 m</td></tr><tr><td>40GBASE-SR4</td><td>100 m</td><td>150 m</td></tr><tr><td>100GBASE-SR4</td><td>100 m</td><td>150 m</td></tr><tr><td>100GBASE-SR2</td><td>70 m</td><td>100 m</td></tr><tr><td>400GBASE-SR8</td><td>70 m</td><td>100 m</td></tr><tr><td>400GBASE-SR4</td><td>60 m</td><td>100 m</td></tr></tbody></table></div>
+<p>A run that comfortably carried gigabit across a building at 1000 m has, at 400G, a budget of 60 meters on the same OM3. Meanwhile the single-mode side barely moves: 100GBASE-DR is 500 m, FR1 is 2 km, LR1 is 10 km, and 400G repeats the same pattern with DR4, FR4 and LR4. The glass you pulled for 10G single-mode a decade ago will still carry 400G. The OM3 you pulled alongside it may not reach the other end of the row.</p>
+<p>There is a second cost hiding in the multimode column. Most of the high-rate SR variants are parallel optics: 100GBASE-SR4 uses four lanes each way, so eight fibers and an MPO, where 100GBASE-DR uses one duplex pair. Multimode's cheaper optics get partly eaten by needing four times the fiber count and a connector type that is harder to clean and harder to test.</p>
+<h2 id="the-transceiver-is-what-you-are-actually-buying">The transceiver is what you are actually buying</h2>
+<p>Multimode exists because of the <strong>VCSEL</strong>. A vertical-cavity surface-emitting laser at 850 nm is fabricated and tested on the wafer, emits perpendicular to the die, and goes into volume production cheaply. Single-mode optics generally need an edge-emitting DFB laser, tighter alignment into a 9 µm core, and more careful packaging. That is the entire cost story: the fiber is nearly the same price either way, the terminations are similar, and then the optics on both ends decide the bill.</p>
+<p>That gap used to be large enough to design around. It has narrowed considerably as single-mode volumes have grown in hyperscale build-outs, and at the top rates the parallel-optics fiber count narrows it further. So the honest framing is not "multimode is cheap and single-mode is expensive." It is: price the optics you will actually plug in, for the rates you expect to run in five years, and add the cost of the fiber count each option needs.</p>
+<p>Do that calculation with real quotes, not remembered ones. The answer moves.</p>
+<h2 id="what-to-install">What to install</h2>
+<p>For anything leaving the building - between data halls, to a meet-me room, to another site, anything you will ever want to put DWDM on - install single-mode, OS2, and install more strands than you can currently justify. Fiber is cheap; the trench and the ceiling work are not, and duct occupancy is the thing you run out of.</p>
+<p>Inside a data hall or a riser, the question is honest. Short structured runs between adjacent rows, at rates you know, with optics you have already priced: multimode is fine, and OM4 rather than OM3 costs almost nothing extra and buys you a speed bump of headroom. Long horizontal runs, uncertain future rates, or anything crossing a building: single-mode, and stop thinking about it.</p>
+<p>The rule of thumb I would give someone standing in front of an empty cable tray:</p>
+<ul><li>If the run is longer than 100 meters, single-mode.</li><li>If you cannot name the transceiver you will plug into it in five years, single-mode.</li><li>If you are going multimode anyway, use OM4, use one core size everywhere, and label the run</li></ul>
+<p>  with its measured length so the next person can check it against a standard's reach table   instead of guessing.</p>
+<ul><li>Whatever you pull, pull spare strands in the same operation. The second visit costs more than</li></ul>
+<p>  the first one did.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

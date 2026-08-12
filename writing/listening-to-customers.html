@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What customers want is not what they ask for - Chris Strandt</title>
+  <meta name="description" content="Where demand signal actually lives in a hosting business, how to separate a loud minority from a real pattern, and what a request-driven roadmap turns into.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Practice</p>
+      <h1 class="wr-title">What customers want is not what they ask for</h1>
+      <p class="wr-dek">Where demand signal actually lives in a hosting business, how to separate a loud minority from a real pattern, and what a request-driven roadmap turns into.</p>
+      <div class="wr-meta"><span>Practice</span><span>6 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/listening-to-customers.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>There are three different things people mean when they say they are listening to customers, and only one of them is useful.</p>
+<p>The first is building what customers ask for. The second is building what you assume they want, usually because it is what you would want. The third is working out what they actually want, which takes effort, is frequently at odds with the request as stated, and is almost never the thing that happens to be convenient to build. The third one is the job.</p>
+<h2 id="a-request-is-already-a-solution">A request is already a solution</h2>
+<p>When a customer files a feature request, they have done you a favor and also done you some damage. The favor is that they cared enough to write it. The damage is that they have already made a design decision on your behalf, and it is usually a bad one, because they can only design within what they know your product can do.</p>
+<p>Behind every request is a problem the customer was trying to get past when they wrote it. The request is their guess at the fix. The problem is the asset. So the first question is never "should we build this," it is "what were you doing when you wanted this," and then keep going until you get to something that happened on a specific day.</p>
+<p>Half the time the underlying problem is better solved by something the customer would never have asked for, because the thing they asked for was the only shape they could imagine. The other half of the time you find out the problem was already solved and they could not find the feature, which is a documentation or interface finding, not a roadmap item. Both outcomes are worth more than building the request.</p>
+<h2 id="where-the-signal-actually-lives">Where the signal actually lives</h2>
+<p>Not in the feature request form. The form collects from the small subset of customers who both cared and had a spare ten minutes, which is not a sample of anything.</p>
+<p><strong>The ticket queue is the best product research a hosting company has, and it is free.</strong> Not individual tickets - the shape of the whole queue. Categorize tickets by what the customer was actually trying to do and sort by volume. What you get is a roadmap written by customers who did not know they were writing one, weighted by real frequency instead of by who was loudest.</p>
+<p>The tickets that matter are the boring, repeated ones. "How do I" appearing two hundred times is a product defect, not a training problem. "Can you do this for me" appearing every week from different accounts is a missing feature, and every instance of it is being paid for in support hours. Anything a customer routinely asks a human to do on their behalf is the clearest demand signal that exists, because they have already demonstrated they want it badly enough to ask.</p>
+<p><strong>Churn conversations are the least reliable and most valuable data you will get.</strong> Least reliable because the stated reason is usually price, and price is what people say when they do not want a conversation, or when the real answer is that something wore them down. Most valuable because a customer who is already leaving has no reason to be diplomatic if you ask the right question. Do not ask why they are cancelling. Ask what the last six months were like, and what they had to do that they did not expect to have to do. The answer is often something that never appeared in a ticket at all, which is the point.</p>
+<p><strong>The workaround is the strongest signal of all.</strong> A customer who has built scaffolding around your product is telling you exactly where it fails, and they have already quantified how much they care by the amount of work they were willing to do. Scripts driving your control panel because there is no API for that operation. A spreadsheet maintained alongside your billing because your invoices do not break out what they need. A second vendor bought for one narrow function. Every one of those is a customer paying twice, and they will usually not file a request about it because they already solved it. When a support engineer mentions in passing that a customer has a clever way of doing something, that is not a fun fact. That is a finding.</p>
+<h2 id="telling-a-loud-minority-from-a-real-pattern">Telling a loud minority from a real pattern</h2>
+<p>The failure here is symmetrical. Build for the loudest account and you distort the product for everyone. Dismiss the loudest account as an outlier and you sometimes miss the first instance of something real. Volume of email is not evidence in either direction.</p>
+<p>What actually distinguishes a pattern:</p>
+<ul><li><strong>Independent occurrences.</strong> Count distinct accounts that have no connection to each other. Five</li></ul>
+<p>  accounts in the same industry that all talk at the same conference are close to one data point.</p>
+<ul><li><strong>Multiple channels.</strong> The same problem arriving through support, through sales objections, and</li></ul>
+<p>  through churn conversations is a pattern. Something that only ever arrives through one channel is   usually specific to the people who use that channel.</p>
+<ul><li><strong>Behavior, not opinion.</strong> Has anyone worked around it, paid someone else for it, or delayed a</li></ul>
+<p>  purchase over it? Stated preference is cheap. Effort already spent is not.</p>
+<ul><li><strong>Segment weighting.</strong> Whether it comes from the customers you want more of matters, and it is</li></ul>
+<p>  reasonable to decide that a loud segment is not the segment you are building for. What is not   reasonable is pretending the volume of complaint decides that for you.</p>
+<p>The genuinely difficult case is the large, articulate account that is right about their own problem and wrong that it is general. That customer deserves a real answer, and the real answer is sometimes a bespoke arrangement rather than a product change. Making that distinction explicitly, and saying so, is better than either quietly building it for everyone or quietly ignoring them.</p>
+<h2 id="what-is-convenient-to-build">What is convenient to build</h2>
+<p>Every roadmap drifts toward what the current architecture makes easy. This is not corruption, it is gradient descent, and it happens without anyone deciding.</p>
+<p>Convenient work is easy to estimate, so it survives planning. It ships on time, so it makes the team look good. It carries low technical risk, so nobody objects. Meanwhile the thing customers actually need sits behind an awkward piece of the platform that nobody wants to open, and every quarter it loses to three convenient items that each have a plausible customer attached.</p>
+<p>There is no trick for this. The only defense is naming it out loud: this quarter we are doing four things that were easy and zero things that were hard, and here is why that is or is not acceptable. A roadmap with no expensive items on it is not a well-run roadmap, it is a roadmap that has stopped choosing.</p>
+<h2 id="if-you-build-only-what-is-asked-for">If you build only what is asked for</h2>
+<p>You end up with the union of everyone's requests. Each item had a customer behind it, so each item was individually justified, and the result is still incoherent - overlapping features, no consistent model of how the product works, and a support organization that has to explain the history of decisions to every new customer.</p>
+<p>Two other things happen. Your product becomes shaped by whoever writes in, which skews toward your most technical and most demanding accounts, while the quiet majority - who never file anything and who leave without explaining why - go unrepresented entirely. And you never build anything customers did not know to ask for, because a request can only reach as far as the customer's model of what is possible. Before self-service infrastructure was a normal thing to expect, the request a hosting company received was for faster turnaround on server orders. The category that eventually replaced that was not a faster version of the request. It was a different answer to the problem underneath it, and no volume of requests would have pointed at it.</p>
+<p>The last part is where the assumption trap sits, though, and it deserves saying plainly: "customers do not know what they want" is a true statement that has been used to justify an enormous amount of self-indulgent product work. The difference between insight and self-indulgence is whether you can point at the pattern in the ticket queue that led you there. If you cannot, you are not seeing past the request. You are guessing, and you have merely found a flattering way to describe it.</p>
+<h2 id="before-you-build-a-request">Before you build a request</h2>
+<p>Write two sentences before anything else. The first is the customer's problem in the customer's words, from an actual conversation, not paraphrased into your vocabulary. The second is how many other accounts have that problem and how you know.</p>
+<p>If the first sentence is hard to write, you do not understand the request yet. If the second is hard to write, you are about to build for one customer. Both are recoverable, and both are much cheaper to find out now.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grounding and bonding are not the same thing - Chris Strandt</title>
+  <meta name="description" content="What each one actually does in a data center, why isolated ground receptacles start arguments, and whether signal reference grids still earn their cost.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">Grounding and bonding are not the same thing</h1>
+      <p class="wr-dek">What each one actually does in a data center, why isolated ground receptacles start arguments, and whether signal reference grids still earn their cost.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/grounding-and-bonding.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Two words get used interchangeably on job sites and they describe opposite mechanisms. <strong>Bonding</strong> is connecting metal parts together so that they are at the same potential and so that fault current has a low-impedance path back to its source. <strong>Grounding</strong> is connecting something to the earth. Bonding is what clears a fault and keeps you from being electrocuted. Grounding is what deals with lightning, surges, and reference to the planet.</p>
+<p>The NEC makes this explicit in 250.4(A)(5), which requires an effective ground-fault current path of low impedance to facilitate operation of the overcurrent device, and then says the part everyone should tattoo somewhere: the earth shall not be considered as an effective ground-fault current path. Dirt does not trip breakers. A 25-ohm ground rod carrying 277 V to earth passes about 11 amps. Your 20 A breaker will sit there all afternoon.</p>
+<p>If you take one thing from this: the green wire is a bonding conductor doing a bonding job. It goes back to the source, not into the ground.</p>
+<h2 id="the-grounding-electrode-system">The grounding electrode system</h2>
+<p>NEC 250.50 requires that all electrodes present at a building be bonded together into one grounding electrode system. 250.52 lists what counts: metal underground water pipe with at least 10 ft in contact with earth, the metal in-ground support structure of the building, a concrete-encased electrode (the Ufer, rebar or bare copper in a footing), a ground ring, rod/pipe/plate electrodes, and other listed electrodes.</p>
+<p>The 25-ohm number is the most misquoted figure in Article 250. 250.53(A)(2) says a single rod, pipe or plate electrode must be supplemented by an additional electrode unless it can be shown to have a resistance to earth of 25 ohms or less. That is a trigger for driving a second rod. It is not a performance requirement for the grounding electrode system, and 25 ohms is not a target you have to hit. Where multiple rods are used they must be at least 6 ft apart.</p>
+<p>For a data center you generally do better than the Code minimum, and not because of the Code. A ground ring around the building, tied to the footing steel, bonded to the generator pads, the fuel tank, the fence and the yard equipment, gives lightning and surge current somewhere to go that is not through your equipment. You measure it at commissioning with a fall-of-potential or clamp-on test, you write the number down, and you re-measure periodically, because soil resistivity moves with moisture and connections corrode.</p>
+<p>What the electrode system does <em>not</em> do is protect equipment from a line-to-ground fault. That is entirely the bonding path's job.</p>
+<h2 id="the-equipment-grounding-conductor-is-the-part-that-saves-you">The equipment grounding conductor is the part that saves you</h2>
+<p>The <strong>equipment grounding conductor</strong> (EGC) is sized from Table 250.122 by the rating of the overcurrent device ahead of it. The table gives a minimum, and there is one adjustment people miss constantly: 250.122(B) requires the wire-type EGC to be increased in size proportionally when the ungrounded conductors are upsized for reasons other than temperature correction or conductor fill - voltage drop being the common case.</p>
+<p>That matters in a data center more than in most buildings, because we run long feeders. A 400 A feeder upsized two sizes for voltage drop on a 300 ft run to a remote PDU needs its EGC upsized by the same circular-mil ratio. If it does not get upsized, the impedance of the fault return path goes up exactly when you have made the conductors long enough for it to matter, and your fault current at the far end drops toward the region where the breaker takes seconds instead of cycles.</p>
+<p>The other recurring finding is objectionable current, covered by 250.6. Neutral current shows up on the EGC and on building steel when there is more than one neutral-to-ground bond. A PDU with an isolation transformer is a separately derived system and gets exactly one system bonding jumper, at one location, per 250.30. Two bonds - the factory jumper plus one a contractor added in the panel - put a parallel path across every piece of metal in the room. It is easy to find: clamp a current probe around the EGC of a feeder with nothing faulted. If it reads amps, go looking.</p>
+<h2 id="signal-reference-grids">Signal reference grids</h2>
+<p>The <strong>signal reference grid</strong> (SRG) is the copper mesh under the raised floor, typically 2 ft by 2 ft, bonded to pedestals, cabinets and the panel grounds. It came out of an era of mainframes and minicomputers where separated cabinets were tied together with unbalanced, chassis-referenced signal cabling, and a few volts of high-frequency common-mode difference between two frames was a real data integrity problem. FIPS PUB 94, the federal guideline that introduced the SRG concept, has long since been withdrawn.</p>
+<p>The technology it was written for is gone. Modern IT equipment has switch-mode supplies with internal isolation, and interconnects that either float or are galvanically isolated: twisted pair with magnetics at each end, or fiber, which references nothing at all. The case for spending on a full mesh purely as a high-frequency reference is much weaker than it was, and in a slab-floor hall with overhead cabling there is often no case at all.</p>
+<p>What has not gone away is the bonding job. Cabinets, ladder rack, cable tray, busway housings, containment panels and raised floor structure all need to be bonded - for safety, for surge and lightning, and so that a fault anywhere in the metalwork finds a low-impedance route home. ANSI/TIA-607-D describes the telecommunications side of this as a defined infrastructure: a primary bonding busbar (PBB) near the service, secondary bonding busbars (SBB) in each telecom space, and a bonding backbone tying them together. The D revision renamed these from the older TMGB and TGB terminology, which is worth knowing when reading older drawings.</p>
+<p>So: build the bonding infrastructure properly and specify it as bonding. If you want a mesh under the floor as well, price it honestly as a bonding and lightning measure, not as a noise cure for equipment that does not care.</p>
+<h2 id="isolated-ground-receptacles">Isolated ground receptacles</h2>
+<p>Nothing in a data center electrical room starts an argument faster.</p>
+<p>The Code permits them. 250.146(D) allows the grounding terminal of a receptacle to be purposely insulated from its mounting means for the reduction of electrical noise, provided the terminal is connected to an insulated EGC run with the circuit conductors. That insulated EGC may pass through panelboards, boxes and wireways without bonding to them, all the way back to the applicable derived system or service. 406.3(E) requires the receptacle to be identified with an orange triangle on its face.</p>
+<p>Now the argument. An isolated ground is still a ground. It terminates at the same bonded point as every other EGC in the system. What you have built is not an electrically separate reference; it is a longer, dedicated, higher-impedance path to the same place. On the noise side, the equipment you are plugging in has a switch-mode supply, a chassis bonded through its own cord, and network connections that are isolated anyway. The mechanism the IG was invented for mostly does not exist in the load.</p>
+<p>On the safety side you have made things slightly worse. Longer path, higher impedance, slower clearing. And an IG conductor that is broken, or was never landed, is invisible - the receptacle tester lights up green because the tester checks continuity to <em>something</em>, and the equipment runs normally until the day it has a fault.</p>
+<p>Two related points that come up in the same argument. NEC 250.96(B) permits the metal raceway itself to be isolated at the point of entry to the equipment using a nonmetallic fitting, which is a different and usually more defensible technique. And Article 647 covers separately derived 120 V systems for sensitive electronic equipment, which is a real tool with real rules - not the same thing as an orange receptacle.</p>
+<p>My position: if you have an equipment vendor who will void support without one, install it correctly and document it. Otherwise put the money into a properly built bonding system and an isolation transformer where you genuinely need a new reference point.</p>
+<h2 id="ground-loops">Ground loops</h2>
+<p>A <strong>ground loop</strong> is what you get when two pieces of equipment share more than one conductive path and there is a potential difference across the ends of it. Current circulates. On a signal path it shows up as hum, bit errors, or an interface that keeps resetting. Between buildings during a lightning event it shows up as smoke.</p>
+<p>The instinct is to break one of the paths. Do not do that with the safety ground. Lifting a ground pin or cutting a bond removes the fault path and creates a hazard, and it is a violation.</p>
+<p>The two legitimate fixes are:</p>
+<p><strong>Remove the potential difference.</strong> Bond harder, not less. Get both ends onto the same bonding network with adequate conductors. Most in-building ground loops are a symptom of a bonding system that has gaps in it - a cabinet grounded only through its own feeder EGC on a different panel, a tray section with a painted joint and no jumper.</p>
+<p><strong>Break the signal path galvanically.</strong> This is the right answer whenever the two ends genuinely cannot share a reference, and it is the reason we run fiber between buildings. Copper Ethernet between two structures on separate services is the classic ground loop, and no amount of bonding fixes it as cleanly as a pair of strands. Inside a building, transformer-coupled interfaces and optical isolators do the same job for control and serial links.</p>
+<h2 id="what-to-check">What to check</h2>
+<ul><li>Clamp a current probe on feeder EGCs with the system healthy. Anything above noise means a second neutral-to-ground bond somewhere downstream. Go find it.</li><li>Verify each separately derived system - every isolation-transformer PDU - has exactly one system bonding jumper, and label the location inside the cabinet.</li><li>Check that any EGC on a feeder upsized for voltage drop was upsized too. This is the most common Article 250 miss on a large distribution build.</li><li>Measure the grounding electrode system at commissioning, record the number and the method, and re-measure on a cycle. A ground resistance report with no number is a receipt, not a test.</li><li>Before you specify isolated grounds, ask which specific piece of equipment requires them and get the requirement in writing from its manufacturer. Usually there isn't one.</li></ul>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

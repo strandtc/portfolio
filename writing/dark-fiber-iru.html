@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What a dark fiber IRU actually buys you - Chris Strandt</title>
+  <meta name="description" content="An IRU is not a lease and not a circuit. What you get, what you keep paying for, and what to check before signing.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">What a dark fiber IRU actually buys you</h1>
+      <p class="wr-dek">An IRU is not a lease and not a circuit. What you get, what you keep paying for, and what to check before signing.</p>
+      <div class="wr-meta"><span>Network</span><span>7 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/dark-fiber-iru.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Somebody offers you dark fiber on a twenty-year IRU and quotes a number with a lot of zeros in it. Before you can tell whether that's a good number, you have to know what is actually being sold. It isn't bandwidth, and it isn't really a lease.</p>
+<h2 id="an-iru-is-a-long-term-right-not-a-rental">An IRU is a long-term right, not a rental</h2>
+<p><strong>IRU</strong> stands for indefeasible right of use. It is a contract granting you exclusive use of a specific physical asset - normally a defined count of fiber strands over a defined route - for a long fixed term, in exchange for a large payment made mostly up front. "Indefeasible" is the operative word. For the length of the term the grantor cannot take the strands back, re-sell them, or hand them to someone else.</p>
+<p>Terms are long. Twenty years is the usual floor and thirty is not unusual, because the term is generally written to track the expected useful life of the cable. That is the shape of the deal: you are buying most of the economic life of a physical asset without buying the asset, and without buying the maintenance organization that keeps it alive.</p>
+<p>That distinction matters to your finance people more than it matters to you. A short dark fiber lease is an operating expense. An IRU prepayment usually gets capitalized and amortized across the term instead. Whether a particular IRU is treated as a lease, a service contract, or an asset acquisition depends on the exact rights in the contract, and the answer shapes your P&amp;L for two decades. Get accounting into the room before signature, not after.</p>
+<h2 id="dark-lit-and-who-owns-the-failure">Dark, lit, and who owns the failure</h2>
+<p>The three ways to get capacity between two buildings differ mostly in where the responsibility line sits.</p>
+<div class="tw"><table><thead><tr><th></th><th>Lit service</th><th>Dark fiber lease</th><th>Dark fiber IRU</th></tr></thead><tbody><tr><td>What you buy</td><td>Bandwidth (a port, a wave, an EVC)</td><td>Use of strands</td><td>A long-term right to use strands</td></tr><tr><td>Term</td><td>1–5 years</td><td>1–5 years, renewals</td><td>20–30 years</td></tr><tr><td>Cost shape</td><td>Monthly recurring</td><td>Monthly recurring</td><td>Large prepayment plus annual O&amp;M</td></tr><tr><td>Capacity change</td><td>Order an upgrade, pay more</td><td>Change your own optics</td><td>Change your own optics</td></tr><tr><td>Optics and electronics</td><td>Provider's</td><td>Yours</td><td>Yours</td></tr><tr><td>Who you call at 3 a.m.</td><td>Provider NOC</td><td>Provider NOC for the cable, you for everything else</td><td>Same</td></tr><tr><td>Capacity ceiling</td><td>What the provider will sell</td><td>Whatever you can light</td><td>Whatever you can light</td></tr></tbody></table></div>
+<p>The reason to go dark is that the capacity ceiling stops being a commercial decision made by somebody else. On a lit service, going from 10G to 100G is a purchase order and a price. On strands you own the use of, it's a pair of transponders. Over a twenty-year term that difference dwarfs the fiber cost, and it's the whole argument for the IRU - you are pre-buying the right to keep upgrading without renegotiating.</p>
+<p>The reason not to go dark is that everything on top of the fiber is now yours: optics, amplification, spares, monitoring, and the engineering to know why your span budget is three dB worse than it was last year.</p>
+<h2 id="you-are-buying-strands-on-a-route-not-a-path">You are buying strands on a route, not a path</h2>
+<p>An IRU is written against a specific route between specific points. What you should be extracting from the grantor before you sign is the physical description of that route, in enough detail that you can build a loss budget and a failure model from it:</p>
+<ul><li>Strand count and which strands, by buffer tube and color, on which cable.</li><li>A route map you can actually work with - a KMZ or shapefile, not a marketing line drawing.</li><li>Every splice point on your span, and the count of splices between your two demarcs.</li><li>Aerial versus underground by segment, and every bridge, railroad, and waterway crossing.</li><li>Where the cable enters each building, through which entrance facility, terminating on which panel, in which room.</li><li>Whose responsibility the last hundred feet is. This is where deals go wrong.</li></ul>
+<p>The splice count is not trivia. Every splice is loss you have to carry for twenty years, and every splice is a place where somebody else's maintenance crew will one day be working with your strands in their hand.</p>
+<h2 id="loss-budget-arithmetic">Loss budget arithmetic</h2>
+<p>Ask for the total end-to-end loss the grantor will commit to, and ask for OTDR traces from both ends at both 1310 and 1550 nm at acceptance. Then check the number against the physics before you accept it.</p>
+<p>The Fiber Optic Association's planning values are 0.15 dB for a singlemode fusion splice and 0.3 dB for a typical connector, with TIA-568 allowing up to 0.75 dB for a mated connector pair. ITU-T G.652 caps cable attenuation around 0.4 dB/km in the 1310 nm region; modern G.652.D fiber is specified tighter than that at 1550, and well-built outside plant commonly measures near 0.2 dB/km there.</p>
+<pre><code>40 km route, 1550 nm, 12 splices, 2 connector pairs per end
+
+  fiber      40 km x 0.20 dB/km   =  8.00 dB
+  splices    12 x 0.15 dB         =  1.80 dB
+  connectors  4 x 0.30 dB         =  1.20 dB
+                                    -------
+  expected                          11.00 dB
+  aging / repair margin (3 dB)    =  3.00 dB
+                                    -------
+  design to                         14.00 dB</code></pre>
+<p>That margin line is the one people leave out. Over twenty years that span will be cut and repaired, and each repair adds two splices. If your optics have exactly enough budget on day one, you have bought a span that fails after the third backhoe.</p>
+<h2 id="o-m-and-the-bill-that-does-not-stop">O&amp;M, and the bill that does not stop</h2>
+<p>The prepayment is not the whole price. IRUs carry an ongoing operations and maintenance charge, almost always priced per route mile, billed annually or monthly. Publicly posted public-sector IRU contracts put routine maintenance in the low hundreds of dollars per route mile per year, but it varies enormously with terrain, ownership of the underlying structure, and how much of the route is aerial.</p>
+<p>Read what the O&amp;M fee actually covers. Normally: routine inspection, locate tickets, and emergency restoration of a cut. Normally not: your optics, your patch cords, anything past the demarc, or relocation.</p>
+<p>Relocation is the clause that surprises people. When the state widens a road and the cable has to move, somebody pays for the new cable, new splices, and the outage. Find out who, and find out whether the grantor can bill you for a pro-rata share of a relocation on a route you share with forty other IRU holders.</p>
+<p>Also look for a restoration commitment with a number attached - time to dispatch, time to restore - and a credit if it's missed. An IRU without a restoration SLA is a promise to eventually care.</p>
+<h2 id="diversity-is-a-claim-until-you-have-read-the-maps">Diversity is a claim until you have read the maps</h2>
+<p>Two IRUs sold to you as diverse routes are diverse only where the grantor's own records say they are. In practice, "diverse" fiber from the same grantor very often shares a conduit for a few blocks, shares one bridge crossing, shares a manhole, or - most commonly - enters your building through the same entrance facility, in which case none of it matters.</p>
+<p>Make the grantor show you where the two routes converge, in meters, with a map. Ask specifically about shared bridges, shared conduit runs, shared handholes, and shared building entrances. Then ask the same questions of the building owner at each end, because the last two hundred feet are usually not the grantor's to answer for.</p>
+<p>If real physical diversity isn't available on one grantor's plant, buy the second route from someone else. That's the whole reason the second route exists.</p>
+<h2 id="before-you-sign">Before you sign</h2>
+<p>Work down this list, and don't accept a verbal answer to any of it:</p>
+<ol><li>Strand count, strand identification, and whether you can add strands later at a stated price.</li><li>Route map as GIS data, not a picture.</li><li>Splice count and locations; committed end-to-end loss; OTDR acceptance both directions, both wavelengths.</li><li>Demarcation point drawn on a page, and who owns the panel it lands on.</li><li>O&amp;M fee, what it includes, and the escalator - a fixed percentage per year is normal, an uncapped one is not.</li><li>Relocation liability and cost-sharing method.</li><li>Restoration commitment, with times and credits.</li><li>Assignment rights. Can you assign the IRU if you sell the company? Can you sublease unused strands?</li><li>What happens if the grantor goes bankrupt or sells the plant, and whether your rights survive.</li><li>Renewal or extension terms at end of life, and whether you get an option or just a conversation.</li></ol>
+<p>The item people skip is number nine. Twenty years is longer than most of the companies selling you fiber have existed. Make sure the right you bought attaches to the cable, not to the counterparty.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choosing a data center cooling architecture - Chris Strandt</title>
+  <meta name="description" content="CRAC versus CRAH, DX versus chilled water, air-cooled versus water-cooled, and what economizers and liquid cooling actually change.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">Choosing a data center cooling architecture</h1>
+      <p class="wr-dek">CRAC versus CRAH, DX versus chilled water, air-cooled versus water-cooled, and what economizers and liquid cooling actually change.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/cooling-architectures.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Cooling is where the money is. Power distribution losses in a well-built plant are a few percent; the mechanical system is the difference between a facility that spends 15% of its energy on overhead and one that spends 60%. It is also the system most likely to take your floor down, because unlike power it has no equivalent of a battery. When cooling stops, you have minutes.</p>
+<p>Every architecture below is a different answer to one question: how do you get heat from the back of a server to the outdoors, and what do you spend doing it.</p>
+<h2 id="crac-crah-and-direct-expansion">CRAC, CRAH, and direct expansion</h2>
+<p>A <strong>CRAC</strong> - computer room air conditioner - is a direct expansion unit with a refrigeration circuit and a compressor inside it. It cools air by boiling refrigerant in a coil, and it has to reject that heat somewhere: an outdoor air-cooled condenser, a water- or glycol-cooled condenser, or a condenser water loop.</p>
+<p>A <strong>CRAH</strong> - computer room air handler - has no compressor. It is a fan, a filter and a chilled water coil with a control valve. All it does is move heat into a water loop. The refrigeration happens somewhere else, in a chiller plant.</p>
+<p>People use the two terms interchangeably. They should not: the distinction drives where the compressors live, how you stage capacity, what fails, and what you can do with free cooling.</p>
+<p>The DX approach puts a compressor in every unit on the floor. The appeal is simplicity and independence. Each unit is self-contained. No central plant, no big pumped loop, and a single unit failure takes out only its own capacity. For small rooms, edge sites and anywhere you cannot justify a plant operator, DX is the right answer and often the only sensible one.</p>
+<p>The costs show up as you scale. Compressor efficiency per unit of capacity is worse than a large central machine. You have many compressors to maintain and many refrigerant circuits to leak. Capacity comes in coarse steps, part-load behavior of an on/off or two-stage circuit is poor unless you buy variable-speed compressors, and free cooling is limited to whatever the product supports. Above a few hundred kilowatts of IT load the arithmetic usually turns.</p>
+<h2 id="chilled-water-plants">Chilled water plants</h2>
+<p>A chilled water plant centralizes the refrigeration. Chillers make cold water, pumps move it, CRAHs or fan walls or in-row coils transfer heat into it, and something rejects that heat outdoors.</p>
+<p>What you gain is efficiency, granularity of control, and options. Large chillers are far more efficient per ton than small distributed compressors. Variable primary flow with two-way valves lets the plant follow the load. And a water loop is a place you can insert an economizer, a thermal storage tank, or a heat exchanger for liquid-cooled IT - none of which you can easily do with DX.</p>
+<p>What you take on is a plant: pumps, valves, water treatment, a control sequence that has to work at 3 a.m. with nobody watching, and single points of failure in the headers and the loop itself that need real thought about isolation valving.</p>
+<p>One design decision worth more than most: <strong>raise the chilled water temperature</strong>. Plants used to be designed around 44°F supply because that is what you need to dehumidify a comfort-cooling load. A data hall is a sensible load. ASHRAE's TC 9.9 thermal guidelines, now in their fifth edition (2021), put the recommended IT inlet range at 18–27°C (64.4–80.6°F) for the standard A-classes, so you can run supply water far warmer than 44°F. Warmer water means a more efficient chiller and, more importantly, far more hours where you do not need the chiller at all.</p>
+<p>The fifth edition also added class <strong>H1</strong> for high-density air-cooled equipment, with a narrower recommended envelope than the general 18–27°C. If you are deploying dense accelerator gear, check which class it is before designing the plant around 27°C inlet air.</p>
+<h2 id="air-cooled-or-water-cooled-chillers">Air-cooled or water-cooled chillers</h2>
+<p>This is the fork that determines whether you have a water problem.</p>
+<p>An <strong>air-cooled chiller</strong> rejects heat directly to ambient air through a condenser coil and fans. No tower, no condenser water pumps, no water treatment, no freeze protection on a tower basin, no Legionella program. It sits outside and you leave it alone.</p>
+<p>A <strong>water-cooled chiller</strong> rejects heat to a condenser water loop and a cooling tower, where evaporation does the work. Because evaporation gets you down toward the wet bulb rather than the dry bulb, the condensing temperature is much lower and the compressor works much less hard.</p>
+<p>The efficiency gap is large. Code-minimum water-cooled centrifugal machines land around 0.55 kW/ton at full load at AHRI 550/590 rating conditions, and good ones do better. Air-cooled chillers typically sit near 1.0–1.2 kW/ton. Roughly, an air-cooled plant spends about twice the compressor energy per ton at design conditions.</p>
+<div class="tw"><table><thead><tr><th></th><th>Air-cooled chiller</th><th>Water-cooled chiller + tower</th></tr></thead><tbody><tr><td>Full-load efficiency</td><td>~1.0–1.2 kW/ton</td><td>~0.4–0.6 kW/ton</td></tr><tr><td>Water use</td><td>Essentially none</td><td>Significant and continuous</td></tr><tr><td>Auxiliaries</td><td>Condenser fans</td><td>Tower fans, condenser pumps, treatment</td></tr><tr><td>Maintenance</td><td>Coil cleaning</td><td>Tower cleaning, chemistry, basin, freeze protection</td></tr><tr><td>Footprint</td><td>Large, outdoors</td><td>Chiller indoors, tower outdoors</td></tr><tr><td>Failure exposure</td><td>Coil fouling, fan failure</td><td>Water supply interruption, biological control</td></tr></tbody></table></div>
+<p>Water-cooled wins on energy and loses on water, complexity and operating discipline. In a water-constrained location, or somewhere the municipality is unenthusiastic about a large industrial draw, air-cooled may be the only politically feasible answer regardless of the efficiency table.</p>
+<h2 id="economizers-and-free-cooling-hours">Economizers and free cooling hours</h2>
+<p>An economizer is any arrangement that rejects heat without running a compressor. This is where most of the annual savings actually come from, and it is why the chilled water temperature decision matters so much.</p>
+<p><strong>Airside economizer.</strong> Bring in outdoor air, filter it, use it directly. Most efficient when the weather cooperates and most operationally involved. You inherit outdoor humidity, particulates and gaseous contaminants - the fifth edition of the ASHRAE guidelines treats pollutants as a first-class design factor - and you need a changeover strategy that does not oscillate.</p>
+<p><strong>Waterside economizer.</strong> Keep the air loop closed. When the wet bulb is low enough, run tower water through a plate-and-frame heat exchanger and make chilled water without the chiller. At higher wet bulbs, run integrated economizer, where the heat exchanger does part of the work and the chiller trims. None of the contaminant exposure, at the cost of some efficiency and a heat exchanger.</p>
+<p><strong>Dry cooler or free-cooling chiller.</strong> Rejects to ambient dry bulb with no water. Fewer free hours than a tower in a humid climate, but no water at all.</p>
+<p>The number that matters is annual free cooling hours at your site and your chilled water temperature, and it is very sensitive to both. Get it run as an 8,760-hour bin analysis against your actual design temperatures, not as a rule of thumb. In a cold-winter climate the difference between 44°F and 65°F supply water can be thousands of hours a year.</p>
+<p>ASHRAE 90.1 requires economizers for computer rooms above tabled cooling capacities in most climate zones, with limited exceptions, and ASHRAE 90.4 governs data centers specifically through its mechanical load component and electrical loss component limits. In practice you are designing an economizer whether you wanted one or not.</p>
+<h2 id="evaporative-and-adiabatic-and-what-the-water-costs">Evaporative and adiabatic, and what the water costs</h2>
+<p>Evaporative cooling - cooling towers, direct and indirect evaporative units, adiabatic pre-cooling pads on a dry cooler or air-cooled condenser - buys efficiency with water. It is a genuinely good trade in a lot of climates. But you should size the trade before you make it.</p>
+<p>The classic rule of thumb is that a cooling tower evaporates about 3 gpm per 100 tons of heat rejection. Blowdown adds to that, and how much depends on the cycles of concentration your water chemistry allows - often three or four.</p>
+<pre><code>1 MW IT load
+  = 1,000 kW / 3.517 kW per ton      = 284 tons at the evaporator
+  + compressor work at 0.55 kW/ton   ≈ 328 tons rejected at the tower
+
+evaporation  = 328 tons × 3 gpm/100 tons        ≈  9.8 gpm
+blowdown     = 9.8 / (4 cycles − 1)             ≈  3.3 gpm
+makeup       ≈ 13 gpm  ≈  19,000 gallons/day at design conditions</code></pre>
+<p>That is design-day, not annual average - for most of the year the plant runs at part load, in economizer, or both, so the annual number is lower. But it is the number the municipality and your resilience plan care about. Ask three questions: is the main big enough, where does blowdown discharge and under what permit limits, and what do you do the day water service is interrupted. On-site makeup storage sized for some number of hours of design-day consumption is cheap insurance compared to what it protects.</p>
+<p>Track it as <strong>WUE</strong> - water usage effectiveness, liters of site water per kilowatt-hour of IT energy, standardized as ISO/IEC 30134-9. If nobody is measuring WUE, nobody is managing water.</p>
+<h2 id="where-direct-to-chip-changes-the-arithmetic">Where direct-to-chip changes the arithmetic</h2>
+<p>Direct-to-chip liquid cooling puts a cold plate on the processor and moves heat into a liquid loop at the source. A coolant distribution unit separates the technology cooling loop from the facility water loop through a heat exchanger.</p>
+<p>Two things change.</p>
+<p>First, the temperature you have to supply goes way up. The 2021 ASHRAE liquid cooling classes are named for their maximum facility supply water temperature - W17, W27, W32, W40, W45 and W+ above that. At W40 or W45 you can reject heat with a dry cooler or a tower in economizer mode nearly year-round and the chiller becomes a trim machine or disappears. That is a bigger efficiency win than anything you can do to an air-cooled hall.</p>
+<p>Second, the air side does not go away. Cold plates capture the processors. Memory, drives, NICs, power supplies and the rest still dump heat into the room. The fraction of rack heat you actually capture in liquid depends on the specific hardware, so get that number from the vendor for the specific configuration rather than assuming. You still need an air system, just a smaller one, and you now have two loops, a CDU, quick-disconnects and a leak detection strategy in the white space.</p>
+<p>The honest framing: liquid cooling is not a cheaper way to do what you were already doing. It is the only way to cool rack densities that air cannot, and while you are there it lets you run warm enough to delete most of your compressor hours.</p>
+<h2 id="what-to-decide-first">What to decide first</h2>
+<p>Pick the water answer before you pick anything else. Whether you can use evaporative cooling at this site, at this scale, with this municipality, determines chiller type, which determines free cooling strategy, which determines chilled water temperature, which determines air distribution and containment.</p>
+<p>And whatever you build, design the loop temperatures for the equipment you will actually install, not for a 44°F comfort-cooling habit inherited from a building that was not a data center.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

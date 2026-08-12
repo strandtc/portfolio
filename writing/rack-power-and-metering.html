@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sizing and metering rack power - Chris Strandt</title>
+  <meta name="description" content="How to size a rack circuit under the continuous load rules, how A/B redundancy gets defeated in practice, and what stranded capacity costs.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">Sizing and metering rack power</h1>
+      <p class="wr-dek">How to size a rack circuit under the continuous load rules, how A/B redundancy gets defeated in practice, and what stranded capacity costs.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/rack-power-and-metering.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>The rack circuit is where the entire power chain either pays off or gets thrown away. You can build a beautiful 2N plant - two utility feeds, paralleled generators, N+1 UPS, redundant switchgear - and then have a technician plug both cords of a server into the same PDU, and none of the upstream investment matters for that server.</p>
+<p>It is also where most of the capacity in a data center goes to die, quietly, in circuits provisioned for loads that never arrive.</p>
+<h2 id="sizing-the-circuit">Sizing the circuit</h2>
+<p>Start with the code, because the code is the reason the numbers look the way they do.</p>
+<p>The NEC defines a <strong>continuous load</strong> in Article 100 as one where the maximum current is expected to continue for three hours or more. IT load is continuous. It does not turn off at lunch.</p>
+<p>For continuous loads, 210.19(A)(1) requires branch-circuit conductors to have an ampacity of at least 125% of the continuous load, and 210.20(A) requires the overcurrent device to be rated at least 125% of the continuous load. Article 645, which covers information technology equipment, says the same thing in its own words: branch-circuit conductors supplying IT equipment must have an ampacity not less than 125% of the total connected load.</p>
+<p>Dividing by 1.25 gives you the number everyone quotes: <strong>you get 80% of the breaker's rating</strong>. There is an exception where the assembly, including the overcurrent device, is listed for operation at 100% of its rating - those exist and they are expensive, and unless you specified one deliberately, assume you have the ordinary kind.</p>
+<p>The arithmetic, for the circuits you will actually see:</p>
+<pre><code>usable kW = V × A × 0.8            (single phase)
+usable kW = V × A × √3 × 0.8       (three phase)
+
+120 V, 20 A, 1φ    →  120 × 20 × 0.8            =  1.9 kW
+208 V, 30 A, 1φ    →  208 × 30 × 0.8            =  5.0 kW
+208 V, 30 A, 3φ    →  208 × 30 × 1.732 × 0.8    =  8.6 kW
+208 V, 60 A, 3φ    →  208 × 60 × 1.732 × 0.8    = 17.3 kW
+415 V, 30 A, 3φ    →  415 × 30 × 1.732 × 0.8    = 17.2 kW
+415 V, 60 A, 3φ    →  415 × 60 × 1.732 × 0.8    = 34.5 kW</code></pre>
+<p>Two notes. These are volt-amps; modern server supplies with active PFC run near unity power factor so kW and kVA are close, but the breaker responds to current, so size on VA. And the 415/240 V line is why high-density halls moved to it - the same kW down a 30 A whip that a 60 A whip delivers at 208 V, which means half the current, smaller conductors and lower distribution losses.</p>
+<p>The rule that gets violated most often: <strong>the 80% is not a safety margin you can borrow against</strong>. It is the code-required rating of the circuit. A rack that "only occasionally" pulls 95% of the breaker is not running with margin, and the first cold-start inrush after a transfer will find out.</p>
+<h2 id="single-corded-dual-corded-and-how-people-defeat-a-b">Single-corded, dual-corded, and how people defeat A/B</h2>
+<p>The premise of A/B distribution is that each rack gets two independent circuits from two independent paths, and either one can carry the whole rack alone.</p>
+<p>Dual-corded equipment makes this work natively. Two power supplies, both energized, sharing the load roughly evenly. Lose one side and the surviving supply picks up the full load, usually without a blip.</p>
+<p>Here is the constraint people miss, and it is the single most common error I have seen on a data center floor:</p>
+<blockquote><p>With A and B both live, each side carries about half the rack load. But each side must be able to carry <strong>all</strong> of it. So the usable capacity of an A/B pair is the usable capacity of <strong>one</strong> circuit, not two.</p></blockquote>
+<p>A pair of 208 V 30 A three-phase feeds gives you 8.6 kW of rack, not 17.2 kW. If you load that rack to 14 kW because "there are two 8.6 kW feeds," you have built something that works perfectly right up until you take one side down for UPS maintenance, at which point the survivor sees 14 kW on an 8.6 kW circuit and trips. You will have converted a planned maintenance window into an outage, and you will have done it to the racks you were most careful about.</p>
+<p>Under normal operation each side should sit near or below 40% of its breaker rating. That feels wasteful. It is the price of the redundancy you already paid for upstream.</p>
+<p>Other ways A/B gets quietly defeated:</p>
+<p><strong>Both cords into the same PDU.</strong> Sometimes carelessness, usually because one side ran out of outlets of the right type. Color-code cords and PDUs, red and blue, and audit it. Nothing beats walking the aisle with a flashlight.</p>
+<p><strong>Single-corded equipment.</strong> Firewalls, some storage controllers, KVM gear, older switches. The usual fix is a rack-mount <strong>automatic transfer switch</strong> that takes A and B and presents one output. Two caveats: the ATS is now itself a single point of failure for everything behind it, and its capacity limits how much single-corded gear you can hang on it. Keep those loads inventoried - they are the list of things that will actually drop.</p>
+<p><strong>Both PDU whips on the same upstream branch.</strong> Harder to spot. The rack looks correct, but both whips landed on the same panel, or the same breaker pair, at the RPP. The circuit schedule catches this, if the circuit schedule is accurate.</p>
+<p><strong>Failing to test.</strong> If you have never opened the A side under load, you do not know that B carries the room.</p>
+<h2 id="metered-monitored-switched">Metered, monitored, switched</h2>
+<p>Rack PDU marketing terms are inconsistent between vendors, so define them by capability rather than by name:</p>
+<div class="tw"><table><thead><tr><th>Capability</th><th>What it gives you</th><th>What it is worth</th></tr></thead><tbody><tr><td>Basic</td><td>Outlets. Nothing else.</td><td>Fine in a lab. Not in production.</td></tr><tr><td>Inlet metered</td><td>Total current per PDU, per phase, local display and network</td><td>The minimum. Tells you how loaded the circuit is.</td></tr><tr><td>Outlet metered</td><td>Per-outlet current and energy</td><td>Chargeback, capacity planning, finding the one server drawing double</td></tr><tr><td>Switched</td><td>Remote on/off per outlet</td><td>Remote hard reboot, outlet lockout, commissioning sequencing</td></tr><tr><td>Environmental</td><td>Temperature and humidity probes at inlet and exhaust</td><td>Cheapest rack-level thermal data you can buy</td></tr></tbody></table></div>
+<p>If you buy one capability, buy inlet metering with per-phase current. If you can afford outlet metering, get it - it turns capacity planning from an estimating exercise into a measurement, and it lets you bill a colocation customer for actual consumption rather than for the size of the breaker.</p>
+<p>If you are billing on it, care about accuracy. Rack PDU energy metering is commonly specified to IEC 62053-21 class 1, which is ±1% under reference conditions. Revenue metering standards proper - ANSI C12.20, or IEC 62053-22 class 0.5S - are tighter. There is a real difference between a meter that is <em>revenue accurate</em> and one certified for revenue billing, and you want to know which you have before its output goes on an invoice.</p>
+<p>Switched PDUs are wonderful and slightly dangerous. Remote power cycling saves a truck roll at 3 a.m. It also means a bad script can drop a rack. Restrict the interface, segment its management network, and set outlet-level permissions so whoever can reboot a server cannot reboot the storage array next to it.</p>
+<h2 id="branch-circuit-monitoring-upstream">Branch circuit monitoring upstream</h2>
+<p>Rack PDUs tell you what the rack draws. <strong>Branch circuit monitoring</strong> at the floor PDU or remote power panel tells you what each breaker in that panel draws, from current transformers on every pole.</p>
+<p>You want both, because they answer different questions. The rack PDU tells you whether the rack is near its limit. The BCM tells you whether the panel is, whether your circuit schedule matches reality, and where the load actually landed. On a floor with hundreds of circuits, BCM is how you find the panel that is 85% loaded on one phase while its neighbor sits at 30% - and it is what makes phased build-out safe, because you can add racks against measured loading instead of nameplate arithmetic.</p>
+<h2 id="three-phase-racks-and-phase-balance">Three-phase racks and phase balance</h2>
+<p>Three-phase rack PDUs deliver more kilowatts per whip, which is why dense racks use them. The complication is that the load does not distribute itself.</p>
+<p>On a 208 V three-phase rack PDU, outlets are grouped and fed across phase pairs. Fill them in physical order - top to bottom, as anyone naturally would - and you can end up with most of the load on one pair. The consequence is not subtle: <strong>the breaker sees the current on the most loaded phase, so an unbalanced rack trips well below its nameplate capacity.</strong> A 17.3 kW circuit carrying 12 kW badly distributed can sit at the limit on one phase while the other two idle.</p>
+<p>Practical handling:</p>
+<ul><li>Populate outlets so consecutive servers land on different phase pairs. Vendors label the phase</li></ul>
+<p>  grouping; follow the labels, not the physical order.</p>
+<ul><li>Monitor per-phase current, not just total, and alarm on imbalance as well as absolute current.</li><li>Rebalance when you decommission. Pulling ten servers out unbalances a rack as surely as installing</li></ul>
+<p>  them.</p>
+<ul><li>On a 208/120 V wye system feeding nonlinear loads, watch neutral current. Triplen harmonics from</li></ul>
+<p>  single-phase switch-mode supplies add in the neutral rather than cancel.</p>
+<h2 id="what-stranded-capacity-costs-you">What stranded capacity costs you</h2>
+<p>Stranded capacity is power you built, paid for, and cannot sell. It shows up when circuits are provisioned against nameplate rather than measured draw.</p>
+<p>The mechanism is simple. Someone reads the label on a dual-supply server, which states the rating of each supply, and budgets that number. Real steady-state draw is routinely a fraction of it. Multiply by forty servers and you have provisioned two or three times the power the rack will ever use. That capacity is now reserved at the panel and unavailable to anyone else, while the UPS, generator, switchgear and cooling that support it sit idle. In a colocation business it is a rack you cannot sell.</p>
+<p>The fix is metering plus discipline:</p>
+<ol><li>Provision against <strong>measured</strong> peak draw with a defined headroom factor, not against nameplate.</li><li>Reclaim on a schedule. Report circuits whose 95th-percentile draw is under half of allocation, and</li></ol>
+<p>   go take the allocation back.</p>
+<ol><li>Track allocated versus measured as a ratio, per panel and per room. Above about 1.5 you have a</li></ol>
+<p>   capacity planning problem that no amount of new construction will fix.</p>
+<ol><li>Right-size the circuit to the rack's real density. Two 208 V 30 A three-phase feeds for a 4 kW rack</li></ol>
+<p>   of network gear wastes two breaker positions and 8.6 kW of allocation.</p>
+<h2 id="the-one-to-check-first">The one to check first</h2>
+<p>Walk into any hall and pick the racks with the most expensive equipment in them. For each, add up what the A side would carry if B disappeared right now, and compare it to 80% of the A-side breaker rating.</p>
+<p>If any rack fails that comparison, you do not have redundancy there. You have two circuits and a belief.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

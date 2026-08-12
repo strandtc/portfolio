@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Picking between Yocto, Buildroot and Debian for a product - Chris Strandt</title>
+  <meta name="description" content="How the three common embedded Linux build approaches differ on reproducibility, build time, licensing evidence and long-term maintenance.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Embedded</p>
+      <h1 class="wr-title">Picking between Yocto, Buildroot and Debian for a product</h1>
+      <p class="wr-dek">How the three common embedded Linux build approaches differ on reproducibility, build time, licensing evidence and long-term maintenance.</p>
+      <div class="wr-meta"><span>Embedded</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/embedded-linux-distros.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>You have a board. It boots. Now someone has to decide how the software image gets built, and that decision outlives every other one on the project, because it determines what a security patch costs three years from now when the person who made it has left.</p>
+<p>There are effectively three answers: Buildroot, Yocto, or a Debian-derived image. They are not competitors so much as different bets about who maintains your software and for how long.</p>
+<h2 id="buildroot-one-configuration-one-image">Buildroot: one configuration, one image</h2>
+<p>Buildroot is a set of makefiles and Kconfig. You run <code>make menuconfig</code>, pick a target architecture, a toolchain, a kernel, a bootloader and a list of packages, and <code>make</code> produces a root filesystem image, a kernel and a bootloader.</p>
+<p>The appeal is that you can hold it in your head. The configuration is one file. The build is a directed graph of makefiles you can read. When something goes wrong you can follow it, which is a genuinely rare property.</p>
+<p>Adding a package that isn't in the tree is a <code>Config.in</code> entry and a <code>.mk</code> file - usually well under fifty lines. There is a <code>br2-external</code> mechanism so your packages and board support live in your own repository rather than as a fork of Buildroot.</p>
+<p>What you give up is per-package incremental building. Buildroot's model is that the output is a function of the configuration; there is no isolated per-package sysroot and no shared cache of built artifacts in the default workflow. Change something significant and you rebuild broadly, and the honest advice from the Buildroot developers has always been to just rebuild from scratch when in doubt. A moderately complex target typically builds in well under an hour, so that's tolerable. It stops being tolerable when your image is large and your developers are iterating on one userspace application.</p>
+<p>Releases come quarterly as YYYY.MM. The February release is long-term supported: three years of security fixes, with a new LTS started every two years.</p>
+<h2 id="yocto-layers-recipes-and-the-cache-that-makes-it-bearable">Yocto: layers, recipes, and the cache that makes it bearable</h2>
+<p>Yocto is not a distribution. It is a build system - BitBake plus OpenEmbedded metadata - for generating a distribution. Every component is a <strong>recipe</strong> describing where to fetch source, how to configure, compile and install it, and what it depends on. Recipes are grouped into <strong>layers</strong>, which stack with priorities so a layer can add recipes or modify recipes from a lower layer without editing them.</p>
+<p>That layering is the actual product. Your silicon vendor ships a BSP layer. Your OTA vendor ships a layer. Qt ships a layer. You write one layer containing your application, your machine configuration, and your <code>.bbappend</code> files that adjust everything else. Nothing is forked, and a vendor BSP update is a git bump rather than a merge.</p>
+<p>Each recipe builds in its own sysroot with its own dependencies, and the results go into <strong>shared state</strong> - the sstate cache. A first build from cold is slow, commonly an hour and a half or more on decent hardware because you are compiling a toolchain and everything above it. After that, a change to one recipe rebuilds that recipe and its dependents, and everything else is restored from cache. Point your CI at a shared sstate mirror and developers stop building toolchains entirely.</p>
+<p>LTS releases come every two years and are supported for four; Scarthgap, released April 2024, runs to April 2028. Non-LTS releases get about seven months.</p>
+<p>The cost is real and you should not pretend otherwise. The learning curve is steep, the variable-override syntax is unusual, and diagnosing why a recipe produced the wrong thing means understanding task ordering, layer priorities, and how <code>PACKAGECONFIG</code> expanded. On the i.MX8MP work I've been doing, the vendor's layer stack plus Qt6 plus Mender integration is a lot of metadata to hold, and the first month is spent learning where things come from rather than building anything.</p>
+<h2 id="a-debian-based-image">A Debian-based image</h2>
+<p>The third option is to start from a general-purpose distribution: Debian or Ubuntu, arm64, built with <code>debootstrap</code> or a tool like Isar, ELBE or debos, or simply Raspberry Pi OS or Armbian if your hardware is supported.</p>
+<p>Everything already exists. Tens of thousands of packages, built and security-maintained by someone else, installable with <code>apt</code>. If your product is a small appliance with a big software stack - Python, a database, a web stack - this can save you months.</p>
+<p>Two things bite.</p>
+<p>The first is reproducibility. <code>apt install</code> resolves against whatever is in the archive today. Run the same build in three months and you get different package versions, which means your test evidence describes an image you can no longer produce. The fix is to run your own snapshot mirror and pin to it, which is entirely doable and is work nobody scopes at the start.</p>
+<p>The second is size and surface. A minimal Debian rootfs is a few hundred megabytes against a few megabytes for a stripped Buildroot image, and it carries a general-purpose init, a package manager, and a lot of things a fixed-function device does not need. That matters for flash cost, for OTA bandwidth, and for the list of CVEs you have to triage each month.</p>
+<p>There's also a workflow trap. Having <code>apt</code> on the device invites in-place package updates, and the moment field devices start diverging from the image you built, you no longer have a fleet - you have a population, and you cannot reason about it. If you go Debian, decide early whether the device is image-managed or package-managed, and enforce it.</p>
+<h2 id="licensing-evidence-and-the-sbom">Licensing evidence and the SBOM</h2>
+<p>Any of these ships GPL code, and you need to be able to produce, on request, the corresponding source and the license texts. Do not plan to assemble this by hand at the end.</p>
+<p>Buildroot's <code>make legal-info</code> produces a manifest of every package with version and license, the license texts, and the source tarballs, in one directory. Its own documentation is careful to say the declarative license data may not be fully accurate or exhaustive and that you must review it before relying on it - which is honest, and true of every such tool.</p>
+<p>Yocto generates a license manifest per image and can archive the corresponding sources via the <code>archiver</code> class. More usefully, current releases inherit the <code>create-spdx</code> class in the default distro configuration, so an SPDX SBOM is produced as part of the build without you asking, covering components, licenses, dependencies and applied patches. If a customer's procurement process now demands an SBOM - and increasingly it does - that is a strong argument for Yocto that has nothing to do with engineering.</p>
+<p>Debian gives you <code>/usr/share/doc/*/copyright</code> for everything installed and a package list you can turn into an SBOM with off-the-shelf tooling. Source availability is Debian's problem, not yours, provided you can name the exact versions - which brings you back to pinning your mirror.</p>
+<h2 id="which-one">Which one</h2>
+<div class="tw"><table><thead><tr><th></th><th>Buildroot</th><th>Yocto</th><th>Debian-based</th></tr></thead><tbody><tr><td>Configuration model</td><td>Single Kconfig</td><td>Layers and recipes</td><td>Package list plus overlay</td></tr><tr><td>Cold build</td><td>Typically under an hour</td><td>Often 90 min or more</td><td>Fast (mostly downloads)</td></tr><tr><td>Incremental build</td><td>Weak; expect full rebuilds</td><td>Strong, via sstate cache</td><td>Fast</td></tr><tr><td>Minimal image size</td><td>Single-digit MB</td><td>Tens of MB and up</td><td>A few hundred MB</td></tr><tr><td>Vendor BSP support</td><td>Sometimes</td><td>Usually the vendor's primary target</td><td>Varies by SoC</td></tr><tr><td>Multi-product reuse</td><td>Awkward</td><td>The reason it exists</td><td>Good</td></tr><tr><td>License/SBOM tooling</td><td><code>make legal-info</code></td><td>SPDX SBOM by default</td><td>Distribution copyright files</td></tr><tr><td>Time to first competence</td><td>Days</td><td>Weeks to months</td><td>Hours</td></tr></tbody></table></div>
+<p>The decision usually comes down to three questions.</p>
+<p><strong>How many products?</strong> One device, one configuration, one team - Buildroot, and don't apologize for it. Three product variants sharing a SoC family, with a vendor BSP that updates on its own schedule - Yocto, because layering is the only mechanism here that handles that without forking.</p>
+<p><strong>How long do you ship and support it?</strong> A two-year consumer lifecycle tolerates almost anything. Ten years of industrial support means you will be applying CVE fixes to a tree long after the original authors are gone, and you want a build that is exactly reproducible from a git hash, plus an LTS branch someone else is backporting into. That is Yocto or Buildroot, not a rolling apt archive.</p>
+<p><strong>Who actually maintains it?</strong> This is the one that decides most projects and it rarely gets asked out loud. Yocto expects a person who owns the build. If you have a firmware team, that's fine. If your embedded software is two people who are mostly writing application code, Yocto will absorb one of them and you will resent it.</p>
+<p>The thing people get wrong is treating this as reversible. It isn't, in practice - by the time you know the answer you have a year of board bringup, kernel patches, integration work and test evidence expressed in one system's idiom. So make the call against the product's ten-year shape rather than the demo you need in November, and if you genuinely can't tell yet, pick the smaller system. Growing out of Buildroot is a bad month. Discovering nobody can maintain your Yocto build is a bad year.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

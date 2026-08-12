@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writing - Chris Strandt</title>
+  <meta name="description" content="Technical writing on data center power, fiber, networks, monitoring and embedded systems.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Writing</p>
+      <h1 class="wr-title">Notes from the plant</h1>
+      <p class="wr-dek">Infrastructure, mostly. Power chains, fiber, networks and the systems on top of them - written down while I still remember why.</p>
+      <div class="wr-meta"><span>46 articles</span></div>
+    </div>
+  </section>
+  <section class="wr-body">
+    <div class="wr-wrap"><div class="wr-grid">
+      <div class="wr-index-year" style="grid-column:1/-1">Facilities</div><a class="wr-card" href="../writing/aisle-containment.html"><img src="../assets/images/writing/aisle-containment.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>Aisle containment and the air you are already wasting</h3><p>Bypass and recirculation are the real problem, containment is one answer, and delta-T is how you tell whether any of it worked.</p>
+        <span class="d">9 min read</span></div></a><a class="wr-card" href="../writing/preventative-maintenance.html"><img src="../assets/images/writing/preventative-maintenance.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>Building a maintenance calendar that does not collide with itself</h3><p>Load banks, generator runs, battery testing, thermography and breaker injection - what each proves, what it costs you in redundancy, and how to sequence it.</p>
+        <span class="d">9 min read</span></div></a><a class="wr-card" href="../writing/cooling-architectures.html"><img src="../assets/images/writing/cooling-architectures.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>Choosing a data center cooling architecture</h3><p>CRAC versus CRAH, DX versus chilled water, air-cooled versus water-cooled, and what economizers and liquid cooling actually change.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/utility-interconnection.html"><img src="../assets/images/writing/utility-interconnection.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>Getting a large load interconnected to the utility</h3><p>What a utility needs from you, how the study process works, who pays for the substation, and why interconnection is the real project schedule.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/redundancy-n-plus-one.html"><img src="../assets/images/writing/redundancy-n-plus-one.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>What N+1 actually buys you</h3><p>Decoding N, N+1, 2N and 2N+1, the difference between capacity and paths, and the failures that survive all of them.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/pue.html"><img src="../assets/images/writing/pue.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>What PUE tells you and what it hides</h3><p>How power usage effectiveness is defined and metered, the ways a good number covers for a badly run facility, and what to measure instead.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/uptime-institute-tiers.html"><img src="../assets/images/writing/uptime-institute-tiers.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>What Uptime Institute Tiers actually say</h3><p>The four Tier definitions, the three Certification awards, and why a Tier claim in a sales deck is usually not one.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/datacenter-site-selection.html"><img src="../assets/images/writing/datacenter-site-selection.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>What actually decides a data center site</h3><p>How power capacity, fiber routes, water, land and local politics narrow a long list of parcels down to the one or two that will work.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/commissioning-levels.html"><img src="../assets/images/writing/commissioning-levels.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Facilities</span>
+        <h3>What each level of data center commissioning actually proves</h3><p>What happens at each of the five commissioning levels, who writes the test scripts, and why operations must witness the integrated systems test.</p>
+        <span class="d">8 min read</span></div></a><div class="wr-index-year" style="grid-column:1/-1">Critical Power</div><a class="wr-card" href="../writing/battery-plants.html"><img src="../assets/images/writing/battery-plants.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Choosing and living with a UPS battery plant</h3><p>Flooded, VRLA and lithium compared on runtime, footprint and failure mode, what NFPA 855 asks of a lithium install, and where flywheels fit.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/commercial-power-480v.html"><img src="../assets/images/writing/commercial-power-480v.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Commercial power from 480 volts down to the receptacle</h3><p>How three-phase distribution works in a commercial building, why the neutral can carry more current than a phase, and what harmonics cost you.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/grounding-and-bonding.html"><img src="../assets/images/writing/grounding-and-bonding.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Grounding and bonding are not the same thing</h3><p>What each one actually does in a data center, why isolated ground receptacles start arguments, and whether signal reference grids still earn their cost.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/arc-flash-70e.html"><img src="../assets/images/writing/arc-flash-70e.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Reading an arc flash label and knowing what is behind it</h3><p>What an incident energy calculation computes, how the two NFPA 70E methods differ, why studies go stale, and how to cut energy rather than exposure.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/rack-power-and-metering.html"><img src="../assets/images/writing/rack-power-and-metering.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Sizing and metering rack power</h3><p>How to size a rack circuit under the continuous load rules, how A/B redundancy gets defeated in practice, and what stranded capacity costs.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/generator-sizing.html"><img src="../assets/images/writing/generator-sizing.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Sizing standby diesel for a data center load</h3><p>Why transient response and not steady-state kilowatts decides generator size, what UPS rectifiers do to an alternator, and how derating and fuel bite you later.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/ups-topologies.html"><img src="../assets/images/writing/ups-topologies.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>UPS topologies and what N+1 really means</h3><p>The four UPS topologies, the honest case for and against eco mode, and why module-level redundancy is not the same as a redundant system.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/circuit-breakers.html"><img src="../assets/images/writing/circuit-breakers.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>What a circuit breaker is actually doing</h3><p>Overload versus short circuit versus ground fault, what every knob on a trip unit changes, and the 80 percent rule people get wrong.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/transfer-switches.html"><img src="../assets/images/writing/transfer-switches.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>What actually happens when a transfer switch transfers</h3><p>Open, closed and soft transition explained, why the utility gets a say in closed transition, and why bypass isolation decides whether the switch ever gets inspected.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/itic-curve.html"><img src="../assets/images/writing/itic-curve.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>What the ITIC curve actually claims about clean power</h3><p>The real breakpoints on the ITI power quality curve, what its three regions do and do not promise, and where server ride-through actually comes from.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/selective-coordination.html"><img src="../assets/images/writing/selective-coordination.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Critical Power</span>
+        <h3>Why the wrong breaker trips first</h3><p>How overcurrent devices are made to open in the right order, how to read a time-current curve, and where the Code actually requires it.</p>
+        <span class="d">8 min read</span></div></a><div class="wr-index-year" style="grid-column:1/-1">Network</div><a class="wr-card" href="../writing/bgp.html"><img src="../assets/images/writing/bgp.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>BGP once you have your own AS number</h3><p>What BGP is doing, how it picks a path, what communities and prepending buy you, and what a full table costs in memory.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/singlemode-vs-multimode.html"><img src="../assets/images/writing/singlemode-vs-multimode.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>Choosing between single-mode and multimode fiber</h3><p>The core diameter sets the physics, the transceiver sets the price, and the price is usually what decides it.</p>
+        <span class="d">6 min read</span></div></a><a class="wr-card" href="../writing/ddos-mitigation.html"><img src="../assets/images/writing/ddos-mitigation.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>DDoS mitigation starts upstream of your firewall</h3><p>The three attack classes, why amplification works, what blackholing and flowspec actually do, and how to choose between appliances and scrubbing.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/fiber-cleaning-and-loss-budgets.html"><img src="../assets/images/writing/fiber-cleaning-and-loss-budgets.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>Fiber loss budgets and the connector nobody cleaned</h3><p>How to build an optical link budget out of real numbers, and why every end face gets inspected before it gets mated.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/arin-ip-allocation.html"><img src="../assets/images/writing/arin-ip-allocation.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>Getting your own IP space and AS number from ARIN</h3><p>What provider-independent space costs, how to justify it, why IPv4 is now a market, and how to size IPv6 so you never do this twice.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/dwdm.html"><img src="../assets/images/writing/dwdm.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>How DWDM turns one fiber pair into dozens of circuits</h3><p>Why you multiplex wavelengths, how the ITU grid works, what transponders and amplifiers do, and what a metro ring is really made of.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/structured-cabling.html"><img src="../assets/images/writing/structured-cabling.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>Structured cabling that survives ten years</h3><p>The standards, pathways, bend radii, labeling and test discipline that decide whether your cable plant ages well or becomes a hazard.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/dark-fiber-iru.html"><img src="../assets/images/writing/dark-fiber-iru.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>What a dark fiber IRU actually buys you</h3><p>An IRU is not a lease and not a circuit. What you get, what you keep paying for, and what to check before signing.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/peering-vs-transit.html"><img src="../assets/images/writing/peering-vs-transit.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Network</span>
+        <h3>When peering starts to make more sense than transit</h3><p>What you actually pay for with transit, how settlement-free peering works, and the arithmetic that tells you when to connect to an exchange.</p>
+        <span class="d">7 min read</span></div></a><div class="wr-index-year" style="grid-column:1/-1">Systems</div><a class="wr-card" href="../writing/custom-kernels.html"><img src="../assets/images/writing/custom-kernels.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Systems</span>
+        <h3>Building your own kernel, and the bill that comes with it</h3><p>What a custom Linux kernel actually buys you, how to manage the config, and the ongoing maintenance you are agreeing to.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/monitoring-industrial-equipment.html"><img src="../assets/images/writing/monitoring-industrial-equipment.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Systems</span>
+        <h3>Monitoring the equipment that keeps the building alive</h3><p>The protocols facilities gear actually speaks, how to get it into one system, and how to build alerting people will still read in a year.</p>
+        <span class="d">9 min read</span></div></a><a class="wr-card" href="../writing/pxe-provisioning.html"><img src="../assets/images/writing/pxe-provisioning.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Systems</span>
+        <h3>Network booting a fleet without touching it</h3><p>How PXE, iPXE, UEFI and out-of-band control fit together, and what it takes to make an install repeatable across thousands of machines.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/snmp-and-monitoring.html"><img src="../assets/images/writing/snmp-and-monitoring.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Systems</span>
+        <h3>SNMP and what monitoring actually costs you</h3><p>How SNMP works, why community strings refuse to die, and the running cost of a monitoring system nobody puts in the budget.</p>
+        <span class="d">9 min read</span></div></a><a class="wr-card" href="../writing/hypervisors-xen-kvm.html"><img src="../assets/images/writing/hypervisors-xen-kvm.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Systems</span>
+        <h3>Xen, KVM, and the hardware underneath them</h3><p>What a hypervisor does to a CPU, why x86 needed hardware help, and how Xen and KVM take different routes to the same place.</p>
+        <span class="d">8 min read</span></div></a><div class="wr-index-year" style="grid-column:1/-1">Embedded</div><a class="wr-card" href="../writing/can-bus.html"><img src="../assets/images/writing/can-bus.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Embedded</span>
+        <h3>How CAN survives an engine bay</h3><p>The physical layer, arbitration, bit timing and error handling that let a two-wire bus work next to an alternator, plus the protocols layered on top.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/embedded-linux-distros.html"><img src="../assets/images/writing/embedded-linux-distros.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Embedded</span>
+        <h3>Picking between Yocto, Buildroot and Debian for a product</h3><p>How the three common embedded Linux build approaches differ on reproducibility, build time, licensing evidence and long-term maintenance.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/ota-updates.html"><img src="../assets/images/writing/ota-updates.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Embedded</span>
+        <h3>Shipping OTA updates you can't take back</h3><p>A/B partitions, delta updates, rollback that actually works, signing, staged rollouts, and the device that has been offline for a year.</p>
+        <span class="d">8 min read</span></div></a><div class="wr-index-year" style="grid-column:1/-1">Compliance</div><a class="wr-card" href="../writing/datacenter-compliance.html"><img src="../assets/images/writing/datacenter-compliance.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Compliance</span>
+        <h3>Compliance for hosting and colocation providers</h3><p>What SOC 2 covers, how PCI DSS responsibility splits in a shared facility, when a BAA applies, and how to survive an audit.</p>
+        <span class="d">8 min read</span></div></a><div class="wr-index-year" style="grid-column:1/-1">Practice</div><a class="wr-card" href="../writing/kaizen.html"><img src="../assets/images/writing/kaizen.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>A hundred small fixes beat one reorganization</h3><p>Why continual improvement outperforms big-bang change in operations, how to make it somebody's actual job, and the way the practice usually dies.</p>
+        <span class="d">6 min read</span></div></a><a class="wr-card" href="../writing/delivering-happiness.html"><img src="../assets/images/writing/delivering-happiness.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>Customer service is a deliverable, not an overhead</h3><p>What an uptime SLA actually promises, why the credit matters less than the conversation, measuring satisfaction without gaming it, and staffing support as you grow.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/crawl-walk-run.html"><img src="../assets/images/writing/crawl-walk-run.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>Earning each stage of a new product</h3><p>Crawl, walk, run as an actual sequence - what a crawl looks like, why teams skip it, and how to tell a walking product from one being carried.</p>
+        <span class="d">6 min read</span></div></a><a class="wr-card" href="../writing/cosmic-perspective.html"><img src="../assets/images/writing/cosmic-perspective.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>How we know what the universe is</h3><p>An atheist's account of why finite time is worth more, the measured age and scale of the universe, and how those numbers were produced.</p>
+        <span class="d">8 min read</span></div></a><a class="wr-card" href="../writing/if-i-dont-do-it.html"><img src="../assets/images/writing/if-i-dont-do-it.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>If I don't do it, nobody else will</h3><p>The ownership stance that is correct at seven people, the point where it becomes the bottleneck, and how to tell you have crossed it.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/imposter-syndrome.html"><img src="../assets/images/writing/imposter-syndrome.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>Telling imposter syndrome apart from an actual skill gap</h3><p>Why the feeling targets people who keep changing domains, how to distinguish it from a real gap, and what reduces it besides reassurance.</p>
+        <span class="d">7 min read</span></div></a><a class="wr-card" href="../writing/listening-to-customers.html"><img src="../assets/images/writing/listening-to-customers.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>What customers want is not what they ask for</h3><p>Where demand signal actually lives in a hosting business, how to separate a loud minority from a real pattern, and what a request-driven roadmap turns into.</p>
+        <span class="d">6 min read</span></div></a><a class="wr-card" href="../writing/merit.html"><img src="../assets/images/writing/merit.jpg" alt="" loading="lazy">
+      <div class="wr-card-in"><span class="wr-card-cat">Practice</span>
+        <h3>What it actually takes to promote on merit</h3><p>Why advancement on demonstrated capability beats tenure or proximity, what a merit system requires to function, and how it gets quietly captured.</p>
+        <span class="d">7 min read</span></div></a>
+    </div></div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

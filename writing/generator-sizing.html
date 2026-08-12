@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sizing standby diesel for a data center load - Chris Strandt</title>
+  <meta name="description" content="Why transient response and not steady-state kilowatts decides generator size, what UPS rectifiers do to an alternator, and how derating and fuel bite you later.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Critical Power</p>
+      <h1 class="wr-title">Sizing standby diesel for a data center load</h1>
+      <p class="wr-dek">Why transient response and not steady-state kilowatts decides generator size, what UPS rectifiers do to an alternator, and how derating and fuel bite you later.</p>
+      <div class="wr-meta"><span>Critical Power</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/generator-sizing.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Ask how big a generator a site needs and you will get a kilowatt number back. The kilowatt number is the least interesting thing about the machine. A set that carries the load comfortably at steady state can still fail to pick it up, and a set that picks it up can still hunt itself into a shutdown when the UPS rectifiers come on. Sizing standby diesel is a transient problem wearing a steady-state costume.</p>
+<h2 id="ratings-mean-specific-things">Ratings mean specific things</h2>
+<p>Manufacturers publish standby, prime and continuous ratings for the same iron. They are not marketing tiers; they are duty definitions with hour and average load factor limits attached.</p>
+<p><strong>Standby</strong> is for a variable load, limited hours per year, no overload capability, and it assumes the set spends most of its life switched off. That is what a data center generator does, and standby is the usual rating.</p>
+<p>The argument for a <strong>prime</strong> or data-center-continuous rating instead is that if the utility is out for four days, standby duty is a promise you would rather not lean on. It also gives headroom for load bank testing and peak shaving. Costs more per kilowatt, and defensible.</p>
+<p>Whichever you buy, read the hour and load-factor limits, because a site that regularly runs the generator for demand response is not operating a standby set any more.</p>
+<h2 id="step-loads-and-block-loading">Step loads and block loading</h2>
+<p>The engine has to make torque the instant load appears. A turbocharged diesel cannot do that in a single step the way a naturally aspirated engine can, because the turbo has to spool before there is enough air to burn the fuel the governor is asking for. Add load faster than the turbo can respond and you get a frequency dip, a puff of black smoke, and possibly an underfrequency shutdown.</p>
+<p>ISO 8528-5 sets the framework. It defines performance classes G1 through G4 with progressively tighter limits on transient voltage and frequency deviation and on recovery time, and most industrial and data center sets are specified to G3. What you are really specifying is how much load the set accepts in one block while staying inside those limits.</p>
+<p>Note that the voltage dip and the frequency dip come from two different places. Frequency dip is mechanical - engine, fuel system, turbo, governor. Voltage dip is electrical - alternator reactance and how fast the excitation system responds. A set can be fine on one and poor on the other, and the fixes are different.</p>
+<p>The practical design consequence is <strong>load sequencing</strong>. Every transfer switch in the building closing at the same moment is a decision, and usually a bad one. Stage them: life safety and controls first, then mechanical plant with the largest motors on soft starts or drives, then UPS. Put enough interval between steps for the set to recover to nominal. This costs nothing but coordination and it removes the single most common reason gensets fail their first real test.</p>
+<h2 id="why-ups-rectifiers-are-a-nasty-load">Why UPS rectifiers are a nasty load</h2>
+<p>A UPS input is a rectifier. It draws current in pulses rather than sinusoidally, which means it produces harmonic current. An older six-pulse front end reflects on the order of 40 percent current distortion; with an input filter that comes down to around 5 percent.</p>
+<p>On the utility, that distortion barely moves the voltage, because the utility source impedance is very low. A generator is not the utility. Its source impedance is high by comparison, so the same harmonic current produces real voltage distortion at the generator terminals - including commutation notching, sharp notches in the voltage waveform every time the rectifier commutates.</p>
+<p>Here is why that matters more than the distortion figure suggests: the automatic voltage regulator is sampling that same waveform to decide how much excitation to apply. Notches landing at the wrong point in the cycle can make the AVR misread the output and cut or boost excitation incorrectly. The symptom is voltage hunting, and in bad cases it does not settle.</p>
+<p>There are four fixes and you generally use more than one:</p>
+<ul><li><strong>Specify a better rectifier.</strong> An IGBT active front end draws near-sinusoidal current at close to unity power factor. This is the standard answer on new UPS and it makes most of the problem disappear. Twelve-pulse with a phase-shifting transformer is the older approach and still works.</li><li><strong>Input filters.</strong> Effective, but the capacitors in them can present a leading power factor at light load, which generators dislike - an alternator supplying a capacitive load can lose voltage control in the other direction.</li><li><strong>Oversize the alternator.</strong> A larger alternator on the same engine has lower per-unit impedance, so the same harmonic current produces less voltage distortion.</li><li><strong>Enable rectifier walk-in.</strong> Most UPS will ramp their input draw over ten to thirty seconds instead of stepping. Turn it on, and make sure it is on for generator source specifically.</li></ul>
+<p>Published generator sizing factors for rectified loads vary widely. For an unfiltered six-pulse drive, guidance in the range of twice the running kilowatts is common; with a filtered or PWM front end holding current distortion under about 10 percent, something closer to 1.4 times. Treat those as orientation and get the specific numbers from the UPS vendor and the genset vendor together, in writing, before purchase.</p>
+<h2 id="the-alternator-and-the-engine-are-sized-separately">The alternator and the engine are sized separately</h2>
+<p>The engine makes kilowatts. The alternator makes kilovolt-amperes and absorbs the thermal, harmonic and short-circuit duty. They are separate purchases bolted to a common base, and you can put a bigger alternator on the same engine.</p>
+<p>Reasons to do it: motor starting kVA, harmonic loading as above, load with poor power factor, and available fault current - because downstream selective coordination needs enough fault current on generator source to make upstream devices discriminate the way they do on utility source.</p>
+<p>Reason not to: cost, and the fact that more available fault current raises arc flash incident energy downstream. That is a real trade, not a hypothetical one, and it is worth checking the arc flash consequence before oversizing purely for coordination.</p>
+<h2 id="derating">Derating</h2>
+<p>Diesel engines make power by burning fuel in air. Less dense air, less power. Two things reduce density: altitude and temperature.</p>
+<p>Manufacturers publish engine-specific derate curves and those curves are the only figures anyone should design to. Rules of thumb exist - a few percent of output per 1,000 feet is the commonly quoted shape of it - and they are fine for a first conversation and wrong for a final design. As orientation, output typically begins falling off above roughly 1,000 m (about 3,300 ft) and above roughly 40°C inlet air. Caterpillar, for example, additionally applies a temperature rise reduction of 1 percent per 100 m above 1,000 m to the generator end itself, separate from the engine derate.</p>
+<p>What catches people is not the published derate. It is the site conditions the derate assumed and the installation did not deliver: radiator air recirculating inside an enclosure or a walled gen yard, exhaust backpressure above spec because silencer and length got added after the drawing was approved, restrictive intake louvers, and the site's own heat rejection blowing across the gen yard on a summer afternoon.</p>
+<p>Measure inlet air temperature at the engine, at load, in August. That is the derate that matters.</p>
+<h2 id="fuel">Fuel</h2>
+<p>Twenty-four hours at full load is the common target for a data center. Some sites hold 48 or 72, and some hold whatever the supply contract and the local fire code between them allow.</p>
+<p>Calculate it from the consumption curve at the load you will actually carry, not at nameplate. A generator sized with headroom runs at 40 or 50 percent and burns considerably less. Do not then cut the tank - the fuel is also your margin against a regional event when nobody is delivering.</p>
+<p>Diesel does not keep. It oxidizes, it picks up water from tank breathing as the headspace heats and cools, and the water/fuel interface grows microbial colonies that produce acids, corrode the tank, and plug filters with biomass. ASTM D975 is the specification for the fuel itself and does not address microbial contamination or long-term storage stability; ASTM D6469 is the guide for microbial contamination in fuels and fuel systems. NFPA 110 requires annual fuel quality testing, and where the fuel fails, more frequent retesting.</p>
+<p><strong>Fuel polishing</strong> - continuous or periodic recirculation through filtration and water separation - is standard practice for critical sites and cheap relative to the risk. So is a water alarm in the tank bottom, and so is actually pulling a bottom sample rather than a top sample when you test.</p>
+<p>Two operational habits worth having: turn the fuel over rather than letting it sit for years, which load bank testing conveniently helps with, and know before an event which supplier is contractually obligated to deliver to you and where you sit on their priority list.</p>
+<h2 id="testing">Testing</h2>
+<p>NFPA 110 requires monthly exercise for at least 30 minutes at not less than 30 percent of nameplate, or at a load that maintains the manufacturer's minimum exhaust gas temperature. The reason is <strong>wet stacking</strong>: run a diesel too lightly for too long and unburned fuel and carbon accumulate in the exhaust, glazing cylinders and fouling turbos.</p>
+<p>Most data centers cannot reach 30 percent with connected load during a monthly test, because the connected load is behind a UPS and the IT load is what it is. Where the monthly load requirement cannot be met, NFPA 110 requires an annual supplemental load bank test. Older editions specified 25 percent for 30 minutes, then 50 percent for 30 minutes, then 75 percent for 60 minutes - two hours total. The 2025 edition drops the 25 percent step, leaving 50 percent for 30 minutes then 75 percent for an hour. Confirm which edition your authority having jurisdiction has adopted before writing the procedure.</p>
+<p>One thing about load banks. A purely resistive bank exercises the engine, cooling and exhaust at unity power factor. It does not exercise the excitation system, because it never asks the alternator for reactive current. To prove the alternator and AVR you want a resistive-reactive bank at something like 0.8 power factor lagging. It costs more to rent and it tests a different set of failures.</p>
+<p>And the test that matters most is the one people skip: transfer the real load. A generator that runs beautifully on a load bank, connected through a cable to a bank in the parking lot, has not proven that the transfer switch works, that the sequencing intervals are right, that the UPS rectifiers accept the source, or that the mechanical plant restarts. Test the chain, not the box.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

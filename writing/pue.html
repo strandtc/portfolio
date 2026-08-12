@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What PUE tells you and what it hides - Chris Strandt</title>
+  <meta name="description" content="How power usage effectiveness is defined and metered, the ways a good number covers for a badly run facility, and what to measure instead.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Facilities</p>
+      <h1 class="wr-title">What PUE tells you and what it hides</h1>
+      <p class="wr-dek">How power usage effectiveness is defined and metered, the ways a good number covers for a badly run facility, and what to measure instead.</p>
+      <div class="wr-meta"><span>Facilities</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/pue.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>Power usage effectiveness is total facility energy divided by IT equipment energy. That is the whole metric. The Green Grid introduced it in 2007 and it was later standardized as ISO/IEC 30134-2. A PUE of 2.0 means you burn a watt of overhead for every watt of compute. A PUE of 1.3 means you burn 0.3.</p>
+<p>It is a useful number and it is the only efficiency figure most people in this industry can quote from memory. It is also, on its own, close to meaningless, and it is trivially gamed - usually not deliberately, just by measuring in a convenient place at a convenient time.</p>
+<h2 id="what-it-actually-measures">What it actually measures</h2>
+<p>The numerator is everything that crosses the meter into the facility: IT load, cooling, lighting, UPS and transformer losses, humidification, the office, the security system, the parking lot lights. The denominator is the IT equipment energy.</p>
+<p>Two consequences fall straight out of that fraction and both matter.</p>
+<p><strong>PUE has no concept of useful work.</strong> A data hall full of servers running at 4% utilization has exactly the same PUE as the same hall doing real work, and if you decommission the idle servers your PUE gets <em>worse</em>, because you shrank the denominator while the fixed overhead stayed put. PUE is an infrastructure efficiency metric. It says nothing about whether the IT it is supporting deserves to exist.</p>
+<p><strong>Anything you move into the denominator improves the ratio.</strong> Push a load off the IT bus and into the facility bus and PUE goes up; count more of the distribution chain as IT load and it goes down. That is where most of the disagreement between two published numbers comes from.</p>
+<p>You will still occasionally see <strong>DCiE</strong>, data center infrastructure efficiency, which is just the reciprocal expressed as a percentage. Same information, different direction.</p>
+<h2 id="where-you-put-the-meters">Where you put the meters</h2>
+<p>This is the part everyone skips and it is the part that determines whether two PUE numbers can be compared at all. The metric defines measurement categories by where the IT energy is measured.</p>
+<div class="tw"><table><thead><tr><th>Category</th><th>IT energy measured at</th><th>Typical measurement interval</th><th>What it includes as overhead</th></tr></thead><tbody><tr><td>1 (basic)</td><td>UPS output</td><td>Monthly or weekly</td><td>Everything downstream of the UPS is treated as IT</td></tr><tr><td>2 (intermediate)</td><td>PDU output</td><td>Daily or hourly</td><td>Now counts PDU transformer and distribution losses</td></tr><tr><td>3 (advanced)</td><td>IT equipment inlet</td><td>Continuous, 15 minutes or better</td><td>Counts everything, including rack PDU and cord losses</td></tr></tbody></table></div>
+<p>A category 1 number and a category 3 number for the same building are not the same number. Category 1 quietly credits you for PDU transformer losses and rack-level distribution losses by calling them IT load. Moving from category 1 to category 3 makes your published PUE worse without changing a single piece of equipment, which is exactly why so many published figures are category 1.</p>
+<p>There is also a category 0, which is a demand-based snapshot in kilowatts rather than an energy figure in kilowatt-hours. It is a sanity check, not a reportable annual number.</p>
+<p>The rule: publish the category with the number. "PUE 1.35" is marketing. "PUE 1.35, category 2, twelve-month rolling" is a measurement.</p>
+<h2 id="a-low-pue-can-hide-a-badly-run-facility">A low PUE can hide a badly run facility</h2>
+<p>Three ways this happens routinely.</p>
+<p><strong>Running the hall too hot for the equipment in it.</strong> Raise supply air temperature far enough and PUE falls beautifully. It also pushes server inlet temperatures toward or past the top of the ASHRAE recommended envelope, which drives server fan speeds up. Server fan power is inside the denominator, so the extra fan energy improves your PUE twice: once by cutting facility energy and once by inflating IT energy. Meanwhile the racks at the top of the aisle are running hot and you are trading IT reliability for a number on a slide.</p>
+<p><strong>Counting the boundary generously.</strong> Excluding an office wing that shares the mechanical plant. Excluding a shared chiller serving an adjacent building. Not metering the electrical room's own lighting and cooling. Each is defensible in isolation, and together they are easily worth a tenth of a point.</p>
+<p><strong>Reporting the good months.</strong> A single-month PUE from a facility in February is not an annual PUE and cannot be compared to one.</p>
+<p>None of that requires dishonesty. It requires nobody asking the follow-up question.</p>
+<p>For context on what normal looks like: Uptime Institute's 2024 global survey put the industry average at about 1.56, and noted it has been roughly flat for five consecutive years, held up by the large installed base of older facilities even as new large sites do considerably better. If someone quotes you a number far below that, ask about the category, the boundary and the period before you're impressed.</p>
+<h2 id="seasonal-variation-and-why-annual-is-the-only-honest-figure">Seasonal variation and why annual is the only honest figure</h2>
+<p>PUE moves with weather. In a climate with real winters, a facility running waterside or airside economizer will show a dramatically better PUE in January than in July, because for months of the year the compressors barely run. In summer, at design wet bulb, the chiller plant is at full tilt and the same facility might be half a point worse.</p>
+<p>That is why the metric is meant to be reported over a full year of energy, not a snapshot. Measure it continuously, report it as a twelve-month rolling figure, and keep the monthly trend so you can see whether a change is your plant or the weather. If your PUE improved in October, you did not improve anything. It got cold.</p>
+<p>The corollary: benchmarking against another facility in another climate tells you very little. A 1.25 in Michigan and a 1.25 in Phoenix are not the same accomplishment.</p>
+<h2 id="partial-load-wrecks-it">Partial load wrecks it</h2>
+<p>This is the one that catches every new build.</p>
+<p>A data center is commissioned at full design capacity and then filled over five years. On day one the mechanical and electrical plant is sized for 10 MW and carrying 800 kW. Everything in the overhead is either fixed or scales badly:</p>
+<ul><li><strong>UPS efficiency</strong> follows a curve. Double-conversion units are most efficient somewhere in the</li></ul>
+<p>  upper half of their load range and fall off sharply at low load, and a system built N+1 or 2N is   running each module at a fraction of its rating by design.</p>
+<ul><li><strong>Transformer losses</strong> have a fixed no-load component that does not care how loaded you are.</li><li><strong>Pumps and fans</strong> on constant-speed drives consume nearly the same power at 20% load as at 80%.</li></ul>
+<p>  Variable speed helps enormously here and is the single best partial-load investment.</p>
+<ul><li><strong>Lighting, controls, security and the office</strong> are flat.</li></ul>
+<p>So a brand new, well-designed facility can post a genuinely terrible PUE for its first two years, and there is nothing wrong with it. Judging a partially loaded facility on PUE is like judging a truck's fuel economy while it idles in the yard.</p>
+<p>What to do about it: design the plant to stage down. Modular UPS you can right-size as load grows, chillers that can run one small machine rather than one big machine at 15%, variable speed on everything that moves fluid, and containment from the first row so you are not conditioning the whole hall to cool one aisle.</p>
+<h2 id="the-metrics-that-tell-you-more">The metrics that tell you more</h2>
+<p>PUE is one line on a dashboard. These are the others I would want.</p>
+<p><strong>WUE</strong> - water usage effectiveness, liters of site water per kilowatt-hour of IT energy, standardized as ISO/IEC 30134-9. It is the natural companion to PUE, because most of the easy ways to improve PUE spend water. A facility can drive PUE down by leaning harder on evaporative cooling and the PUE number will never show you the cost. Reporting one without the other is an incomplete picture.</p>
+<p><strong>CUE</strong> - carbon usage effectiveness, standardized as ISO/IEC 30134-8, which weights your energy by the carbon intensity of what supplies it. This is the metric that distinguishes an efficient facility on a dirty grid from a mediocre one on a clean grid, and increasingly it is the one customers ask about.</p>
+<p><strong>Delta-T across the IT equipment.</strong> The cheapest, most diagnostic number in the building and almost nobody trends it. Delta-T is the temperature rise from cold aisle to hot aisle. If your delta-T is low, you are moving far more air than the servers need - bypass air is going around the load and back to the cooling units without doing any work. That means oversized fan energy, blanking panels missing, floor tiles in the wrong places, cable cutouts unsealed. If delta-T is high in one spot, you have recirculation and something is running hot.</p>
+<p>The formal versions of this are worth knowing: <strong>RTI</strong>, the return temperature index, where above 100% indicates recirculation and below 100% indicates bypass, and <strong>RCI</strong>, the rack cooling index, which scores how well rack inlet temperatures stay inside the recommended envelope, split into high and low components.</p>
+<p><strong>Overhead in kilowatts, by system.</strong> Not a ratio - actual metered energy for chillers, pumps, tower fans, CRAH fans, UPS losses and everything else. A ratio tells you that you have a problem. A breakdown tells you which pump it is.</p>
+<h2 id="the-thing-people-get-wrong">The thing people get wrong</h2>
+<p>They optimize the number instead of the facility.</p>
+<p>The useful discipline is not "get PUE below 1.4." It is: meter at a consistent, declared category, report annually, publish WUE alongside it, and trend delta-T and per-system overhead so that when the ratio moves you know why. A facility where the operators can tell you within a minute which pump is running and why is a well-run facility, whatever the ratio says.</p>
+<p>If you only add one measurement this year, make it delta-T across the racks. It costs almost nothing and it will tell you more about how your hall is actually behaving than a year of PUE reporting.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

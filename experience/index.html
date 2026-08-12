@@ -502,7 +502,11 @@
         justify-content: flex-start;
       }
     }
-  </style>
+  
+    .experience-hero { position: relative; overflow: hidden; }
+    .experience-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+    .experience-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+</style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -524,9 +528,9 @@
             </div></div>
           </li>
           <li><a href="../projects/">Projects</a></li>
-
+          <li><a href="../datacenters/">Data Centers</a></li>
           <li><a href="../contact.html">Contact</a></li>
-        </ul>
+  </ul>
       </nav>
       <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
       <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
@@ -544,7 +548,7 @@
     <a href="liquid-web/" class="mobile-nav-sub">Liquid Web</a>
     <a href="power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
     <a href="../projects/">Projects</a>
-
+    <a href="../datacenters/">Data Centers</a>
     <a href="../contact.html">Contact</a>
     <a href="../assets/resume.pdf" download>Download Resume</a>
   </div>
@@ -562,6 +566,7 @@
 
     <!-- Hero -->
     <section class="experience-hero">
+      <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
       <div class="hero-bg-img" aria-hidden="true"></div>
       <div class="grid-bg" aria-hidden="true"></div>
       <div class="container">
@@ -671,7 +676,7 @@
 
               <!-- Sub-topics -->
               <div class="sub-topics">
-                <div class="sub-topics-label">Deep-Dive Areas</div>
+                <div class="sub-topics-label">In Detail</div>
                 <div class="sub-topic-chips">
                   <a href="liquid-web/index.html#networking" class="sub-topic-chip">Networking <span aria-hidden="true">&rarr;</span></a>
                   <a href="liquid-web/index.html#data-centers" class="sub-topic-chip">Data Centers <span aria-hidden="true">&rarr;</span></a>
@@ -706,7 +711,7 @@
 
               <!-- Sub-topics -->
               <div class="sub-topics">
-                <div class="sub-topics-label">Deep-Dive Areas</div>
+                <div class="sub-topics-label">In Detail</div>
                 <div class="sub-topic-chips">
                   <a href="power-gauge-pro/index.html#embedded" class="sub-topic-chip">Embedded Software <span aria-hidden="true">&rarr;</span></a>
                   <a href="power-gauge-pro/index.html#hardware" class="sub-topic-chip">Hardware <span aria-hidden="true">&rarr;</span></a>
@@ -739,9 +744,9 @@
           <li><a href="../about.html">About</a></li>
           <li><a href="index.html">Experience</a></li>
           <li><a href="../projects/">Projects</a></li>
-          
+          <li><a href="../datacenters/">Data Centers</a></li>
           <li><a href="../contact.html">Contact</a></li>
-        </ul>
+  </ul>
       </nav>
       <div>
         <div class="footer-social">

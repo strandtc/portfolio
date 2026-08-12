@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network booting a fleet without touching it - Chris Strandt</title>
+  <meta name="description" content="How PXE, iPXE, UEFI and out-of-band control fit together, and what it takes to make an install repeatable across thousands of machines.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Systems</p>
+      <h1 class="wr-title">Network booting a fleet without touching it</h1>
+      <p class="wr-dek">How PXE, iPXE, UEFI and out-of-band control fit together, and what it takes to make an install repeatable across thousands of machines.</p>
+      <div class="wr-meta"><span>Systems</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/pxe-provisioning.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>A rack of new servers arrives. Nobody should ever plug a keyboard into one. From the moment they're cabled and powered, everything - firmware settings, disk layout, OS, kernel, packages, config management enrollment - should happen over the wire, the same way, every time. That is the whole objective. The mechanisms below are just the ways it goes wrong.</p>
+<h2 id="what-actually-happens-when-a-machine-pxe-boots">What actually happens when a machine PXE boots</h2>
+<p>The NIC's option ROM broadcasts a DHCP DISCOVER like any other client, but with extra baggage. It sets <strong>option 60</strong> (vendor class identifier) to a string starting <code>PXEClient</code>, and <strong>option 93</strong> (client system architecture) to a number telling you what kind of firmware is asking. That number matters more than anything else in the transaction, because it determines which boot file you must hand back.</p>
+<p>The DHCP server replies with an address plus <strong>option 66</strong> (TFTP server name) and <strong>option 67</strong> (boot file name), or the equivalent BOOTP <code>next-server</code> and <code>filename</code> header fields - set both, because plenty of clients only read one. The firmware then fetches the named file over TFTP and executes it.</p>
+<p>That's it. DHCP tells you where to go and what to get; TFTP gets it. Everything modern is a workaround for one of those two protocols.</p>
+<h2 id="option-93-is-where-the-mismatches-live">Option 93 is where the mismatches live</h2>
+<p>The architecture types are an IANA registry, originally from RFC 4578 and extended for UEFI HTTP boot:</p>
+<div class="tw"><table><thead><tr><th>Value</th><th>Client firmware</th><th>Typical boot file</th></tr></thead><tbody><tr><td>0</td><td>x86 BIOS</td><td><code>pxelinux.0</code> or <code>undionly.kpxe</code></td></tr><tr><td>6</td><td>x86 (32-bit) UEFI</td><td><code>bootia32.efi</code></td></tr><tr><td>7</td><td>x64 UEFI</td><td><code>bootx64.efi</code>, <code>ipxe.efi</code>, <code>shimx64.efi</code></td></tr><tr><td>9</td><td>EFI byte code</td><td>rare in the wild</td></tr><tr><td>10</td><td>ARM 32-bit UEFI</td><td><code>bootarm.efi</code></td></tr><tr><td>11</td><td>ARM 64-bit UEFI</td><td><code>bootaa64.efi</code></td></tr><tr><td>15</td><td>x86 UEFI HTTP boot</td><td>a URL</td></tr><tr><td>16</td><td>x64 UEFI HTTP boot</td><td>a URL</td></tr></tbody></table></div>
+<p>There is one long-standing trap here. RFC 4578 labeled type 7 as "EFI BC" and type 9 as "EFI x86-64", while the UEFI specification and effectively every shipping implementation use 7 for x64 UEFI. Follow the hardware, not the RFC text: 7 is what a normal 64-bit UEFI server sends. If you inherited a DHCP config written by someone who read the RFC literally, that is the bug.</p>
+<p>In ISC dhcpd this is a class match on the option; in dnsmasq it's <code>dhcp-match</code>. Either way, the shape is the same - branch on option 93, hand back a different file. Get it wrong and the symptom is unhelpful: the firmware fetches a file, fails to execute it, and either loops or falls through to the next boot device with no message you'll ever see.</p>
+<h2 id="tftp-is-the-bottleneck-and-ipxe-is-the-fix">TFTP is the bottleneck, and iPXE is the fix</h2>
+<p>TFTP as specified in RFC 1350 is lockstep with 512-byte blocks. Send a block, wait for the ack, send the next. Over UDP, on a network with any latency at all, that is dismal. RFC 2348 added a negotiable block size - practically capped around 1468 bytes so you don't fragment a standard Ethernet frame - and RFC 7440 added a window size so multiple blocks can be in flight. Turn both on. It is the single cheapest improvement to a slow PXE environment.</p>
+<p>The better answer is to stop using TFTP for anything large. <strong>iPXE</strong> is open source boot firmware that speaks HTTP, HTTPS, iSCSI, and more, and it can be chainloaded: TFTP delivers one small iPXE binary - <code>undionly.kpxe</code> for BIOS clients, <code>ipxe.efi</code> for UEFI - and everything after that is HTTP. Kernel, initrd, and squashfs over HTTP from a normal web server you already know how to scale, cache, and monitor.</p>
+<p>Chainloading has an obvious hazard. iPXE issues its own DHCP request, gets told to load iPXE, and loops. The standard escapes are to test for iPXE in the DHCP request (iPXE identifies itself and sets a user class) and serve it a script instead of a binary, or to build iPXE with the script embedded so it ignores DHCP's opinion entirely. The embedded-script build is more work up front and much harder to break later, which is the trade you usually want at fleet scale.</p>
+<p>Newer UEFI firmware can do HTTP boot natively - architecture types 15 and 16, with option 60 set to <code>HTTPClient</code> and option 67 containing a URL. It removes the TFTP step entirely. It is also the part of any given firmware that has been tested least, so verify it per platform before you build a workflow on it.</p>
+<h2 id="secure-boot-complicates-all-of-this">Secure boot complicates all of this</h2>
+<p>With secure boot enabled, the firmware only executes binaries signed by a key in its db. In practice that means Microsoft's third-party UEFI CA, because that's the key that ships in the db of essentially every x86 server. The distributions solve it with <strong>shim</strong>: a small Microsoft-signed loader that then verifies the next stage - GRUB, and then the kernel - against the distribution's own embedded certificate, plus a Machine Owner Key list you can add to.</p>
+<p>So the chain is firmware to <code>shimx64.efi</code> to <code>grubx64.efi</code> to <code>vmlinuz</code>, and every link is signature-checked. Two consequences for provisioning:</p>
+<p>Unsigned iPXE won't run. If you want both secure boot and iPXE, you sign your own iPXE build and enroll your key, which means owning a signing key and the process around it.</p>
+<p>Your custom kernel won't boot either, and neither will your out-of-tree modules. You generate a MOK key pair, enroll the public certificate with <code>mokutil</code>, and sign the kernel and modules. MOK enrollment is interactive at the console by design - that is the point of it - so at fleet scale you're either scripting key enrollment through the vendor's firmware API or deciding that the machines running your custom kernel don't run secure boot. Decide that deliberately, once, and write it down.</p>
+<h2 id="out-of-band-ipmi-and-redfish">Out-of-band: IPMI and Redfish</h2>
+<p>None of the above helps if you can't force a machine to net-boot or read why it didn't.</p>
+<p><strong>IPMI</strong> is the old answer - a command model over UDP, usually port 623, spoken to the BMC with <code>ipmitool</code>. It does what you need: power on, power cycle, set the next boot device to PXE, open a serial-over-LAN console, read sensors. It also has a security history nobody defends, and Intel has stated that no further updates to the specification are planned and points users toward more modern interfaces.</p>
+<p><strong>Redfish</strong> is that interface: a DMTF standard, a JSON schema-based REST API over HTTPS. Same operations, but discoverable and scriptable without a special client.</p>
+<pre><code># force the next boot to PXE, then power on
+curl -sk -u admin:$PW -X PATCH \
+  -H 'Content-Type: application/json' \
+  -d '{"Boot":{"BootSourceOverrideTarget":"Pxe",
+               "BootSourceOverrideEnabled":"Once"}}' \
+  https://$BMC/redfish/v1/Systems/1
+
+curl -sk -u admin:$PW -X POST \
+  -d '{"ResetType":"On"}' \
+  https://$BMC/redfish/v1/Systems/1/Actions/ComputerSystem.Reset</code></pre>
+<p>Redfish also covers the thing IPMI never did well: firmware and BIOS settings as data. Being able to GET a BIOS attribute set from one machine and PATCH it onto four hundred others is the difference between a fleet and a collection. Vendor coverage varies - check what your platform actually implements before you assume a schema exists.</p>
+<h2 id="the-unattended-install">The unattended install</h2>
+<p><strong>Kickstart</strong> on the Red Hat side, <strong>preseed</strong> on Debian, <strong>autoinstall</strong> on modern Ubuntu. All three do the same job: answer every installer question in advance, from a file the installer fetches over the network.</p>
+<p>The discipline that matters isn't the syntax, it's restraint. A kickstart with four hundred lines of <code>%post</code> shell is a configuration management system with no state, no idempotence, and no way to test a change other than reinstalling a server. Keep the install to the things that genuinely can only happen at install time - partitioning, bootloader, base package set, network - and hand off to your config management tool at first boot. The install should be boring and identical; the divergence belongs somewhere it can be converged.</p>
+<p>Serve the config file over HTTP from something that knows the machine, keyed on MAC address or serial. That way "what will this host install as" is a question you can answer with <code>curl</code> before you power it on.</p>
+<h2 id="making-it-actually-repeatable">Making it actually repeatable</h2>
+<p>Every failure I've seen at scale traces back to a machine that was not identical to its neighbors in a way nobody had recorded. So:</p>
+<p>Version the firmware and the BIOS settings, and check them as part of provisioning rather than trusting what shipped. Two servers from the same PO can have different microcode and different boot orders.</p>
+<p>Make the boot menu deterministic and time out to <em>nothing</em>. A netboot default that installs is a loaded gun; anything that reboots unexpectedly will find it.</p>
+<p>Log both sides. The DHCP transaction and the HTTP fetches, together, tell you exactly where a machine stopped. Without them you're guessing at a black screen.</p>
+<p>And treat "install completed" as untrusted. Have the machine report in and prove itself: right kernel, right disks, right link speeds, right BMC credentials. A build that silently succeeded wrong is more expensive than one that failed loudly.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>

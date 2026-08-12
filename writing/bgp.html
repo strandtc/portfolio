@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BGP once you have your own AS number - Chris Strandt</title>
+  <meta name="description" content="What BGP is doing, how it picks a path, what communities and prepending buy you, and what a full table costs in memory.">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wr-hero { position: relative; overflow: hidden; padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-8); }
+    .wr-hero .dot-field { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+    .wr-hero .dot-field canvas { width: 100%; height: 100%; display: block; }
+    .wr-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 2; }
+    .wr-narrow { max-width: 70ch; }
+    .wr-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                  text-transform: uppercase; color: var(--color-accent); margin-bottom: var(--space-4); }
+    .wr-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                font-size: clamp(30px, 4.4vw, 52px); line-height: 1.04; letter-spacing: var(--tracking-tight);
+                color: var(--color-text-primary); margin: 0 0 var(--space-4); max-width: 20ch; }
+    .wr-dek { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--color-text-secondary);
+              max-width: 60ch; margin: 0 0 var(--space-5); }
+    .wr-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-family: var(--font-mono);
+               font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+               color: var(--color-text-muted); }
+    .wr-figure { margin: var(--space-8) 0 0; }
+    .wr-figure img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+    .wr-body { padding: var(--space-10) 0 var(--space-16); }
+    .wr-body p, .wr-body li { color: var(--color-text-secondary); line-height: 1.72; }
+    .wr-body p { margin: 0 0 var(--space-5); max-width: 70ch; }
+    .wr-body h2 { font-family: var(--font-display); font-size: clamp(21px, 2.6vw, 27px); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); letter-spacing: var(--tracking-tight);
+                  margin: var(--space-10) 0 var(--space-4); max-width: 28ch; }
+    .wr-body h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-6) 0 var(--space-3); }
+    .wr-body ul, .wr-body ol { max-width: 70ch; margin: 0 0 var(--space-5); padding-left: 22px; }
+    .wr-body li { margin-bottom: var(--space-2); }
+    .wr-body li::marker { color: var(--color-accent); }
+    .wr-body strong { color: var(--color-text-primary); font-weight: var(--weight-medium); }
+    .wr-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
+    .wr-body code { font-family: var(--font-mono); font-size: .88em; background: var(--color-bg-card);
+                    border: 1px solid var(--color-border); padding: 1px 5px; border-radius: 2px; color: var(--color-text-primary); }
+    .wr-body pre { background: var(--color-bg-card); border: 1px solid var(--color-border); padding: var(--space-5);
+                   overflow-x: auto; margin: 0 0 var(--space-5); }
+    .wr-body pre code { background: none; border: 0; padding: 0; font-size: var(--text-sm); line-height: 1.6; }
+    .wr-body blockquote { border-left: 2px solid var(--color-accent); padding-left: var(--space-5);
+                          margin: 0 0 var(--space-5); }
+    .wr-body blockquote p { color: var(--color-text-primary); font-family: var(--font-display); font-size: var(--text-lg); }
+    .tw { overflow-x: auto; margin: 0 0 var(--space-6); border: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .wr-body table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: var(--text-sm); }
+    .wr-body th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--color-border-light);
+                  font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase;
+                  letter-spacing: var(--tracking-wide); color: var(--color-text-muted); background: var(--color-bg-secondary); white-space: nowrap; }
+    .wr-body td { padding: 10px 14px; border-bottom: 1px solid var(--color-border); vertical-align: top; color: var(--color-text-secondary); }
+    .wr-body tr:last-child td { border-bottom: 0; }
+    .wr-foot { border-top: 1px solid var(--color-border); padding-top: var(--space-6); margin-top: var(--space-10); }
+    .wr-back { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide);
+               text-transform: uppercase; color: var(--color-accent); text-decoration: none; }
+    .wr-index-year { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-ultra);
+                     text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+                     padding-bottom: var(--space-3); margin: var(--space-10) 0 var(--space-6); }
+    .wr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-6); }
+    .wr-card { display: block; text-decoration: none; border: 1px solid var(--color-border); background: var(--color-bg-card);
+               transition: border-color .2s ease, transform .2s ease; }
+    .wr-card:hover { border-color: var(--color-border-accent); transform: translateY(-2px); }
+    .wr-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--color-bg-secondary); }
+    .wr-card-in { padding: var(--space-5); }
+    .wr-card-cat { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+                   color: var(--color-accent); }
+    .wr-card h3 { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-bold);
+                  color: var(--color-text-primary); margin: var(--space-2) 0; line-height: 1.28; }
+    .wr-card p { font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0 0 var(--space-3); line-height: 1.55; }
+    .wr-card .d { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+<header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="logo" aria-label="Strandt Home">STRANDT<span class="slash">//</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li class="nav-dropdown"><a href="../experience/index.html">Experience</a>
+            <div class="nav-dropdown-menu"><div class="nav-dropdown-inner">
+              <a href="../experience/early-career.html">Early Career</a>
+              <a href="../experience/liquid-web/">Liquid Web</a>
+              <a href="../experience/power-gauge-pro/">Power Gauge Pro</a>
+            </div></div>
+          </li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <a href="../assets/resume.pdf" class="nav-resume" download>Download Resume</a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-nav">
+    <a href="../">Home</a><a href="../about.html">About</a><a href="../experience/">Experience</a>
+    <a href="../experience/early-career.html" class="mobile-nav-sub">Early Career</a>
+    <a href="../experience/liquid-web/" class="mobile-nav-sub">Liquid Web</a>
+    <a href="../experience/power-gauge-pro/" class="mobile-nav-sub">Power Gauge Pro</a>
+    <a href="../projects/">Projects</a><a href="../datacenters/">Data Centers</a>
+<a href="../contact.html">Contact</a>
+    <a href="../assets/resume.pdf">Download Resume</a>
+  </div>
+<main id="main">
+  <section class="wr-hero">
+    <div class="dot-field" aria-hidden="true"><canvas id="network-anim"></canvas></div>
+    <div class="wr-wrap">
+      <p class="wr-eyebrow">// Network</p>
+      <h1 class="wr-title">BGP once you have your own AS number</h1>
+      <p class="wr-dek">What BGP is doing, how it picks a path, what communities and prepending buy you, and what a full table costs in memory.</p>
+      <div class="wr-meta"><span>Network</span><span>8 min read</span></div>
+      <figure class="wr-figure">
+        <img src="../assets/images/writing/bgp.jpg" alt="" loading="eager">
+      </figure>
+    </div>
+  </section>
+
+  <section class="wr-body">
+    <div class="wr-wrap">
+      <p>The day your AS number comes back from ARIN, BGP stops being a thing other people run. What changes is not the protocol - it's that mistakes you make now show up in other people's routing tables.</p>
+<h2 id="what-bgp-is-actually-doing">What BGP is actually doing</h2>
+<p>BGP is a <strong>path vector</strong> protocol. It does not compute a shortest path the way OSPF or EIGRP do. It distributes reachability - "prefix P is reachable via this sequence of autonomous systems" - and each AS applies its own policy to decide which of the paths it heard it will use and which it will pass on.</p>
+<p>That second half is the important part. An interior gateway protocol tries to find the best path by some technical metric. BGP exists to let independent organizations express commercial policy. Almost everything confusing about BGP makes sense once you accept that "best" means "best for the network operator making the decision," and that operator is usually optimizing a bill.</p>
+<p>Mechanically it's TCP on port 179, sessions that stay up for months, incremental updates rather than periodic refreshes, and no concept of link cost at all. The current base specification is RFC 4271.</p>
+<h2 id="ebgp-and-ibgp">eBGP and iBGP</h2>
+<p><strong>eBGP</strong> runs between routers in different autonomous systems. It is almost always directly connected, the AS number is prepended to the AS path on the way out, and the next hop is rewritten to the sending router.</p>
+<p><strong>iBGP</strong> runs between routers inside the same AS. It exists to carry externally learned routes across your own network. Two rules trip up everyone the first time:</p>
+<ul><li>iBGP does not re-advertise a route learned from one iBGP peer to another iBGP peer. There is no AS path loop protection inside your own AS, so the protocol solves it by refusing to forward. That's why iBGP wants a full mesh, and why route reflectors exist once a full mesh stops being practical.</li><li>iBGP does not change the next hop by default. A route learned on your border router points at your upstream's interface address, and your core router has no idea how to reach that. Either redistribute the peering link into your IGP or, far more commonly, set <code>next-hop-self</code> on the border router's iBGP sessions.</li></ul>
+<p><code>LOCAL_PREF</code> is carried in iBGP and stripped on eBGP advertisement. That's the design: local preference is your policy, expressed to your own routers, and nobody else's business.</p>
+<h2 id="path-selection">Path selection</h2>
+<p>The decision process is ordered. It walks the list and stops at the first tiebreak that discriminates. Vendors add their own steps at the top and bottom, but the core order is stable:</p>
+<div class="tw"><table><thead><tr><th>Step</th><th>Criterion</th><th>Notes</th></tr></thead><tbody><tr><td>1</td><td>Highest weight</td><td>Cisco-proprietary, local to one router, not advertised</td></tr><tr><td>2</td><td>Highest LOCAL_PREF</td><td>Your policy, AS-wide. This is the knob you should use</td></tr><tr><td>3</td><td>Locally originated</td><td>Routes you injected win</td></tr><tr><td>4</td><td>Shortest AS_PATH</td><td>The only "distance" BGP has, and it's a hop count of ASes</td></tr><tr><td>5</td><td>Lowest ORIGIN</td><td>IGP &lt; EGP &lt; incomplete</td></tr><tr><td>6</td><td>Lowest MED</td><td>Only compared between paths from the same neighboring AS by default</td></tr><tr><td>7</td><td>eBGP over iBGP</td><td>Prefer to hand it off directly</td></tr><tr><td>8</td><td>Lowest IGP metric to next hop</td><td>"Hot potato" - nearest exit wins</td></tr><tr><td>9</td><td>Tiebreakers</td><td>Oldest path, lowest router ID, lowest neighbor address</td></tr></tbody></table></div>
+<p>Two things worth internalizing. First, LOCAL_PREF beats AS path length, which means your policy always wins over topology - set local preference and you will get the exit you asked for even if it's a longer path. Second, step 8 is why traffic leaves your network at the nearest exit rather than the exit closest to the destination. That is the correct default. It is also the reason your traffic engineering looks wrong until you understand it.</p>
+<h2 id="as-path-prepending-and-what-it-cannot-do">AS path prepending, and what it cannot do</h2>
+<p>Prepending means stuffing extra copies of your own AS number into the path you advertise, to make it look longer and therefore less attractive. It is the only inbound traffic engineering tool that works on strangers, because it operates on step 4 of a decision process everyone runs.</p>
+<p>It is also blunt and often useless, for a specific reason: prepending sits at step 4, and any network that has set a LOCAL_PREF on the path - which every transit provider does, on every customer route - decided at step 2 and never reached your prepends. So prepending reliably shifts traffic among your own upstreams' customers who have no preference, and reliably does nothing to a network that prefers its customer routes.</p>
+<p>Two prepends is a signal. Five is a confession. If two aren't moving the traffic, more won't; go find the community that does what you actually want.</p>
+<h2 id="communities">Communities</h2>
+<p>A community is a tag you attach to a route to signal intent, either to your own routers or to someone else's.</p>
+<ul><li><strong>RFC 1997</strong> standard communities are 32 bits, conventionally written <code>ASN:value</code>. The well-known ones are <code>NO_EXPORT</code> and <code>NO_ADVERTISE</code>.</li><li><strong>RFC 4360</strong> extended communities added structure, mostly used inside MPLS VPNs.</li><li><strong>RFC 8092</strong> large communities are 12 octets in three 4-octet fields, which exists because 32-bit communities cannot hold a 4-byte AS number and a value at the same time. If your AS number is 4-byte, you need these.</li></ul>
+<p>The useful part is what your transit providers do with them. Most publish a community list that lets you set their local preference on your routes, prepend to specific peers on your behalf, or suppress advertisement to a particular region or peer. That is real inbound traffic engineering, executed inside their network at step 2, and it works where prepending doesn't. Read your upstream's community documentation before you ever touch a prepend.</p>
+<p>Scrub inbound communities from customers you don't trust, and don't accidentally strip your own.</p>
+<h2 id="full-tables-a-default-route-and-what-it-costs">Full tables, a default route, and what it costs</h2>
+<p>The global table is not small. APNIC's measurement put it at roughly 943,000 IPv4 prefixes in January 2024 and about 201,000 IPv6 prefixes, across roughly 75,000 active AS numbers. It has been growing at tens of thousands of IPv4 prefixes a year, and 83% of the IPv4 table is /24, /23 and /22 - deaggregation, not new allocation.</p>
+<p>There are three ways to take routes from an upstream:</p>
+<p><strong>Default only.</strong> One route. No memory concern, no convergence concern, and no ability to pick an exit - everything goes to whoever gave you the default. Fine for a single-homed network that just wants its own address space.</p>
+<p><strong>Partial plus default.</strong> Your upstream sends you their customer routes and their peer routes, you take a default for everything else. You get path selection where it matters, at a fraction of the table size. For most multi-homed networks that are not themselves transit providers, this is the right answer and it is under-used.</p>
+<p><strong>Full tables from every transit.</strong> You see every path anyone offers you and can make real decisions. You also pay for it.</p>
+<p>The cost has two parts, and people only budget for one. Control plane memory scales with the number of peers, because each session gets its own Adj-RIB-In: two full-table peers is roughly two copies of the table before path selection, plus the Loc-RIB. Adding a third transit is not a 50% increase in effort for the route processor, it is another full copy.</p>
+<p>Forwarding plane memory is the harder limit, and it is the one that has taken the internet down. On 12 August 2014 the IPv4 table crossed 512,000 routes, which was the default TCAM allocation on a large installed base of Cisco 6500 and 7600 hardware. Routers that hit it fell back to software switching or crashed, and there was a visible spike in global outages. The same class of problem recurred at the 768K boundary in 2019 on platforms with that default. Before you turn up full tables, check your platform's actual FIB scale and the current default allocation split between IPv4 and IPv6, not the datasheet headline.</p>
+<h2 id="filtering-and-rpki">Filtering and RPKI</h2>
+<p>Everything you advertise and everything you accept needs a filter. RFC 7454 (BCP 194) is the operational reference and is worth reading end to end, but the short version:</p>
+<ul><li><strong>Outbound</strong>, advertise your own prefixes and your customers' prefixes, and nothing else. Build this from an explicit prefix list, not from "whatever is in the table." Route leaks are almost always a missing outbound filter.</li><li><strong>Inbound</strong>, drop bogons, drop your own prefixes coming back at you, drop default unless you asked for it, and drop anything longer than /24 in IPv4 or /48 in IPv6 because nobody else will carry it anyway.</li><li><strong>Set max-prefix on every session.</strong> A neighbor that suddenly sends you 900,000 routes instead of 40 is a fat finger somewhere, and you want the session to drop rather than your router.</li></ul>
+<p><strong>RPKI</strong> is the piece that has actually changed in the last few years. It is a public key infrastructure over number resources: you create a <strong>ROA</strong> - Route Origin Authorization - in your RIR's portal stating that AS X is authorized to originate prefix P up to a given length. Routers fetch validated data via RTR and mark each received route valid, invalid, or not-found. The architecture is RFC 6480, origin validation is RFC 6811, the current ROA profile is RFC 9582.</p>
+<p>Two practical notes. First, deployment is real now - the NIST RPKI Monitor showed ROA coverage crossing half of the IPv4 routes in the global table during 2024, and major transit providers drop invalids. If your prefix is invalid, parts of the internet will not reach you, and the failure looks like nothing at all from where you're sitting. Second, be careful with maxLength. Setting it wide "so I have room later" creates prefixes that are RPKI-valid but that you don't actually announce, which is exactly the space a hijacker needs. RFC 9319 (BCP 185) says to keep it tight; the safe default is maxLength equal to the prefix length, and a new ROA when you deaggregate.</p>
+<p>Create the ROAs the same week you get the allocation. It's ten minutes of work and it is the only part of this that fails silently.</p>
+      <div class="wr-foot"><a class="wr-back" href="../writing/">&larr; All writing</a></div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">STRANDT<span style="color: var(--color-text-muted)">//</span></div>
+        <p class="tagline">Building things that matter.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-nav">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience/index.html">Experience</a></li>
+          <li><a href="../projects/">Projects</a></li>
+          <li><a href="../datacenters/">Data Centers</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div><div class="footer-social">
+        <a href="mailto:strandtc@gmail.com" aria-label="Email">@</a>
+        <a href="https://linkedin.com/in/chrisstrandt" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        <a href="https://github.com/strandtc" target="_blank" rel="noopener" aria-label="GitHub">&lt;/&gt;</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copyright">&copy; 2026 Chris Strandt. All rights reserved.</span>
+      <span class="status"><span class="status-dot"></span> Open to opportunities</span>
+    </div>
+  </footer>
+<script src="../js/forge.js"></script>
+</body>
+</html>
