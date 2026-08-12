@@ -93,15 +93,19 @@
       color: var(--color-text-primary); font-weight: var(--weight-light); margin: 0;
     }
 
-    /* ---------- gallery placeholders ---------- */
-    .dc-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4); margin-top: var(--space-8); }
-    .dc-photo {
-      aspect-ratio: 4 / 3; border: 1px dashed var(--color-border-light); background: var(--color-bg-secondary);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2);
-      color: var(--color-text-muted); font-family: var(--font-mono); font-size: var(--text-xs);
-      letter-spacing: var(--tracking-wide); text-transform: uppercase; text-align: center; padding: var(--space-4);
+    /* ---------- figures & galleries ---------- */
+    .dc-fig { margin: var(--space-8) 0 0; }
+    .dc-fig img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); background: #fff; }
+    .dc-fig figcaption, .dc-gallery figcaption {
+      font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wide); margin-top: var(--space-3); line-height: var(--leading-normal);
     }
-    .dc-photo svg { opacity: .35; }
+    .dc-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: var(--space-5); margin-top: var(--space-8); }
+    .dc-gallery figure { margin: 0; }
+    .dc-gallery img {
+      display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+      border: 1px solid var(--color-border); background: var(--color-bg-secondary);
+    }
 
     /* ---------- cta ---------- */
     .dc-cta { border-top: 1px solid var(--color-border); margin-top: var(--space-12); padding-top: var(--space-12); }
@@ -214,6 +218,11 @@
              commissioning and turnover into live operation.</p>
         </div>
       </div>
+
+      <figure class="dc-fig">
+        <img src="../assets/images/datacenters/dc-floorplan.jpg" alt="Architectural floor plan of the Lansing data center showing 741 racks, a generator bank, switchgear and primary switch lineups, cooling units and the office areas." loading="lazy" width="1187" height="881">
+        <figcaption>Floor plan &mdash; (741) 24&Prime;&times;72&Prime; racks, the generator bank and primary switch lineup down one side, switchgear, cooling and PDU positions. Office, training and receiving to the west.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -368,6 +377,33 @@
              carried through design, construction and the operating procedures afterward.</p>
         </div>
       </div>
+
+      <div class="dc-gallery">
+        <figure>
+          <img src="../assets/images/datacenters/dc-generators.jpg" alt="Two Generac standby generator sets on concrete pads with belly fuel tanks, alongside an outdoor switchgear lineup." loading="lazy">
+          <figcaption>Standby generation and the outdoor gear lineup, on the pad.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-switchgear-lineup.jpg" alt="Switchgear lineup during installation, cabinet sections open showing copper busbar and breaker compartments." loading="lazy">
+          <figcaption>Switchgear during installation, before energisation.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-busbar.jpg" alt="Close-up of switchgear terminations: copper busbar with LOAD and EMERGENCY labels and lugged feeder cables." loading="lazy">
+          <figcaption>Terminations. Load and emergency bus, feeders landed.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-switchgear-terminations.jpg" alt="Electrician working inside an open switchgear section, banks of conduit entering the electrical room overhead." loading="lazy">
+          <figcaption>Controls termination, conduit banks overhead.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-ups-room.jpg" alt="Row of UPS cabinets in a finished electrical room with overhead conduit." loading="lazy">
+          <figcaption>UPS lineup, N+1.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-battery-install.jpg" alt="Technicians installing VRLA battery strings into open UPS battery cabinets." loading="lazy">
+          <figcaption>Battery plant going in. VRLA strings, cabinet by cabinet.</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -473,18 +509,22 @@
         <p>Construction-phase photographs from the Lansing facilities.</p>
       </div>
       <div class="dc-gallery">
-        <div class="dc-photo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
-          <span>Power chain / switchgear</span>
-        </div>
-        <div class="dc-photo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
-          <span>Construction phase</span>
-        </div>
-        <div class="dc-photo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
-          <span>Hand-drawn floor plan</span>
-        </div>
+        <figure>
+          <img src="../assets/images/datacenters/dc-slab-pour.jpg" alt="Crew placing and finishing a concrete slab pour inside the data center shell." loading="lazy">
+          <figcaption>Slab pour.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-steel-shell.jpg" alt="Interior of the building shell during construction, steel structure and mezzanine with scissor lifts on the floor." loading="lazy">
+          <figcaption>The shell, before it was anything.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-framing.jpg" alt="Metal stud framing dividing the interior, stacked drywall waiting on the floor." loading="lazy">
+          <figcaption>Framing the rooms out. That drywall did not hang itself.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/images/datacenters/dc-equipment-delivery.jpg" alt="Mobile crane offloading electrical equipment from flatbed trailers outside the building in winter." loading="lazy">
+          <figcaption>Long-lead gear arriving. Michigan, in winter.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
